@@ -1,2 +1,2 @@
 # YipSite
-Website for yipcode.com
+Website for [yipcode.com](https://yipcode.com/).
