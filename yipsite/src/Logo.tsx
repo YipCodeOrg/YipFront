@@ -6,11 +6,11 @@ import {
   forwardRef,
   usePrefersReducedMotion,
 } from "@chakra-ui/react"
-import logo from "./logo.svg"
+import logo from "./yiplogo.svg"
 
-const spin = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+const shake = keyframes`
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(30%); }
 `
 
 export const Logo = forwardRef<ImageProps, "img">((props, ref) => {
@@ -18,7 +18,7 @@ export const Logo = forwardRef<ImageProps, "img">((props, ref) => {
 
   const animation = prefersReducedMotion
     ? undefined
-    : `${spin} infinite 20s linear`
+    : `${shake} 20s alternate infinite`
 
   return <chakra.img animation={animation} src={logo} ref={ref} {...props} />
 })

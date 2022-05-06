@@ -3,7 +3,6 @@ import {
   ChakraProvider,
   Box,
   Text,
-  Link,
   VStack,
   Code,
   Grid,
@@ -22,15 +21,9 @@ export const App = () => (
           <Text fontSize="xxl">
             <Code fontSize="xl">YipCode</Code> <b>Y</b>our <b>I</b>nternet <b>P</b>ostcode.
           </Text>
-          <Link
-            color="teal.500"
-            href="https://github.com/ColmBhandal/YipSite"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Text fontSize="2xl">
             The future of postal address management is coming. Stay tuned.
-          </Link>
+          </Text>
         </VStack>
       </Grid>
     </Box>
