@@ -20,7 +20,7 @@ export const App = () => (
         <VStack spacing={8}>
           <Logo h="40vmin" pointerEvents="none" />
           <Text fontSize="xxl">
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
+            <Code fontSize="xl">YipCode</Code> <b>Y</b>our <b>I</b>nternet <b>P</b>ostcode.
           </Text>
           <Link
             color="teal.500"
@@ -29,7 +29,7 @@ export const App = () => (
             target="_blank"
             rel="noopener noreferrer"
           >
-            Yipcode: The future of postal address storage is here.
+            The future of postal address management is coming. Stay tuned.
           </Link>
         </VStack>
       </Grid>
