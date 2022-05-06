@@ -19,7 +19,7 @@ export const App = () => (
         <VStack spacing={8}>
           <Logo h="40vmin" pointerEvents="none" />
           <Text fontSize="xxl">
-            <Code fontSize="xl">YipCode</Code> <b>Y</b>our <b>I</b>nternet <b>P</b>ostcode.
+            <b>Yip</b><Code fontSize="xl">Code</Code> <b>Y</b>our <b>I</b>nternet <b>P</b>ostcode.
           </Text>
           <Text fontSize="2xl">
             The future of postal address management is coming. Stay tuned.
