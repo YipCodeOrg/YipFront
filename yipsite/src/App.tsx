@@ -4,13 +4,13 @@ import {
   VStack,
   theme,
 } from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import Hero from "./hero"
+import NavBar from "./navBar"
 
 export const App = () => (
-  <ChakraProvider theme={theme}> 
+  <ChakraProvider theme={theme}>
+    <NavBar/>
     <VStack>      
-      <ColorModeSwitcher justifySelf="flex-end" />
       <Hero/>
     </VStack>
   </ChakraProvider>
