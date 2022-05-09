@@ -25,7 +25,7 @@ import {
             </Text>
           </Heading>
           <Text color={'gray.500'} maxW={'3xl'}>
-            The future of postal address management here.
+            The future of postal address management is here.
           </Text>
           <Stack spacing={6} direction={'row'}>
             <Button
