@@ -1,4 +1,3 @@
-import * as React from "react"
 import {
   ChakraProvider,
   VStack,
@@ -6,12 +5,16 @@ import {
 } from "@chakra-ui/react"
 import Hero from "./hero"
 import NavBar from "./navBar"
+import Footer from "./footer"
 
 export const App = () => (
   <ChakraProvider theme={theme}>
     <NavBar/>
-    <VStack>      
-      <Hero/>
+    <VStack>
+      <VStack>      
+        <Hero/>
+      </VStack>
     </VStack>
+    <Footer/>
   </ChakraProvider>
 )
