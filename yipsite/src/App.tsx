@@ -6,6 +6,7 @@ import {
 import Hero from "./hero"
 import NavBar from "./navBar"
 import Footer from "./footer"
+import { Logo } from "./Logo"
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -15,6 +16,7 @@ export const App = () => (
         <Hero/>
       </VStack>
     </VStack>
+    <Logo/>
     <Footer/>
   </ChakraProvider>
 )
