@@ -16,7 +16,7 @@ export const App = () => (
         <Hero/>
       </VStack>
     </VStack>
-    <Logo/>
+    <Logo lightCol='#000000' darkCol='#ffffff'/>
     <Footer/>
   </ChakraProvider>
 )
