@@ -15,7 +15,9 @@ export const Logo: FunctionComponent<LogoProps> = ({lightCol, darkCol}) => {
   {
     path: {
     stroke: stroke
-    }
+    },
+    height: 32,
+    viewBox: "0 0 32 32"
   } 
 
   const StyledLogo = styled(YipLogo)`

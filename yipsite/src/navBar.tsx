@@ -14,6 +14,7 @@ import {
   MdClose as CloseIcon,
 } from 'react-icons/all';
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
+import { Logo } from './Logo';
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -46,7 +47,9 @@ export default function NavBar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'} >
-            <Box >Logo</Box>
+            <Box>
+              <Logo lightCol='#000000' darkCol='#ffffff'/>
+            </Box>
             <HStack
               as={'nav'}
               spacing={4}
