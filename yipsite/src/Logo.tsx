@@ -1,12 +1,23 @@
-import * as React from "react"
-import {
-  chakra,
-  ImageProps,
-  forwardRef,
-} from "@chakra-ui/react"
-import logo from "./yiplogo.svg"
+import {ReactComponent as YipLogo} from "./yiplogo.svg"
+import styled from "@emotion/styled"
+import { css } from "@emotion/react"
+import { useColorModeValue } from "@chakra-ui/react"
 
-export const Logo = forwardRef<ImageProps, "img">((props, ref) => {
+export const Logo = () => {
+  
+  const stroke=useColorModeValue('#000000', '#ffffff')
 
-  return <chakra.img src={logo} ref={ref} {...props} />
-})
+  const customCss = css`  
+  path {
+    stroke: ${stroke};
+    }
+  `
+
+  const StyledLogo = styled(YipLogo)`
+    ${customCss};
+  `
+  
+  return (
+    <StyledLogo/>
+  );
+}
