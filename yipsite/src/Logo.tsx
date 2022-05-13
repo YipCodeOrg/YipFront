@@ -4,10 +4,12 @@ import styled from "@emotion/styled"
 import { useColorModeValue } from "@chakra-ui/react"
 
 type LogoProps = {
-  lightCol:string, darkCol:string
+  lightCol:string,
+  darkCol:string,
+  size: number
 }
 
-export const Logo: FunctionComponent<LogoProps> = ({lightCol, darkCol}) => {
+export const Logo: FunctionComponent<LogoProps> = ({lightCol, darkCol, size}) => {
   
   const stroke=useColorModeValue(lightCol, darkCol)
 
@@ -16,8 +18,7 @@ export const Logo: FunctionComponent<LogoProps> = ({lightCol, darkCol}) => {
     path: {
     stroke: stroke
     },
-    height: 32,
-    viewBox: "0 0 32 32"
+    height: size,
   } 
 
   const StyledLogo = styled(YipLogo)`
@@ -25,6 +26,6 @@ export const Logo: FunctionComponent<LogoProps> = ({lightCol, darkCol}) => {
   `
   
   return (    
-    <StyledLogo/>  
+    <StyledLogo width={size} height={size}/>  
   );
 }
