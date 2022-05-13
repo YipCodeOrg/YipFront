@@ -21,10 +21,8 @@ export const App = () => (
        <NavBar/>
       </Box>
       <main style={mainFlexProps}>
-        <VStack>
-          <VStack>      
-            <Hero/>
-          </VStack>
+        <VStack>  
+          <Hero/>
         </VStack>
       </main>
       <Box minWidth="100vw">
