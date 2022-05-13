@@ -87,16 +87,16 @@ export default function Footer() {
               <Logo color={useColorModeValue('gray.700', 'white')} />
             </Box>
             <Text fontSize={'sm'}>
-              © 2022 Chakra Templates. All rights reserved
+              © 2022 YipCode. All rights reserved.
             </Text>
             <Stack direction={'row'} spacing={6}>
-              <SocialButton label={'Twitter'} href={'#'}>
+              <SocialButton label={'Twitter'} href={'https://twitter.com/YipCode'}>
                 <FaTwitter />
               </SocialButton>
-              <SocialButton label={'YouTube'} href={'#'}>
+              <SocialButton label={'YouTube'} href={'https://www.youtube.com/channel/UCW3rMAnOM3Z1rZhmG7RBWsw'}>
                 <FaYoutube />
               </SocialButton>
-              <SocialButton label={'Instagram'} href={'#'}>
+              <SocialButton label={'Instagram'} href={'https://www.instagram.com/yipcode/'}>
                 <FaInstagram />
               </SocialButton>
             </Stack>
