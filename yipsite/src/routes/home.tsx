@@ -4,9 +4,10 @@ import {
   theme,
   Box,
 } from "@chakra-ui/react"
-import Hero from "./hero"
-import NavBar from "./navBar"
-import Footer from "./footer"
+import Hero from "../hero"
+import NavBar from "../navBar"
+import Footer from "../footer"
+import { Link } from "react-router-dom";
 
 const mainFlexProps = {
   flexGrow: "1",
@@ -14,8 +15,8 @@ const mainFlexProps = {
   flexBasis: "auto"
 }
 
-export const App = () => (
-    <ChakraProvider theme={theme}>
+export default function Home() {
+    return (<ChakraProvider theme={theme}>
       <VStack minHeight="100vh" minWidth="100vw">
         <Box minWidth="100vw">
         <NavBar/>
@@ -24,10 +25,12 @@ export const App = () => (
           <VStack>  
             <Hero/>
           </VStack>
+          <Link to="/blog">Blog</Link> |{" "}
+          <Link to="/about">About</Link>
         </main>
         <Box minWidth="100vw">
           <Footer/>
         </Box>    
       </VStack>
-    </ChakraProvider>
-)
+    </ChakraProvider>);
+}

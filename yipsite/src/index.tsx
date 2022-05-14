@@ -1,18 +1,24 @@
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
 import ReactDOM from "react-dom"
-import { App } from "./App"
+import Home from "./routes/home"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Blog from "./routes/blog"
+import About from "./routes/about"
 
 const Root = () => (
-  <BrowserRouter>
-    <React.StrictMode>
-      <ColorModeScript />
-      <App />
-    </React.StrictMode>
-  </BrowserRouter>
+  <React.StrictMode>
+    <ColorModeScript />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="blog" element={<Blog/>}/>
+        <Route path="about" element={<About/>}/>
+      </Routes>      
+    </BrowserRouter>
+  </React.StrictMode>
 )
 
 ReactDOM.render(<Root/>,
