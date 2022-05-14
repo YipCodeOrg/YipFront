@@ -1,7 +1,5 @@
-import PageWrapper from "../pageWrapper";
-
 export default function Blog(){
-    return <PageWrapper>
+    return <>
         No blog posts yet! Coming soon.
-    </PageWrapper>
+    </>
 }

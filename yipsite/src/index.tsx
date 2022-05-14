@@ -7,15 +7,24 @@ import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Blog from "./routes/blog"
 import About from "./routes/about"
+import Glossary from "./routes/glossary"
+import Yiptionary from "./routes/glossary/yiptionary"
+import FullLayout from "./pageLayouts"
 
 const Root = () => (
   <React.StrictMode>
     <ColorModeScript />
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="blog" element={<Blog/>}/>
-        <Route path="about" element={<About/>}/>
+        <Route path="/*" element={<FullLayout/>}>
+          <Route index element={<Home/>}/>
+          <Route path="blog" element={<Blog/>}/>
+          <Route path="about" element={<About/>}/>
+          <Route path="glossary">
+            <Route index element={<Glossary/>}/>
+            <Route path="yiptionary" element={<Yiptionary/>}/>
+          </Route>
+        </Route>
       </Routes>      
     </BrowserRouter>
   </React.StrictMode>

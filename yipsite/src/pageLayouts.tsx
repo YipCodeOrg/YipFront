@@ -6,6 +6,7 @@ import {
 } from "@chakra-ui/react"
 import NavBar from "./navBar"
 import Footer from "./footer"  
+import { Outlet } from "react-router-dom";
 
 const mainFlexPropVals = {
   flexGrow: "1",
@@ -13,17 +14,14 @@ const mainFlexPropVals = {
   flexBasis: "auto"
 }
 
-type PageWrapperProps = {
-};
-
-const PageWrapper: React.FC<PageWrapperProps> =({children}) => (
+const FullLayout = () => (
     <ChakraProvider theme={theme}>
       <VStack minHeight="100vh" minWidth="100vw">
         <Box minWidth="100vw">
         <NavBar/>
         </Box>
         <main style={mainFlexPropVals}>
-            {children}
+          <Outlet/>
         </main>
         <Box minWidth="100vw">
           <Footer/>
@@ -32,4 +30,4 @@ const PageWrapper: React.FC<PageWrapperProps> =({children}) => (
     </ChakraProvider>
 );
 
-export default PageWrapper;
+export default FullLayout;

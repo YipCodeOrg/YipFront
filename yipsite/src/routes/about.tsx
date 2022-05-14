@@ -1,7 +1,5 @@
-import PageWrapper from "../pageWrapper";
-
 export default function About(){
-    return <PageWrapper>
+    return <>
         About
-    </PageWrapper>
+    </>
 }
