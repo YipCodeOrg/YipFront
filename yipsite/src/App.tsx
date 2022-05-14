@@ -7,7 +7,6 @@ import {
 import Hero from "./hero"
 import NavBar from "./navBar"
 import Footer from "./footer"
-import { BrowserRouter } from "react-router-dom";
 
 const mainFlexProps = {
   flexGrow: "1",
@@ -16,7 +15,6 @@ const mainFlexProps = {
 }
 
 export const App = () => (
-  <BrowserRouter>
     <ChakraProvider theme={theme}>
       <VStack minHeight="100vh" minWidth="100vw">
         <Box minWidth="100vw">
@@ -32,5 +30,4 @@ export const App = () => (
         </Box>    
       </VStack>
     </ChakraProvider>
-  </BrowserRouter>
 )
