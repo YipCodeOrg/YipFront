@@ -89,6 +89,7 @@ export default function Footer() {
               <Logo lightCol='#000000' darkCol='#ffffff' size={57}/>              
             </Box>
             <Text fontSize={'sm'}>
+              {/*TODO-UPD-2023: Maybe we can have this auto-update e.g. as part of the build process.*/}
               © 2022 YipCode. All rights reserved.
             </Text>
             <Stack direction={'row'} spacing={6}>
