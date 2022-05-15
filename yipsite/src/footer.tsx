@@ -108,7 +108,7 @@ export default function Footer() {
             {CompanyLinks.map(([link, text]) => (
                 <NavLink path={link} text={text}/>
               ))}
-            {/*FF-OFF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
+            {/*TODO-FF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>Support</ListHeader>           
