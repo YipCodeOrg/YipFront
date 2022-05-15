@@ -52,6 +52,29 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const NavLink = ({ path, text }: { path : string, text : string }) => (
+  <Box
+    rounded={'md'}
+    _hover={{
+      textDecoration: 'none',
+      bg: useColorModeValue('gray.200', 'gray.700'),
+    }}
+  >
+    <Link to={path}>{text}</Link>    
+  </Box>
+);
+
+const CompanyLinks = [["/about", "About us"],
+  ["/glossary", "Glossary"],
+  ["/contact", "Contact us"],
+  ["/pricing", "Pricing"]];
+
+const SupportLinks = [["/faq", "FAQ"], 
+  ["/terms", "Terms of Service"], 
+  ["/legal", "Legal"], 
+  ["/privacy", "Privacy Policy"]]
+
+
 export default function Footer() {
   return (
     <Box
@@ -81,19 +104,17 @@ export default function Footer() {
             </Stack>
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Company</ListHeader>
-            <Link to="/about">About us</Link>
-            <Link to="/glossary">Glossary</Link>
-            <Link to="/contact">Contact us</Link>
-            <Link to="/pricing">Pricing</Link>
+            <ListHeader>Company</ListHeader>            
+            {CompanyLinks.map(([link, text]) => (
+                <NavLink path={link} text={text}/>
+              ))}
             {/*FF-OFF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Support</ListHeader>
-            <Link to="/faq">FAQ</Link>
-            <Link to="/terms">Terms of Service</Link>
-            <Link to="/legal">Legal</Link>
-            <Link to="/privacy">Privacy Policy</Link>
+            <ListHeader>Support</ListHeader>           
+            {SupportLinks.map(([link, text]) => (
+                <NavLink path={link} text={text}/>
+              ))}
           </Stack>
         </SimpleGrid>
       </Container>
