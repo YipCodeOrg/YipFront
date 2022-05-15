@@ -2,7 +2,6 @@ import {
   Box,
   chakra,
   Container,
-  Link,
   SimpleGrid,
   Stack,
   Text,
@@ -11,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 
 const SocialButton = ({
@@ -82,19 +82,18 @@ export default function Footer() {
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>Company</ListHeader>
-            <Link href={'#'}>About us</Link>
-            <Link href={'#'}>Blog</Link>
-            <Link href={'#'}>Contact us</Link>
-            <Link href={'#'}>Pricing</Link>
-            <Link href={'#'}>Testimonials</Link>
+            <Link to="/about">About us</Link>
+            <Link to="/glossary">Glossary</Link>
+            <Link to="/contact">Contact us</Link>
+            <Link to="/pricing">Pricing</Link>
+            {/*FF-OFF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>Support</ListHeader>
-            <Link href={'#'}>Help Center</Link>
-            <Link href={'#'}>Terms of Service</Link>
-            <Link href={'#'}>Legal</Link>
-            <Link href={'#'}>Privacy Policy</Link>
-            <Link href={'#'}>Satus</Link>
+            <Link to="/faq">FAQ</Link>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/legal">Legal</Link>
+            <Link to="/privacy">Privacy Policy</Link>
           </Stack>
         </SimpleGrid>
       </Container>

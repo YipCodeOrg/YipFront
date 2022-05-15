@@ -5,11 +5,17 @@ import Home from "./routes/home"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Blog from "./routes/blog"
 import About from "./routes/about"
 import Glossary from "./routes/glossary"
 import Yiptionary from "./routes/glossary/yiptionary"
 import FullLayout from "./pageLayouts"
+import Contact from "./routes/contact"
+import Pricing from "./routes/pricing"
+import Testimonials from "./routes/testimonials"
+import Faq from "./routes/faq"
+import Privacy from "./routes/privacy"
+import Legal from "./routes/legal"
+import Terms from "./routes/terms"
 
 const Root = () => (
   <React.StrictMode>
@@ -18,12 +24,18 @@ const Root = () => (
       <Routes>
         <Route path="/*" element={<FullLayout/>}>
           <Route index element={<Home/>}/>
-          <Route path="blog" element={<Blog/>}/>
           <Route path="about" element={<About/>}/>
+          <Route path="contact" element={<Contact/>}/>
+          <Route path="faq" element={<Faq/>}/>
           <Route path="glossary">
             <Route index element={<Glossary/>}/>
             <Route path="yiptionary" element={<Yiptionary/>}/>
           </Route>
+          <Route path="legal" element={<Legal/>}/>
+          <Route path="pricing" element={<Pricing/>}/>
+          <Route path="privacy" element={<Privacy/>}/>
+          <Route path="terms" element={<Terms/>}/>
+          <Route path="testimonials" element={<Testimonials/>}/>
         </Route>
       </Routes>      
     </BrowserRouter>
