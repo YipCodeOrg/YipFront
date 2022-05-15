@@ -66,7 +66,6 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
 );
 
 const CompanyLinks = [["/about", "About us"],
-  ["/glossary", "Glossary"],
   ["/contact", "Contact us"],
   ["/pricing", "Pricing"]];
 
