@@ -52,12 +52,13 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const NavLink = ({ path, text }: { path : string, text : string }) => (
+//Non-MVP: extract & share with the NavBar's NavLink component
+const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   <Box
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
+      bg: useColorModeValue('gray.200', 'gray.700'),      
     }}
   >
     <Link to={path}>{text}</Link>    

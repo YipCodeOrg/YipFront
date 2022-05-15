@@ -1,9 +1,7 @@
-import { ReactNode } from 'react';
 import {
   Box,
   Flex,
   HStack,
-  Link,
   IconButton,
   useDisclosure,
   useColorModeValue,
@@ -13,23 +11,24 @@ import {
   GiHamburgerMenu as HamburgerIcon,
   MdClose as CloseIcon,
 } from 'react-icons/all';
+import { Link } from 'react-router-dom';
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from './Logo';
 
-const Links = ['Dashboard', 'Projects', 'Team'];
+const Links = [["/", "Home"]];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
-  <Link
+const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
+  <Box
     px={2}
     py={1}
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
+      bg: useColorModeValue('gray.200', 'gray.700'),      
     }}
-    href={'#'}>
-    {children}
-  </Link>
+  >
+    <Link to={path}>{text}</Link>    
+  </Box>
 );
 
 export default function NavBar() {
@@ -51,9 +50,9 @@ export default function NavBar() {
             <HStack
               as={'nav'}
               spacing={4}
-              display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+              display={{ base: 'none', md: 'flex' }}>                         
+              {Links.map(([link, text]) => (
+                <NavLink path={link} text={text}/>
               ))}
             </HStack>
           </HStack>
@@ -64,9 +63,9 @@ export default function NavBar() {
 
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
-            <Stack as={'nav'} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+            <Stack as={'nav'} spacing={4}>                       
+              {Links.map(([link, text]) => (
+                <NavLink path={link} text={text}/>
               ))}
             </Stack>
           </Box>
