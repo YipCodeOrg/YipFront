@@ -34,6 +34,7 @@ import {
               colorScheme={'blue'}
               bg={'blue.400'}
               _hover={{ bg: 'blue.500' }}>
+                {/*TODO: Link this to a stub page explaining that it's not built yet, but we'd love your feedback*/}
                 Get Started
             </Button>
             <Button rounded={'full'} px={6}>
