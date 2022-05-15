@@ -76,10 +76,13 @@ const SupportLinks = [["/faq", "FAQ"],
 
 
 export default function Footer() {
+  
+  let bgCol = useColorModeValue('gray.50', 'gray.900')
+  let fgCol = useColorModeValue('gray.700', 'gray.200')
   return (
     <Box
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}>
+      bg={bgCol}
+      color={fgCol}>
       <Container as={Stack} maxW={'6xl'} py={10}>
         <SimpleGrid
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 2fr' }}
@@ -105,14 +108,14 @@ export default function Footer() {
             </Stack>
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Company</ListHeader>            
+            <ListHeader><b>Company</b></ListHeader>    
             {CompanyLinks.map(([link, text]) => (
                 <NavLink path={link} text={text}/>
               ))}
             {/*TODO-FF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Support</ListHeader>           
+            <ListHeader><b>Support</b></ListHeader>   
             {SupportLinks.map(([link, text]) => (
                 <NavLink path={link} text={text}/>
               ))}
