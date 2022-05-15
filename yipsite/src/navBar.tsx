@@ -45,8 +45,10 @@ export default function NavBar() {
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
-          <HStack spacing={8} alignItems={'center'} >
-            <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>
+          <HStack spacing={8} alignItems={'center'} >                        
+            <Link to={"/"}>
+              <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>                             
+            </Link>
             <HStack
               as={'nav'}
               spacing={4}
