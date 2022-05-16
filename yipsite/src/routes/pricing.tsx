@@ -1,4 +1,5 @@
 //TODO-UPD-2022-08
+
 import {
     Box,
     Button,
@@ -70,7 +71,8 @@ import {
       </Stack>
     );
   };
-  const Pricing = () => {
+  // eslint-disable-next-line
+  const FfOffPricing = () => {
     return (
       <Box py={6} px={5}>
         <Stack spacing={4} width={'100%'} direction={'column'}>
@@ -92,7 +94,7 @@ import {
               }}
               textAlign={'center'}>
               <Heading size={'lg'}>
-                Free for Individuals <Text color="blue.400">Always</Text>
+                YipCode is Free<Text color="blue.400">For Individuals</Text>
               </Heading>
             </Stack>
             <Stack
@@ -101,7 +103,7 @@ import {
                 md: '60%',
               }}>
               <Text textAlign={'center'}>
-                We're working on the details of our business pricing models. In the meantime, whether you're a professional or individual interested in using YipCode, feel free to sign up and start using it for free!
+                YipCode is free to use for individuals. We plan to keep it that way. Feel free to sign up as an individual and start using YipCode today! For businesses, we plan to introduce premium features and pricing models. Stay tuned!
               </Text>
             </Stack>
           </Stack>
@@ -121,5 +123,11 @@ import {
       </Box>
     );
   };
-  
+
+  //TODO-FF-APLV: Remove this and export FfOffPricing
+  const Pricing = () => {
+    return <>We will introduce pricing models when we launch the app. We are planning to make this free for individuals.</>
+  }
+
   export default Pricing;
+
