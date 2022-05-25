@@ -9,7 +9,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
-import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube, } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 
@@ -105,6 +105,13 @@ export default function Footer() {
               <SocialButton label={'Instagram'} href={'https://www.instagram.com/yipcode/'}>
                 <FaInstagram />
               </SocialButton>
+              <SocialButton label={'Facebook'} href={'https://www.facebook.com/YipCode/'}>
+                <FaFacebook />
+              </SocialButton>
+              {/*TODO-FF: No TikTok icon in react-icons/fa. Can add it later if we start using TikTok.
+              <SocialButton label={'Facebook'} href={'https://www.tiktok.com/@yipcode'}>              
+              </SocialButton>              
+              */}
             </Stack>
           </Stack>
           <Stack align={'flex-start'}>
