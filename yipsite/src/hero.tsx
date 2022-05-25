@@ -19,13 +19,13 @@ import {
             fontWeight={600}
             fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
             lineHeight={'110%'}>
-                <b>Yip</b><Code fontSize="xl">Code</Code>{' '}
+                Yip<Code fontSize="xl">Code</Code>{' '}
             <Text as={'span'} color={'blue.400'}>
-                <b>Y</b>our <b>I</b>nternet <b>P</b>ostcode.
+                Your Internet Postcode.
             </Text>
           </Heading>
           <Text color={'gray.500'} maxW={'3xl'}>
-            The future of postal address management is here.
+            The future of postal address management is coming.
           </Text>
           <Stack spacing={6} direction={'row'}>
             <Button
@@ -35,7 +35,7 @@ import {
               bg={'blue.400'}
               _hover={{ bg: 'blue.500' }}>
                 {/*TODO: Link this to a stub page explaining that it's not built yet, but we'd love your feedback*/}
-                Get Started
+                Get Involved
             </Button>
             <Button rounded={'full'} px={6}>
                 Learn More
