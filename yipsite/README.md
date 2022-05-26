@@ -1,5 +1,4 @@
-This project was bootstrapped with
-[Create React App](https://github.com/facebook/create-react-app).
+Website for [yipcode.com](https://yipcode.com/).
 
 ## Available Scripts
 
