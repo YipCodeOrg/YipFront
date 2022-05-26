@@ -1,6 +1,6 @@
 {
   "name": "yipsite",
-  "version": "0.1.0",
+  "version": "0.1.1-0",
   "private": true,
   "dependencies": {
     "@babel/core": "^7.17.10",
@@ -21,7 +21,7 @@
     "react": "17.x",
     "react-dom": "17.x",
     "react-icons": "^3.0.0",
-    "react-router-dom": "^6.3.0",    
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.3.5",
     "web-vitals": "^0.2.2"
