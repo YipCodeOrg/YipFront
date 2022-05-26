@@ -65,14 +65,14 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
-const CompanyLinks = [["/about", "About us"],
-  ["/contact", "Contact us"],
-  ["/pricing", "Pricing"]];
+const CompanyLinks = [["/site/about", "About us"],
+  ["/site/contact", "Contact us"],
+  ["/site/pricing", "Pricing"]];
 
-const SupportLinks = [["/faq", "FAQ"], 
-  ["/terms", "Terms of Service"], 
-  ["/legal", "Legal"], 
-  ["/privacy", "Privacy Policy"]]
+const SupportLinks = [["/site/faq", "FAQ"], 
+  ["/site/terms", "Terms of Service"], 
+  ["/site/legal", "Legal"], 
+  ["/site/privacy", "Privacy Policy"]]
 
 
 export default function Footer() {

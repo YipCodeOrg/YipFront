@@ -16,7 +16,7 @@ import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from './Logo';
 
 const Links = [["/", "Home"],
-  ["/glossary", "Glossary"]];
+  ["/site/glossary", "Glossary"]];
 
 const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   <Box

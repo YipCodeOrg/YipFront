@@ -5,25 +5,24 @@ import Home from "./routes/home"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import About from "./routes/about"
-import Glossary from "./routes/glossary"
-import Yiptionary from "./routes/glossary/yiptionary"
-import FullLayout from "./pageLayouts"
-import Contact from "./routes/contact"
-import Pricing from "./routes/pricing"
-import Testimonials from "./routes/testimonials"
-import Faq from "./routes/faq"
-import Privacy from "./routes/privacy"
-import Legal from "./routes/legal"
-import Terms from "./routes/terms"
+import About from "./routes/site/about"
+import Glossary from "./routes/site/glossary"
+import Yiptionary from "./routes/site/glossary/yiptionary"
+import FullLayout from "./core/pageLayouts"
+import Contact from "./routes/site/contact"
+import Pricing from "./routes/site/pricing"
+import Testimonials from "./routes/site/testimonials"
+import Faq from "./routes/site/faq"
+import Privacy from "./routes/site/privacy"
+import Legal from "./routes/site/legal"
+import Terms from "./routes/site/terms"
 
 const Root = () => (
   <React.StrictMode>
     <ColorModeScript />
     <BrowserRouter>
       <Routes>
-        <Route path="/*" element={<FullLayout/>}>
-          <Route index element={<Home/>}/>
+        <Route path="site" element={<FullLayout/>}>
           <Route path="about" element={<About/>}/>
           <Route path="contact" element={<Contact/>}/>
           <Route path="faq" element={<Faq/>}/>
@@ -36,6 +35,9 @@ const Root = () => (
           <Route path="privacy" element={<Privacy/>}/>
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
+        </Route>
+        <Route path="/*" element={<FullLayout/>}>
+            <Route index element={<Home/>}/>
         </Route>
       </Routes>      
     </BrowserRouter>
