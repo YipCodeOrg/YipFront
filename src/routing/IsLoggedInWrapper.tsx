@@ -4,16 +4,21 @@ import FullLayout from "../core/pageLayouts"
 
 type IsLoggedInProps = {
     isLoggedIn: boolean
+    isFirstVisit: boolean
 }
 
-const IsLoggedInWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn}) => {
+const IsLoggedInWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVisit}) => {
   
     const {pathname} = useLocation()
     if(isLoggedIn){
         return <FullLayout/>
     }
     else{
-        return <p>Not signed in. Location is: {pathname}</p>
+        if(isFirstVisit){
+            return <p>First Visit! Need to remember: {pathname}</p>
+        } else{
+            return <p>Subsequent visit. Need to remember: {pathname}</p>
+        }
     }
 }
 

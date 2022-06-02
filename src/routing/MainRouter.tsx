@@ -15,10 +15,14 @@ import Dashboard from "../routes/app/Dashboard";
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
 import { useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
+import Login from "../routes/auth/Login";
+import Signup from "../routes/auth/Signup";
 
 export default function MainRouter(){
 
   const [isLoggedIn, setIsLoggedIn] = useState(true)
+
+  const isFirstVisit = true
 
   return (
   <BrowserRouter>
@@ -37,11 +41,12 @@ export default function MainRouter(){
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
         </Route>
-        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}/>}>
+        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn} isFirstVisit={isFirstVisit}/>}>
           <Route index element={<Dashboard/>}/>
         </Route>
         <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect="/app"/>}>
-          {/*TODO: Add auth routes here*/}
+          <Route path="login" element={<Login/>}/>
+          <Route path="signup" element={<Signup/>}/>
         </Route>
         <Route path="/*" element={<FullLayout/>}>
             <Route index element={<Home/>}/>
