@@ -117,14 +117,14 @@ export default function Footer() {
           <Stack align={'flex-start'}>
             <ListHeader><b>Company</b></ListHeader>    
             {CompanyLinks.map(([link, text]) => (
-                <NavLink path={link} text={text}/>
+                <NavLink key={link} path={link} text={text}/>
               ))}
             {/*TODO-FF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader><b>Support</b></ListHeader>   
             {SupportLinks.map(([link, text]) => (
-                <NavLink path={link} text={text}/>
+                <NavLink key={link} path={link} text={text}/>
               ))}
           </Stack>
         </SimpleGrid>
