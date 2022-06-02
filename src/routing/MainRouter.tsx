@@ -20,8 +20,11 @@ import Signup from "../routes/auth/Signup";
 
 export default function MainRouter(){
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  //TODO: Maybe read this from the store? For persistent login sessions
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [redirect, setRedirect] = useState("/app")
 
+  //TODO: Probably use state
   const isFirstVisit = true
 
   return (
@@ -41,10 +44,10 @@ export default function MainRouter(){
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
         </Route>
-        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn} isFirstVisit={isFirstVisit}/>}>
+        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn} isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
           <Route index element={<Dashboard/>}/>
         </Route>
-        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect="/app"/>}>
+        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
           <Route path="login" element={<Login/>}/>
           <Route path="signup" element={<Signup/>}/>
         </Route>
