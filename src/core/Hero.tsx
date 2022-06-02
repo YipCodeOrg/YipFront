@@ -6,6 +6,7 @@ import {
     Button,
     Code,
   } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
   
   export default function Hero() {
     return (
@@ -25,18 +26,19 @@ import {
             </Text>
           </Heading>
           <Text color={'gray.500'} maxW={'3xl'}>
-            The future of postal address management is coming.
+            The future of postal address management is here.
           </Text>
           <Stack spacing={6} direction={'row'}>
-            <Button
-              rounded={'full'}
-              px={6}
-              colorScheme={'blue'}
-              bg={'blue.400'}
-              _hover={{ bg: 'blue.500' }}>
-                {/*TODO: Link this to a stub page explaining that it's not built yet, but we'd love your feedback*/}
-                Get Involved
-            </Button>
+            <Link to="/app">
+              <Button
+                rounded={'full'}
+                px={6}
+                colorScheme={'blue'}
+                bg={'blue.400'}
+                _hover={{ bg: 'blue.500' }}>                  
+                  Get Started
+              </Button>
+            </Link>
             <Button rounded={'full'} px={6}>
                 Learn More
             </Button>
