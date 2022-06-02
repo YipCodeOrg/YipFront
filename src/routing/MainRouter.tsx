@@ -17,6 +17,7 @@ import { useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
 import Login from "../routes/auth/Login";
 import Signup from "../routes/auth/Signup";
+import Create from "../routes/app/Create";
 
 export default function MainRouter(){
 
@@ -46,6 +47,7 @@ export default function MainRouter(){
         </Route>
         <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn} isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
           <Route index element={<Dashboard/>}/>
+          <Route path="create" element={<Create/>}/>
         </Route>
         <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
           <Route path="login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
