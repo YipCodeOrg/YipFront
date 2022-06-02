@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react"
-import { useLocation } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import FullLayout from "../core/pageLayouts"
 
 type IsLoggedInProps = {
@@ -17,9 +17,9 @@ const IsLoggedInWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFi
     else{
         setRedirect(pathname)
         if(isFirstVisit){
-            return <p>First Visit! Need to remember: {pathname}</p>
+            return <Navigate to="/auth/signup"/>
         } else{
-            return <p>Subsequent visit. Need to remember: {pathname}</p>
+            return <Navigate to="/auth/login"/>
         }
     }
 }

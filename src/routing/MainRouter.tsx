@@ -25,7 +25,7 @@ export default function MainRouter(){
   const [redirect, setRedirect] = useState("/app")
 
   //TODO: Probably use state
-  const isFirstVisit = true
+  const isFirstVisit = false
 
   return (
   <BrowserRouter>
@@ -48,7 +48,7 @@ export default function MainRouter(){
           <Route index element={<Dashboard/>}/>
         </Route>
         <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
-          <Route path="login" element={<Login/>}/>
+          <Route path="login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
           <Route path="signup" element={<Signup/>}/>
         </Route>
         <Route path="/*" element={<FullLayout/>}>
