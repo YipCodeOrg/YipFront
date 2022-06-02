@@ -6,7 +6,6 @@ import {
 } from "@chakra-ui/react"
 import NavBar from "./NavBar"
 import Footer from "./Footer"  
-import { Outlet } from "react-router-dom";
 
 const mainFlexPropVals = {
   flexGrow: "1",
@@ -14,14 +13,23 @@ const mainFlexPropVals = {
   flexBasis: "auto"
 }
 
-const FullLayout = () => (
+type LayoutProps = {
+};
+
+export const BareLayout: React.FC<LayoutProps> = ({children}) => (
+  <ChakraProvider theme={theme}>      
+    {children}
+  </ChakraProvider>
+)
+
+const FullLayout: React.FC<LayoutProps> = ({children}) => (
     <ChakraProvider theme={theme}>
       <VStack minHeight="100vh" minWidth="100vw">
         <Box minWidth="100vw">
         <NavBar/>
         </Box>
         <main style={mainFlexPropVals}>
-          <Outlet/>
+          {children}
         </main>
         <Box minWidth="100vw">
           <Footer/>

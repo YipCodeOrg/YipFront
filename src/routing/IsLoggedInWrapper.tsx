@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react"
 import { Navigate, useLocation } from "react-router-dom"
-import FullLayout from "../core/pageLayouts"
+import FullRoutingLayout from "./routingLayouts"
 
 type IsLoggedInProps = {
     isLoggedIn: boolean
@@ -12,7 +12,7 @@ const IsLoggedInWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFi
   
     const {pathname} = useLocation()
     if(isLoggedIn){
-        return <FullLayout/>
+        return <FullRoutingLayout/>
     }
     else{
         setRedirect(pathname)

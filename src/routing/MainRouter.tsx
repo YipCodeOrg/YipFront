@@ -1,23 +1,27 @@
-import Home from "../routes/Home"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import About from "../routes/site/About"
-import Glossary from "../routes/site/Glossary"
-import Yiptionary from "../routes/site/glossary/Yiptionary"
-import FullLayout from "../core/pageLayouts"
-import Contact from "../routes/site/Contact"
-import Pricing from "../routes/site/Pricing"
-import Testimonials from "../routes/site/Testimonials"
-import Faq from "../routes/site/Faq"
-import Privacy from "../routes/site/Privacy"
-import Legal from "../routes/site/Legal"
-import Terms from "../routes/site/Terms"
-import Dashboard from "../routes/app/Dashboard";
+import FullRoutingLayout from "./routingLayouts"
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
-import Login from "../routes/auth/Login";
-import Signup from "../routes/auth/Signup";
-import Create from "../routes/app/Create";
+import { BareLayout } from "../core/pageLayouts";
+
+// Routes: lazy-loaded for performance
+const Home = lazy(() => import("../routes/Home"))
+const About = lazy(() => import("../routes/site/About"))
+const Glossary = lazy(() => import("../routes/site/Glossary"))
+const Yiptionary = lazy(() => import("../routes/site/glossary/Yiptionary"))
+const Contact = lazy(() => import("../routes/site/Contact"))
+const Pricing = lazy(() => import("../routes/site/Pricing"))
+const Testimonials = lazy(() => import("../routes/site/Testimonials"))
+const Faq = lazy(() => import("../routes/site/Faq"))
+const Privacy = lazy(() => import("../routes/site/Privacy"))
+const Legal = lazy(() => import("../routes/site/Legal"))
+const Terms = lazy(() => import("../routes/site/Terms"))
+const Dashboard = lazy(() => import("../routes/app/Dashboard"));
+const Login = lazy(() => import("../routes/auth/Login"));
+const Signup = lazy(() => import("../routes/auth/Signup"));
+const Create = lazy(() => import("../routes/app/Create"));
+
 
 export default function MainRouter(){
 
@@ -29,34 +33,37 @@ export default function MainRouter(){
   const isFirstVisit = false
 
   return (
-  <BrowserRouter>
-      <Routes>
-        <Route path="site" element={<FullLayout/>}>
-          <Route path="about" element={<About/>}/>
-          <Route path="contact" element={<Contact/>}/>
-          <Route path="faq" element={<Faq/>}/>
-          <Route path="glossary">
-            <Route index element={<Glossary/>}/>
-            <Route path="yiptionary" element={<Yiptionary/>}/>
+  <Suspense fallback={<BareLayout>Loading...</BareLayout>}>
+    <BrowserRouter>
+        <Routes>
+          <Route path="site" element={<FullRoutingLayout/>}>
+            <Route path="about" element={<About/>}/>
+            <Route path="contact" element={<Contact/>}/>
+            <Route path="faq" element={<Faq/>}/>
+            <Route path="glossary">
+              <Route index element={<Glossary/>}/>
+              <Route path="yiptionary" element={<Yiptionary/>}/>
+            </Route>
+            <Route path="legal" element={<Legal/>}/>
+            <Route path="pricing" element={<Pricing/>}/>
+            <Route path="privacy" element={<Privacy/>}/>
+            <Route path="terms" element={<Terms/>}/>
+            <Route path="testimonials" element={<Testimonials/>}/>
           </Route>
-          <Route path="legal" element={<Legal/>}/>
-          <Route path="pricing" element={<Pricing/>}/>
-          <Route path="privacy" element={<Privacy/>}/>
-          <Route path="terms" element={<Terms/>}/>
-          <Route path="testimonials" element={<Testimonials/>}/>
-        </Route>
-        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn} isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
-          <Route index element={<Dashboard/>}/>
-          <Route path="create" element={<Create/>}/>
-        </Route>
-        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
-          <Route path="login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
-          <Route path="signup" element={<Signup/>}/>
-        </Route>
-        <Route path="/*" element={<FullLayout/>}>
-            <Route index element={<Home/>}/>
-        </Route>
-      </Routes>      
-    </BrowserRouter>
+            <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
+                    isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
+            <Route index element={<Dashboard/>}/>
+            <Route path="create" element={<Create/>}/>
+          </Route>
+          <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
+            <Route path="login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
+            <Route path="signup" element={<Signup/>}/>
+          </Route>
+          <Route path="/*" element={<FullRoutingLayout/>}>
+              <Route index element={<Home/>}/>
+          </Route>          
+        </Routes>      
+      </BrowserRouter>
+    </Suspense>
   )
 }
