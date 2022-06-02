@@ -11,8 +11,9 @@ import Faq from "../routes/site/Faq"
 import Privacy from "../routes/site/Privacy"
 import Legal from "../routes/site/Legal"
 import Terms from "../routes/site/Terms"
+import Dashboard from "../routes/app/Dashboard";
 
-export default function MainRouter(){    
+export default function MainRouter(){   
  return (<BrowserRouter>
       <Routes>
         <Route path="site" element={<FullLayout/>}>
@@ -28,6 +29,9 @@ export default function MainRouter(){
           <Route path="privacy" element={<Privacy/>}/>
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
+        </Route>
+        <Route path="app" element={<FullLayout/>}>
+          <Route index element={<Dashboard/>}/>
         </Route>
         <Route path="/*" element={<FullLayout/>}>
             <Route index element={<Home/>}/>
