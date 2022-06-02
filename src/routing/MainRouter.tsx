@@ -14,6 +14,7 @@ import Terms from "../routes/site/Terms"
 import Dashboard from "../routes/app/Dashboard";
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
 import { useState } from "react";
+import NotLoggedInWrapper from "./NotLoggedInWrapper";
 
 export default function MainRouter(){
 
@@ -38,6 +39,9 @@ export default function MainRouter(){
         </Route>
         <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}/>}>
           <Route index element={<Dashboard/>}/>
+        </Route>
+        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect="/app"/>}>
+          {/*TODO: Add auth routes here*/}
         </Route>
         <Route path="/*" element={<FullLayout/>}>
             <Route index element={<Home/>}/>
