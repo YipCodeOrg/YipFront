@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react"
+import { Navigate } from "react-router-dom"
 import FullLayout from "../core/pageLayouts"
 
 type NotLoggedInProps = {
@@ -6,10 +7,10 @@ type NotLoggedInProps = {
     redirect: string
 }
 
-const NotLoggedInWrapper: FunctionComponent<NotLoggedInProps> = ({isLoggedIn, redirect: pathname}) => {
+const NotLoggedInWrapper: FunctionComponent<NotLoggedInProps> = ({isLoggedIn, redirect}) => {
   
     if(isLoggedIn){
-        return <p>Already signed in. We should route back to: {pathname}</p>
+        return <Navigate to={redirect}/>
     }
     else{
         return <FullLayout/>
