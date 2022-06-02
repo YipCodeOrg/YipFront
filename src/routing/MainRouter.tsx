@@ -3,7 +3,6 @@ import FullRoutingLayout from "./routingLayouts"
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
 import { lazy, Suspense, useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
-import { BareLayout } from "../core/pageLayouts";
 
 // Routes: lazy-loaded for performance
 const Home = lazy(() => import("../routes/Home"))
@@ -32,38 +31,45 @@ export default function MainRouter(){
   //TODO: Probably use state
   const isFirstVisit = false
 
-  return (
-  <Suspense fallback={<BareLayout>Loading...</BareLayout>}>
-    <BrowserRouter>
-        <Routes>
-          <Route path="site" element={<FullRoutingLayout/>}>
-            <Route path="about" element={<About/>}/>
-            <Route path="contact" element={<Contact/>}/>
-            <Route path="faq" element={<Faq/>}/>
-            <Route path="glossary">
-              <Route index element={<Glossary/>}/>
-              <Route path="yiptionary" element={<Yiptionary/>}/>
-            </Route>
-            <Route path="legal" element={<Legal/>}/>
-            <Route path="pricing" element={<Pricing/>}/>
-            <Route path="privacy" element={<Privacy/>}/>
-            <Route path="terms" element={<Terms/>}/>
-            <Route path="testimonials" element={<Testimonials/>}/>
-          </Route>
-            <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
-                    isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
-            <Route index element={<Dashboard/>}/>
-            <Route path="create" element={<Create/>}/>
-          </Route>
-          <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
-            <Route path="login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
-            <Route path="signup" element={<Signup/>}/>
-          </Route>
-          <Route path="/*" element={<FullRoutingLayout/>}>
-              <Route index element={<Home/>}/>
-          </Route>          
-        </Routes>      
-      </BrowserRouter>
+  type LoadingWrapperProps = {
+  };
+
+  const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
+    <Suspense fallback={<h1>Loading...</h1>}>
+      {children}
     </Suspense>
+  )
+
+  return (  
+    <BrowserRouter>
+      <Routes>
+        <Route path="site" element={<FullRoutingLayout/>}>
+          <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
+          <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
+          <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>
+          <Route path="glossary">
+            <Route index element={<LoadingWrapper><Glossary/></LoadingWrapper>}/>
+            <Route path="yiptionary" element={<LoadingWrapper><Yiptionary/></LoadingWrapper>}/>
+          </Route>
+          <Route path="legal" element={<LoadingWrapper><Legal/></LoadingWrapper>}/>
+          <Route path="pricing" element={<LoadingWrapper><Pricing/></LoadingWrapper>}/>
+          <Route path="privacy" element={<LoadingWrapper><Privacy/></LoadingWrapper>}/>
+          <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
+          <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
+        </Route>
+        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
+                  isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
+          <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
+          <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
+        </Route>
+        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
+          <Route path="login" element={<LoadingWrapper><Login setIsLoggedIn={setIsLoggedIn}/></LoadingWrapper>}/>
+          <Route path="signup" element={<LoadingWrapper><Signup/></LoadingWrapper>}/>
+        </Route>
+        <Route path="/*" element={<FullRoutingLayout/>}>
+            <Route index element={<LoadingWrapper><Home/></LoadingWrapper>}/>
+        </Route>          
+      </Routes>      
+    </BrowserRouter>
   )
 }
