@@ -12,6 +12,7 @@ import Privacy from "../routes/site/Privacy"
 import Legal from "../routes/site/Legal"
 import Terms from "../routes/site/Terms"
 import Dashboard from "../routes/app/Dashboard";
+import IsLoggedInWrapper from "./IsLoggedInWrapper";
 
 export default function MainRouter(){   
  return (<BrowserRouter>
@@ -30,7 +31,7 @@ export default function MainRouter(){
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
         </Route>
-        <Route path="app" element={<FullLayout/>}>
+        <Route path="app" element={<IsLoggedInWrapper/>}>
           <Route index element={<Dashboard/>}/>
         </Route>
         <Route path="/*" element={<FullLayout/>}>
