@@ -2,7 +2,7 @@ import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
 import ReactDOM from "react-dom"
 import reportWebVitals from "./reportWebVitals"
-import MainRouter from "./routing/mainRouter"
+import MainRouter from "./routing/MainRouter"
 import * as serviceWorker from "./serviceWorker"
 
 const Root = () => (

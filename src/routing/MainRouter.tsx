@@ -1,16 +1,16 @@
-import Home from "../routes/home"
+import Home from "../routes/Home"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import About from "../routes/site/about"
-import Glossary from "../routes/site/glossary"
-import Yiptionary from "../routes/site/glossary/yiptionary"
+import About from "../routes/site/About"
+import Glossary from "../routes/site/Glossary"
+import Yiptionary from "../routes/site/glossary/Yiptionary"
 import FullLayout from "../core/pageLayouts"
-import Contact from "../routes/site/contact"
-import Pricing from "../routes/site/pricing"
-import Testimonials from "../routes/site/testimonials"
-import Faq from "../routes/site/faq"
-import Privacy from "../routes/site/privacy"
-import Legal from "../routes/site/legal"
-import Terms from "../routes/site/terms"
+import Contact from "../routes/site/Contact"
+import Pricing from "../routes/site/Pricing"
+import Testimonials from "../routes/site/Testimonials"
+import Faq from "../routes/site/Faq"
+import Privacy from "../routes/site/Privacy"
+import Legal from "../routes/site/Legal"
+import Terms from "../routes/site/Terms"
 
 export default function MainRouter(){    
  return (<BrowserRouter>
