@@ -13,9 +13,14 @@ import Legal from "../routes/site/Legal"
 import Terms from "../routes/site/Terms"
 import Dashboard from "../routes/app/Dashboard";
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
+import { useState } from "react";
 
-export default function MainRouter(){   
- return (<BrowserRouter>
+export default function MainRouter(){
+
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+
+  return (
+  <BrowserRouter>
       <Routes>
         <Route path="site" element={<FullLayout/>}>
           <Route path="about" element={<About/>}/>
@@ -31,12 +36,13 @@ export default function MainRouter(){
           <Route path="terms" element={<Terms/>}/>
           <Route path="testimonials" element={<Testimonials/>}/>
         </Route>
-        <Route path="app" element={<IsLoggedInWrapper/>}>
+        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}/>}>
           <Route index element={<Dashboard/>}/>
         </Route>
         <Route path="/*" element={<FullLayout/>}>
             <Route index element={<Home/>}/>
         </Route>
       </Routes>      
-    </BrowserRouter>)
+    </BrowserRouter>
+  )
 }

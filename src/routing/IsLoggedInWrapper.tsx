@@ -1,9 +1,13 @@
+import { FunctionComponent } from "react"
 import { useLocation } from "react-router-dom"
 import FullLayout from "../core/pageLayouts"
 
-export default function IsLoggedInWrapper(){
+type IsLoggedInProps = {
+    isLoggedIn: boolean
+}
+
+const IsLoggedInWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn}) => {
   
-    const isLoggedIn = false
     const {pathname} = useLocation()
     if(isLoggedIn){
         return <FullLayout/>
@@ -12,3 +16,5 @@ export default function IsLoggedInWrapper(){
         return <p>Not signed in. Location is: {pathname}</p>
     }
 }
+
+export default IsLoggedInWrapper
