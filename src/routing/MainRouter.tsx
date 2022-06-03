@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import FullRoutingLayout from "./routingLayouts"
+import FullRoutingLayout, { TopLevelRoutingLayout } from "./routingLayouts"
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
 import { lazy, Suspense, useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
@@ -42,32 +42,32 @@ export default function MainRouter(){
 
   return (  
     <BrowserRouter>
-      <Routes>
-        <Route path="site" element={<FullRoutingLayout/>}>
-          <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
-          <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
-          <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>
-          <Route path="glossary">
-            <Route index element={<LoadingWrapper><Glossary/></LoadingWrapper>}/>
-            <Route path="yiptionary" element={<LoadingWrapper><Yiptionary/></LoadingWrapper>}/>
+    <Routes>
+      <Route path="/*" element={<TopLevelRoutingLayout/>}>
+          <Route index element={<LoadingWrapper><Home/></LoadingWrapper>}/>
+          <Route path="site" element={<FullRoutingLayout/>}>
+            <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
+            <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
+            <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>
+            <Route path="glossary">
+              <Route index element={<LoadingWrapper><Glossary/></LoadingWrapper>}/>
+              <Route path="yiptionary" element={<LoadingWrapper><Yiptionary/></LoadingWrapper>}/>
+            </Route>
+            <Route path="legal" element={<LoadingWrapper><Legal/></LoadingWrapper>}/>
+            <Route path="pricing" element={<LoadingWrapper><Pricing/></LoadingWrapper>}/>
+            <Route path="privacy" element={<LoadingWrapper><Privacy/></LoadingWrapper>}/>
+            <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
+            <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
           </Route>
-          <Route path="legal" element={<LoadingWrapper><Legal/></LoadingWrapper>}/>
-          <Route path="pricing" element={<LoadingWrapper><Pricing/></LoadingWrapper>}/>
-          <Route path="privacy" element={<LoadingWrapper><Privacy/></LoadingWrapper>}/>
-          <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
-          <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
-        </Route>
-        <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
-                  isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
-          <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
-          <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
-        </Route>
-        <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
-          <Route path="login" element={<LoadingWrapper><Login setIsLoggedIn={setIsLoggedIn}/></LoadingWrapper>}/>
-          <Route path="signup" element={<LoadingWrapper><Signup/></LoadingWrapper>}/>
-        </Route>
-        <Route path="/*" element={<FullRoutingLayout/>}>
-            <Route index element={<LoadingWrapper><Home/></LoadingWrapper>}/>
+          <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
+                    isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
+            <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
+            <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
+          </Route>
+          <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
+            <Route path="login" element={<LoadingWrapper><Login setIsLoggedIn={setIsLoggedIn}/></LoadingWrapper>}/>
+            <Route path="signup" element={<LoadingWrapper><Signup/></LoadingWrapper>}/>
+          </Route>
         </Route>          
       </Routes>      
     </BrowserRouter>
