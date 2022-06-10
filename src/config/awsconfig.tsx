@@ -5,12 +5,12 @@ export const awsconfig = {
         userPoolWebClientId: '6q5ace1mao2cgnvt0ko89puio5',
         mandatorySignIn: false,
         cookieStorage: {
-            domain: '.api.dev.yipcode.com',
+            domain: 'localhost',
             path: '/',
             expires: 30,
             // OPTIONAL - See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
             sameSite: "strict", // | "lax",
-            secure: true
+            secure: false
         },
                 
         oauth: {
