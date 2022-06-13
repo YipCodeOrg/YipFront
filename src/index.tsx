@@ -10,6 +10,7 @@ import { Amplify } from "aws-amplify"
 import { withAuthenticator } from "@aws-amplify/ui-react"
 import "@aws-amplify/ui-react/styles.css"
 
+console.log(`Environment: ${process.env.REACT_APP_ENV}`)
 Amplify.configure(awsconfig)
 
 const Root = () => (
@@ -21,7 +22,7 @@ const Root = () => (
 
 const AuthWrappedRoot = withAuthenticator(Root)
 
-ReactDOM.render(<AuthWrappedRoot/>,
+ReactDOM.render(<Root/>,
   document.getElementById("root"),
 )
 
