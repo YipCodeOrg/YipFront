@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FullRoutingLayout, { TopLevelRoutingLayout } from "./routingLayouts"
 import IsLoggedInWrapper from "./IsLoggedInWrapper";
-import { lazy, Suspense, useState } from "react";
 import NotLoggedInWrapper from "./NotLoggedInWrapper";
+import { lazy, Suspense} from "react";
 
 // Routes: lazy-loaded for performance
 const Home = lazy(() => import("../routes/Home"))
@@ -21,26 +21,25 @@ const Login = lazy(() => import("../routes/auth/Login"));
 const Signup = lazy(() => import("../routes/auth/Signup"));
 const Create = lazy(() => import("../routes/app/Create"));
 
+type LoadingWrapperProps = {
+};
 
-export default function MainRouter(){
+const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
+  <Suspense fallback={<h1>Loading...</h1>}>
+    {children}
+  </Suspense>
+)
 
-  //TODO: Maybe read this from the store? For persistent login sessions
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [redirect, setRedirect] = useState("/app")
+type MainRouterProps = {
+  isLoggedIn: boolean,
+  setIsLoggedIn: (_: boolean) => void
+  isFirstVisit: boolean,
+  redirect: string,
+  setRedirect: (_: string) => void
+}
 
-  //TODO: Probably use state
-  const isFirstVisit = false
-
-  type LoadingWrapperProps = {
-  };
-
-  const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
-    <Suspense fallback={<h1>Loading...</h1>}>
-      {children}
-    </Suspense>
-  )
-
-  return (  
+const MainRouter: React.FC<MainRouterProps> = (
+    {isLoggedIn, setIsLoggedIn, isFirstVisit, redirect, setRedirect}) => (  
     <BrowserRouter>
     <Routes>
       <Route path="/*" element={<TopLevelRoutingLayout/>}>
@@ -71,5 +70,6 @@ export default function MainRouter(){
         </Route>          
       </Routes>      
     </BrowserRouter>
-  )
-}
+)
+
+export default MainRouter
