@@ -1,20 +1,9 @@
-import { ColorModeScript } from "@chakra-ui/react"
-import * as React from "react"
 import ReactDOM from "react-dom"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
 
-console.log(`Environment: ${process.env.REACT_APP_ENV}`)
-
-const Root = () => (
-  <React.StrictMode>
-    <ColorModeScript/>
-    <App/>
-  </React.StrictMode>
-)
-
-ReactDOM.render(<Root/>,
+ReactDOM.render(<App/>,
   document.getElementById("root"),
 )
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import MainRouter from "./routing/MainRouter"
+import { ColorModeScript } from "@chakra-ui/react"
+import * as React from "react"
 
 export default function App(){
 
@@ -9,7 +11,18 @@ export default function App(){
 
     //TODO: Probably use state
     const isFirstVisit = false
+
+    const REACT_APP_ENV = process.env.REACT_APP_ENV;
+    console.log(`Environment: ${REACT_APP_ENV}`)
     
-    return <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
-        isFirstVisit={isFirstVisit} redirect={redirect} setRedirect={setRedirect}/>
+    return (
+        <React.StrictMode>
+            <ColorModeScript/>
+            <iframe title="YipHub IFrame"
+                src="http://localhost:8000"
+            />
+            <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
+                isFirstVisit={isFirstVisit} redirect={redirect} setRedirect={setRedirect}/>
+        </React.StrictMode>
+    )
 }
