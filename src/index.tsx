@@ -5,13 +5,7 @@ import reportWebVitals from "./reportWebVitals"
 import MainRouter from "./routing/MainRouter"
 import * as serviceWorker from "./serviceWorker"
 
-import { awsconfig } from "./config/awsconfig"
-import { Amplify } from "aws-amplify"
-import { withAuthenticator } from "@aws-amplify/ui-react"
-import "@aws-amplify/ui-react/styles.css"
-
 console.log(`Environment: ${process.env.REACT_APP_ENV}`)
-Amplify.configure(awsconfig)
 
 const Root = () => (
   <React.StrictMode>
@@ -19,8 +13,6 @@ const Root = () => (
     <MainRouter/>
   </React.StrictMode>
 )
-
-const AuthWrappedRoot = withAuthenticator(Root)
 
 ReactDOM.render(<Root/>,
   document.getElementById("root"),
