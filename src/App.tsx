@@ -20,6 +20,7 @@ export default function App(){
             <ColorModeScript/>
             <iframe title="YipHub IFrame"
                 src="http://localhost:8000"
+                style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
             <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
                 isFirstVisit={isFirstVisit} redirect={redirect} setRedirect={setRedirect}/>
