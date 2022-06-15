@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FullRoutingLayout, { TopLevelRoutingLayout } from "./routingLayouts"
-import IsLoggedInWrapper from "./IsLoggedInWrapper";
-import NotLoggedInWrapper from "./NotLoggedInWrapper";
+import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
 
 // Routes: lazy-loaded for performance
@@ -17,8 +16,6 @@ const Privacy = lazy(() => import("../routes/site/Privacy"))
 const Legal = lazy(() => import("../routes/site/Legal"))
 const Terms = lazy(() => import("../routes/site/Terms"))
 const Dashboard = lazy(() => import("../routes/app/Dashboard"));
-const Login = lazy(() => import("../routes/auth/Login"));
-const Signup = lazy(() => import("../routes/auth/Signup"));
 const Create = lazy(() => import("../routes/app/Create"));
 
 type LoadingWrapperProps = {
@@ -58,14 +55,10 @@ const MainRouter: React.FC<MainRouterProps> = (
             <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
             <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
           </Route>
-          <Route path="app" element={<IsLoggedInWrapper isLoggedIn={isLoggedIn}
+          <Route path="app" element={<LoginWrapper isLoggedIn={isLoggedIn}
                     isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
             <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
             <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
-          </Route>
-          <Route path="auth" element={<NotLoggedInWrapper isLoggedIn={isLoggedIn} redirect={redirect}/>}>
-            <Route path="login" element={<LoadingWrapper><Login setIsLoggedIn={setIsLoggedIn}/></LoadingWrapper>}/>
-            <Route path="signup" element={<LoadingWrapper><Signup/></LoadingWrapper>}/>
           </Route>
         </Route>          
       </Routes>      

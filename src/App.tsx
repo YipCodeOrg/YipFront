@@ -12,14 +12,15 @@ export default function App(){
     //TODO: Probably use state
     const isFirstVisit = false
 
-    const REACT_APP_ENV = process.env.REACT_APP_ENV;
-    console.log(`Environment: ${REACT_APP_ENV}`)
+    const ENV = process.env.REACT_APP_ENV
+    console.log(`Environment: ${ENV}`)
+    const HUB_API_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/api`
     
     return (
         <React.StrictMode>
             <ColorModeScript/>
             <iframe title="YipHub IFrame"
-                src="http://localhost:8000/api"
+                src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
             <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
