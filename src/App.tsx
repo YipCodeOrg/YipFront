@@ -19,7 +19,7 @@ export default function App(){
         <React.StrictMode>
             <ColorModeScript/>
             <iframe title="YipHub IFrame"
-                src="http://localhost:8000"
+                src="http://localhost:8000/api"
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
             <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
