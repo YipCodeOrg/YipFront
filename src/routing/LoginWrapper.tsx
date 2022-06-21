@@ -8,7 +8,7 @@ type IsLoggedInProps = {
     setRedirect: (s: string) => void
 }
 
-const HUB_AUTH_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth`
+const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
 const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVisit, setRedirect}) => {
   
@@ -19,9 +19,9 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVi
     else{
         setRedirect(pathname)
         if(isFirstVisit){
-            window.location.replace(`${HUB_AUTH_URL}?action=login`)
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)
         } else{
-            window.location.replace(`${HUB_AUTH_URL}?action=signup`)
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)
         }
         return <>Navigating to login...</>
     }
