@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainRouter from "./routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
@@ -12,11 +12,26 @@ export default function App(){
     //TODO: Probably use state
     const isFirstVisit = false
 
-    const ENV = process.env.REACT_APP_ENV
-    console.log(`Environment: ${ENV}`)
-    const HUB_API_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/api`
+    const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL
+    const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
     
-    return (
+    useEffect(() => {
+        const handleHubMessage = (event: MessageEvent) => {
+            if(event.origin != HUB_ORIGIN_URL){
+                //Note: we don't throw an exception here because there are other listeners that process messages from other origins
+                //For example, there seems to be web socket messages from self.origin when running this with NPM locally
+                return
+            }
+            console.log("Received message from Hub: " + event.data);
+        };
+    
+        window.addEventListener("message", handleHubMessage);
+        return () => {
+            window.removeEventListener("message", handleHubMessage);
+        };
+      }, []);
+
+    return (        
         <React.StrictMode>
             <ColorModeScript/>
             <iframe title="YipHub IFrame"
