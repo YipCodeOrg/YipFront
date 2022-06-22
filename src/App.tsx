@@ -22,7 +22,18 @@ export default function App(){
                 //For example, there seems to be web socket messages from self.origin when running this with NPM locally
                 return
             }
-            console.log("Received message from Hub: " + event.data);
+            const data = event.data
+            switch(data){
+                case "userIsLoggedIn":
+                    console.log("Received message from Hub: user is logged in")
+                    setIsLoggedIn(true)
+                    return
+                case "userNotLoggedIn":
+                    console.log("Received message from Hub: user is not logged in")
+                    setIsLoggedIn(false)
+                    return
+            }
+            throw "Unhandled message data received from Hub."            
         };
     
         window.addEventListener("message", handleHubMessage);
