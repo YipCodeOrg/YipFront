@@ -20,7 +20,7 @@ function postHubMessage(msg: any){
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)    
     const [redirect, setRedirect] = useState("/app")
     const [isHubReady, setIsHubReady] = useState(false)
 

@@ -28,7 +28,7 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
 )
 
 type MainRouterProps = {
-  isLoggedIn: boolean,
+  isLoggedIn: boolean | null,
   setIsLoggedIn: (_: boolean) => void
   isFirstVisit: boolean,
   redirect: string,

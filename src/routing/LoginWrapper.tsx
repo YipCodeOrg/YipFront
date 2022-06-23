@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom"
 import FullRoutingLayout from "./routingLayouts"
 
 type IsLoggedInProps = {
-    isLoggedIn: boolean
+    isLoggedIn: boolean | null
     isFirstVisit: boolean
     setRedirect: (s: string) => void
 }
@@ -13,7 +13,10 @@ const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVisit, setRedirect}) => {
   
     const {pathname} = useLocation()
-    if(isLoggedIn){
+    if(isLoggedIn === null){
+        return <>Loading page...</>
+    }
+    else if(isLoggedIn){
         return <FullRoutingLayout/>
     }
     else{
