@@ -28,10 +28,10 @@ export default function App(){
     const isFirstVisit = false
 
     const requestLoginStatusFromHub: React.EffectCallback = () => {
-        if (!isHubReady) { console.log("Hub not ready yet"); return; }
-        console.log("Posting message from Front...");
-        postHubMessage("Hello Hub from Front!");
-        console.log("...Message posting from Front complete");
+        if (!isHubReady) { console.log("Hub not ready yet - no login status requested"); return; }
+        console.log("Requesting login status from Hub...");
+        postHubMessage("requestLoginStatus");
+        console.log("...Login status request requested");
     };
     
     const addMessageListener: React.EffectCallback = () => {
@@ -42,26 +42,26 @@ export default function App(){
                 return;
             }
             const data = event.data;
-            let msg: string = "Received message from Hub: ";
+            let postHandleMsg: string = "Processed message from Hub: ";
             switch (data) {
                 case "readyToListen":
-                    msg += "Hub is ready to listen";
+                    postHandleMsg += "Hub is ready to listen";
                     setIsHubReady(true);
                     break;
                 case "userIsLoggedIn":
-                    msg += "User is logged in";
+                    postHandleMsg += "User is logged in";
                     setIsLoggedIn(true);
                     break;
                 case "userNotLoggedIn":
-                    msg += "User not logged in";
+                    postHandleMsg += "User not logged in";
                     setIsLoggedIn(false);
                     break;
                 default:
-                    const errorMsg = "Unhandled message data received from Hub.";
-                    msg += `ERROR ${errorMsg}`;
+                    const errorMsg = "Unhandled message data received from Hub";
+                    postHandleMsg += `ERROR ${errorMsg}`;
                     throw new Error(errorMsg);
             }
-            console.log(msg);
+            console.log(postHandleMsg);
         };
 
         window.addEventListener("message", handleHubMessage);
