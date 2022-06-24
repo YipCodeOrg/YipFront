@@ -29,14 +29,14 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
 
 type MainRouterProps = {
   isLoggedIn: boolean | null,
-  setIsLoggedIn: (_: boolean) => void
-  isFirstVisit: boolean,
+  setIsSigedUp: (_: boolean) => void
+  isSignedUp: boolean,
   redirect: string,
   setRedirect: (_: string) => void
 }
 
 const MainRouter: React.FC<MainRouterProps> = (
-    {isLoggedIn, setIsLoggedIn, isFirstVisit, redirect, setRedirect}) => (  
+    {isLoggedIn, setIsSigedUp, isSignedUp, redirect, setRedirect}) => (  
     <BrowserRouter>
     <Routes>
       <Route path="/*" element={<TopLevelRoutingLayout/>}>
@@ -56,7 +56,7 @@ const MainRouter: React.FC<MainRouterProps> = (
             <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
           </Route>
           <Route path="app" element={<LoginWrapper isLoggedIn={isLoggedIn}
-                    isFirstVisit={isFirstVisit} setRedirect={setRedirect}/>}>
+                    isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp} setRedirect={setRedirect}/>}>
             <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
             <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
           </Route>

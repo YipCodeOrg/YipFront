@@ -17,6 +17,8 @@ function postHubMessage(msg: any){
     }
 }
 
+const isSignedUp = !!localStorage.getItem("isSignedUp")
+
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
@@ -24,8 +26,9 @@ export default function App(){
     const [redirect, setRedirect] = useState("/app")
     const [isHubReady, setIsHubReady] = useState(false)
 
-    //TODO: Probably use state
-    const isFirstVisit = false
+    function setIsSigedUp(b: boolean){        
+        localStorage.setItem("isSignedUp", String(b))
+    }
 
     const requestLoginStatusFromHub: React.EffectCallback = () => {
         if (!isHubReady) { console.log("Hub not ready yet - no login status requested"); return; }
@@ -80,8 +83,8 @@ export default function App(){
                 src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
-            <MainRouter isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}
-                isFirstVisit={isFirstVisit} redirect={redirect} setRedirect={setRedirect}/>
+            <MainRouter isLoggedIn={isLoggedIn} setIsSigedUp={setIsSigedUp}
+                isSignedUp={isSignedUp} redirect={redirect} setRedirect={setRedirect}/>
         </React.StrictMode>
     )
 }

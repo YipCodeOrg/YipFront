@@ -4,13 +4,14 @@ import FullRoutingLayout from "./routingLayouts"
 
 type IsLoggedInProps = {
     isLoggedIn: boolean | null
-    isFirstVisit: boolean
+    isSignedUp: boolean
     setRedirect: (s: string) => void
+    setIsSigedUp: (b: boolean) => void
 }
 
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
-const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVisit, setRedirect}) => {
+const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setRedirect, setIsSigedUp}) => {
   
     const {pathname} = useLocation()
     if(isLoggedIn === null){
@@ -21,9 +22,10 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isFirstVi
     }
     else{
         setRedirect(pathname)
-        if(isFirstVisit){
+        if(isSignedUp){
             window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)
         } else{
+            setIsSigedUp(true)
             window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)
         }
         return <>Navigating to login...</>
