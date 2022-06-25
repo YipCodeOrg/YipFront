@@ -44,6 +44,8 @@ type NavBarProps = {
   isSignedUp: boolean,
 }
 
+const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
+
 /* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
 */
@@ -98,9 +100,9 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
                   <MenuDivider/>
                   {
                     isSignedUp ?
-                    <MenuItem>Login / Signup</MenuItem>
+                    <MenuItem onClick={() => window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)}>Login / Signup</MenuItem>
                     :
-                    <MenuItem>Signup / Login</MenuItem>
+                    <MenuItem onClick={() => window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)}>Signup / Login</MenuItem>
                   }                  
                 </MenuList>
               }
