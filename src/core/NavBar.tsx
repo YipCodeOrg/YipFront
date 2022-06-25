@@ -39,10 +39,15 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
+type NavBarProps = {
+  isLoggedIn: boolean,
+  isSignedUp: boolean,
+}
+
 /* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
 */
-export default function NavBar() {
+const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -85,12 +90,22 @@ export default function NavBar() {
                   }
                 />
               </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
+              {isLoggedIn ?
+                <MenuList>
+                  <MenuDivider/>
+                  <MenuItem>Logout</MenuItem>
+                </MenuList>
+                :
+                <MenuList>
+                  <MenuDivider/>
+                  {
+                    isSignedUp ?
+                    <MenuItem>Login / Signup</MenuItem>
+                    :
+                    <MenuItem>Signup / Login</MenuItem>
+                  }                  
+                </MenuList>
+              }
             </Menu>
           </Flex>
         </Flex>
@@ -108,3 +123,5 @@ export default function NavBar() {
     </>
   );
 }
+
+export default NavBar

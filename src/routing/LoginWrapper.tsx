@@ -18,7 +18,7 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedU
         return <>Loading page...</>
     }
     else if(isLoggedIn){
-        return <FullAppRoutingLayout/>
+        return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp}/>
     }
     else{
         setRedirect(pathname)

@@ -4,7 +4,7 @@ import { render } from "../test-utils"
 import Home from "../routes/Home"
 
 test("renders learn react link", () => {
-  render(<Home />)
+  render(<Home  isLoggedIn={true} isSignedUp={true}/>)
   const linkElement = screen.getByText(/learn chakra/i)
   expect(linkElement).toBeInTheDocument()
 })

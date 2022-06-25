@@ -4,9 +4,14 @@ import {
 import Hero from "../core/Hero"
 import { FullSiteLayout } from "../core/pageLayouts"
 
-export default function Home() {
+type HomeProps = {
+  isLoggedIn: boolean,
+  isSignedUp: boolean,
+}
+
+const Home: React.FC<HomeProps> = ({isLoggedIn, isSignedUp}) => {
     return (
-      <FullSiteLayout>
+      <FullSiteLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp}>
           <VStack> 
           {/*TODO*/} 
             <Hero/>
@@ -14,3 +19,5 @@ export default function Home() {
       </FullSiteLayout>
       );
 }
+
+export default Home
