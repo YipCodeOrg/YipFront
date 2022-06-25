@@ -24,11 +24,12 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedU
         setRedirect(pathname)
         if(isSignedUp){
             window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)
+            return <>Navigating to login...</>
         } else{
             setIsSigedUp(true)
             window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)
+            return <>Navigating to signup...</>
         }
-        return <>Navigating to login...</>
     }
 }
 
