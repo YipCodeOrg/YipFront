@@ -1,11 +1,17 @@
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-import FullLayout from "../core/pageLayouts";
+import {FullSiteLayout, FullAppLayout} from "../core/pageLayouts";
 
-const FullRoutingLayout = () => (
-    <FullLayout>
+export const FullSiteRoutingLayout = () => (
+    <FullSiteLayout>
         <Outlet/>
-    </FullLayout>          
+    </FullSiteLayout>          
+);
+
+export const FullAppRoutingLayout  = () => (
+    <FullAppLayout>
+        <Outlet/>
+    </FullAppLayout>          
 );
 
 export const TopLevelRoutingLayout = () => (    
@@ -13,5 +19,3 @@ export const TopLevelRoutingLayout = () => (
         <Outlet/>
     </ChakraProvider>            
 );
-
-export default FullRoutingLayout;

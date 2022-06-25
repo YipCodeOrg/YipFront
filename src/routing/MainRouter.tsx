@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import FullRoutingLayout, { TopLevelRoutingLayout } from "./routingLayouts"
+import { FullSiteRoutingLayout, TopLevelRoutingLayout } from "./routingLayouts"
 import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
 
@@ -41,7 +41,7 @@ const MainRouter: React.FC<MainRouterProps> = (
     <Routes>
       <Route path="/*" element={<TopLevelRoutingLayout/>}>
           <Route index element={<LoadingWrapper><Home/></LoadingWrapper>}/>
-          <Route path="site" element={<FullRoutingLayout/>}>
+          <Route path="site" element={<FullSiteRoutingLayout/>}>
             <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
             <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
             <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>

@@ -2,7 +2,7 @@ import {
     VStack,
     Box,
 } from "@chakra-ui/react"
-import NavBar from "./NavBar"
+import SiteNavBar from "./NavBar"
 import Footer from "./Footer"  
 
 const mainFlexPropVals = {
@@ -14,10 +14,10 @@ const mainFlexPropVals = {
 type LayoutProps = {
 }
 
-const FullLayout: React.FC<LayoutProps> = ({children}) => (    
+export const FullSiteLayout: React.FC<LayoutProps> = ({children}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBar/>
+      <SiteNavBar/>
       </Box>
       <main style={mainFlexPropVals}>
         {children}
@@ -28,4 +28,16 @@ const FullLayout: React.FC<LayoutProps> = ({children}) => (
     </VStack>
 )
 
-export default FullLayout;
+export const FullAppLayout: React.FC<LayoutProps> = ({children}) => (    
+    <VStack minHeight="100vh" minWidth="100vw">
+      <Box minWidth="100vw">
+      <SiteNavBar/>
+      </Box>
+      <main style={mainFlexPropVals}>
+        {children}
+      </main>
+      <Box minWidth="100vw">
+        <Footer/>
+      </Box>    
+    </VStack>
+)
