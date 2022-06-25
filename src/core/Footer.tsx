@@ -88,8 +88,10 @@ export default function Footer() {
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 2fr' }}
           spacing={8}>
           <Stack spacing={6}>
-            <Box>
-              <Logo lightCol='#000000' darkCol='#ffffff' size={57}/>              
+            <Box>                       
+              <Link to={"/app"}>
+                <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>                             
+              </Link>           
             </Box>
             <Text fontSize={'sm'}>
               {/*TODO-UPD-2023: Maybe we can have this auto-update e.g. as part of the build process.*/}

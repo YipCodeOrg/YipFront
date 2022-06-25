@@ -32,7 +32,7 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
-/* TODO: Figure out links / buttons for app vs. site. YipCode Logo probably shouldn't navigate home - maybe an actions menu?
+/* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
 */
 export default function NavBar() {
@@ -50,7 +50,7 @@ export default function NavBar() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'} >                        
-            <Link to={"/"}>
+            <Link to={"/app"}>
               <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>                             
             </Link>
             <HStack
