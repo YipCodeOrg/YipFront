@@ -5,15 +5,15 @@ import {FullAppRoutingLayout} from "./routingLayouts"
 type IsLoggedInProps = {
     isLoggedIn: boolean | null
     isSignedUp: boolean
-    setRedirect: (s: string) => void
     setIsSigedUp: (b: boolean) => void
 }
 
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
-const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setRedirect, setIsSigedUp}) => {
+const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) => {
   
     const {pathname} = useLocation()
+    const encodedPathname = encodeURIComponent(pathname)
     if(isLoggedIn === null){
         return <>Loading page...</>
     }
@@ -21,13 +21,12 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedU
         return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp}/>
     }
     else{
-        setRedirect(pathname)
         if(isSignedUp){
-            window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodedPathname}`)
             return <>Navigating to login...</>
         } else{
             setIsSigedUp(true)
-            window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodedPathname}`)
             return <>Navigating to signup...</>
         }
     }

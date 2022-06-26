@@ -22,8 +22,7 @@ const isSignedUp = !!localStorage.getItem("isSignedUp")
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)    
-    const [redirect, setRedirect] = useState("/app")
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)   
     const [isHubReady, setIsHubReady] = useState(false)
 
     function setIsSigedUp(b: boolean){        
@@ -83,8 +82,7 @@ export default function App(){
                 src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
-            <MainRouter isLoggedIn={isLoggedIn} setIsSigedUp={setIsSigedUp}
-                isSignedUp={isSignedUp} redirect={redirect} setRedirect={setRedirect}/>
+            <MainRouter isLoggedIn={isLoggedIn} setIsSigedUp={setIsSigedUp} isSignedUp={isSignedUp}/>
         </React.StrictMode>
     )
 }
