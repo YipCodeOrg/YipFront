@@ -45,6 +45,7 @@ type NavBarProps = {
 }
 
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
+const HUB_LOGOUT_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/logout/init`
 
 /* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
@@ -93,7 +94,7 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
               {isLoggedIn ?
                 <MenuList>
                   <MenuDivider/>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem onClick={() => window.location.replace(HUB_LOGOUT_INIT_URL)}>Logout</MenuItem>
                 </MenuList>
                 :
                 <MenuList>
