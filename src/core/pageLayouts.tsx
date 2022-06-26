@@ -12,14 +12,15 @@ const mainFlexPropVals = {
 }
 
 type LayoutProps = {
-  isLoggedIn: boolean,
-  isSignedUp: boolean,
+  isLoggedIn: boolean
+  isSignedUp: boolean
+  setIsSigedUp: (b: boolean) => void
 }
 
-export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp}) => (    
+export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp}/>
+      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
       </Box>
       <main style={mainFlexPropVals}>
         {children}
@@ -30,10 +31,10 @@ export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isS
     </VStack>
 )
 
-export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp}) => (    
+export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp}/>
+      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
       </Box>
       <main style={mainFlexPropVals}>
         {children}

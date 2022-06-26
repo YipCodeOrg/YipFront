@@ -38,8 +38,8 @@ const MainRouter: React.FC<MainRouterProps> = (
     <BrowserRouter>
     <Routes>
       <Route path="/*" element={<TopLevelRoutingLayout/>}>
-          <Route index element={<LoadingWrapper><Home isLoggedIn={!!isLoggedIn} isSignedUp={isSignedUp}/></LoadingWrapper>}/>
-          <Route path="site" element={<FullSiteRoutingLayout isLoggedIn={!!isLoggedIn} isSignedUp={isSignedUp}/>}>
+          <Route index element={<LoadingWrapper><Home isLoggedIn={!!isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/></LoadingWrapper>}/>
+          <Route path="site" element={<FullSiteRoutingLayout isLoggedIn={!!isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
             <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
             <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
             <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>

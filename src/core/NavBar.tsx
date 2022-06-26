@@ -40,8 +40,9 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
 );
 
 type NavBarProps = {
-  isLoggedIn: boolean,
-  isSignedUp: boolean,
+  isLoggedIn: boolean
+  isSignedUp: boolean
+  setIsSigedUp: (b: boolean) => void
 }
 
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
@@ -50,7 +51,7 @@ const HUB_LOGOUT_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/logout/init
 /* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
 */
-const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
+const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -101,9 +102,9 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
                   <MenuDivider/>
                   {
                     isSignedUp ?
-                    <MenuItem onClick={() => window.location.replace(`${HUB_AUTH_INIT_URL}?action=login`)}>Login / Signup</MenuItem>
+                    <MenuItem onClick={redirectLoginSignup()}>Login / Signup</MenuItem>
                     :
-                    <MenuItem onClick={() => window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup`)}>Signup / Login</MenuItem>
+                    <MenuItem onClick={redirectSignupLogin()}>Signup / Login</MenuItem>
                   }                  
                 </MenuList>
               }
@@ -123,6 +124,15 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp}) => {
       </Box>
     </>
   );
+
+  function redirectSignupLogin() {
+    setIsSigedUp(true)
+    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodeURIComponent("/app")}`);
+  }
+
+  function redirectLoginSignup() {
+    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodeURIComponent("/app")}`);
+  }
 }
 
 export default NavBar
