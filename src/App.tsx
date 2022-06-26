@@ -6,7 +6,7 @@ import * as React from "react"
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
 
-function postHubMessage(msg: any){
+function postHubMessage(msg: FrontToHubMessage){
     const expectedHubFrame = document.querySelector<HTMLIFrameElement>("#yipHubFrame")
     const expectedHubWindow = expectedHubFrame?.contentWindow
     if(!!expectedHubWindow){
@@ -18,6 +18,11 @@ function postHubMessage(msg: any){
 }
 
 const isSignedUp = !!localStorage.getItem("isSignedUp")
+
+type FrontToHubMessage = {
+    label: string,
+    payload?: string
+}
 
 export default function App(){
 
@@ -32,7 +37,7 @@ export default function App(){
     const requestLoginStatusFromHub: React.EffectCallback = () => {
         if (!isHubReady) { console.log("Hub not ready yet - no login status requested"); return; }
         console.log("Requesting login status from Hub...");
-        postHubMessage("requestLoginStatus");
+        postHubMessage({label: "requestLoginStatus"});
         console.log("...Login status request requested");
     };
     
