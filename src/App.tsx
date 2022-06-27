@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MainRouter from "./routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
+import HubApi from "./core/HubApi";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
@@ -24,11 +25,6 @@ type FrontToHubMessage = {
     payload?: string
 }
 
-type HubToFrontMessage = {
-    label: string,
-    payload?: string
-}
-
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
@@ -47,39 +43,16 @@ export default function App(){
     };
     
     const addMessageListener: React.EffectCallback = () => {
-        const handleHubMessage = (event: MessageEvent<HubToFrontMessage>) => {
-            if (event.origin !== HUB_ORIGIN_URL) {
-                //Note: we don't throw an exception here because there are other listeners that process messages from other origins
-                //For example, there seems to be web socket messages from self.origin when running this with NPM locally
-                return;
-            }
-            const data = event.data
-            const label = data.label
-            let postHandleMsg: string = "Processed message from Hub: "
-            switch (label) {
-                case "readyToListen":
-                    postHandleMsg += "Hub is ready to listen"
-                    setIsHubReady(true)
-                    break;
-                case "userIsLoggedIn":
-                    postHandleMsg += "User is logged in"
-                    setIsLoggedIn(true)
-                    break;
-                case "userNotLoggedIn":
-                    postHandleMsg += "User not logged in"
-                    setIsLoggedIn(false)
-                    break;
-                default:
-                    const errorMsg = "Unhandled message data received from Hub"
-                    postHandleMsg += `ERROR ${errorMsg}`
-                    throw new Error(errorMsg)
-            }
-            console.log(postHandleMsg)
-        };
+        
+        const hubApi = new HubApi(new Map([
+            ["readyToListen", () => setIsHubReady(true)],
+            ["userIsLoggedIn", () => setIsLoggedIn(true)],
+            ["userNotLoggedIn", () => setIsLoggedIn(false)]
+        ]))
 
-        window.addEventListener("message", handleHubMessage);
+        window.addEventListener("message", (msg) => hubApi.handleHubMessage(msg));
         return () => {
-            window.removeEventListener("message", handleHubMessage);
+            window.removeEventListener("message", (msg) => hubApi.handleHubMessage(msg));
         };
     };
 
