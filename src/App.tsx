@@ -24,6 +24,11 @@ type FrontToHubMessage = {
     payload?: string
 }
 
+type HubToFrontMessage = {
+    label: string,
+    payload?: string
+}
+
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
@@ -42,33 +47,34 @@ export default function App(){
     };
     
     const addMessageListener: React.EffectCallback = () => {
-        const handleHubMessage = (event: MessageEvent) => {
+        const handleHubMessage = (event: MessageEvent<HubToFrontMessage>) => {
             if (event.origin !== HUB_ORIGIN_URL) {
                 //Note: we don't throw an exception here because there are other listeners that process messages from other origins
                 //For example, there seems to be web socket messages from self.origin when running this with NPM locally
                 return;
             }
-            const data = event.data;
-            let postHandleMsg: string = "Processed message from Hub: ";
-            switch (data) {
+            const data = event.data
+            const label = data.label
+            let postHandleMsg: string = "Processed message from Hub: "
+            switch (label) {
                 case "readyToListen":
-                    postHandleMsg += "Hub is ready to listen";
-                    setIsHubReady(true);
+                    postHandleMsg += "Hub is ready to listen"
+                    setIsHubReady(true)
                     break;
                 case "userIsLoggedIn":
-                    postHandleMsg += "User is logged in";
-                    setIsLoggedIn(true);
+                    postHandleMsg += "User is logged in"
+                    setIsLoggedIn(true)
                     break;
                 case "userNotLoggedIn":
-                    postHandleMsg += "User not logged in";
-                    setIsLoggedIn(false);
+                    postHandleMsg += "User not logged in"
+                    setIsLoggedIn(false)
                     break;
                 default:
-                    const errorMsg = "Unhandled message data received from Hub";
-                    postHandleMsg += `ERROR ${errorMsg}`;
-                    throw new Error(errorMsg);
+                    const errorMsg = "Unhandled message data received from Hub"
+                    postHandleMsg += `ERROR ${errorMsg}`
+                    throw new Error(errorMsg)
             }
-            console.log(postHandleMsg);
+            console.log(postHandleMsg)
         };
 
         window.addEventListener("message", handleHubMessage);
