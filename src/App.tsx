@@ -13,19 +13,20 @@ export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)   
-    const [isHubReady, setIsHubReady] = useState<boolean>(false)
+    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
 
     function setIsSigedUp(b: boolean){        
         localStorage.setItem("isSignedUp", String(b))
     }
 
     const requestLoginStatusFromHub: React.EffectCallback = () => {
-        if (!isHubReady) { console.log("Hub not ready yet - no login status requested"); return; }
+        if (!toHubPort) { console.log("Hub not ready yet - no login status requested"); return; }
         console.log("Sending login status request to Hub...");
-        postHubRequest({label: "requestLoginStatus"})        
+        postHubRequest({label: "requestLoginStatus"}, toHubPort)        
         .then(val => {
-                console.log("...Login status received from Hub");    
-                const isLoggedIn = val.label === "userIsLoggedIn"
+                const status = val.label
+                console.log(`...Login status received from Hub: ${status}`);    
+                const isLoggedIn = status === "userIsLoggedIn"
                 setIsLoggedIn(isLoggedIn)                    
             },
             reason => {throw new Error(`Problem getting login status from Hub: ${reason}`);}
@@ -45,8 +46,9 @@ export default function App(){
             const data = event.data        
             if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
                 throw new Error("Invalid message format received from Hub prior to readyToListen message.")
-            }            
-            setIsHubReady(true)                
+            }
+            const port = event.ports[0]      
+            setToHubPort(port)
             //Removes itself once it's done its job
             window.removeEventListener("message", handleReadyMessage);            
         }
@@ -55,7 +57,7 @@ export default function App(){
     };
 
     useEffect(listenOnceForHubReady, []);
-    useEffect(requestLoginStatusFromHub, [isHubReady]);
+    useEffect(requestLoginStatusFromHub, [toHubPort]);
 
     return (        
         <React.StrictMode>
