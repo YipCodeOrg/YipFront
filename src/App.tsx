@@ -42,7 +42,7 @@ export default function App(){
                 //For example, there seems to be web socket messages from self.origin when running this with NPM locally
                 return;
             }
-            const data = event.data        
+            const data = event.data
             if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
                 throw new Error("Invalid message format received from Hub prior to readyToListen message.")
             }
