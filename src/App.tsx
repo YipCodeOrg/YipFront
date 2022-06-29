@@ -2,34 +2,18 @@ import { useEffect, useState } from "react";
 import MainRouter from "./routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
-import HubApi from "./core/HubApi";
+import postHubRequest from "./core/HubApi";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
 
-function postHubMessage(msg: FrontToHubMessage){
-    const expectedHubFrame = document.querySelector<HTMLIFrameElement>("#yipHubFrame")
-    const expectedHubWindow = expectedHubFrame?.contentWindow
-    if(!!expectedHubWindow){
-        expectedHubWindow.postMessage(msg, HUB_ORIGIN_URL)
-    }
-    else{
-        throw new Error("Problem retrieving Hub frame")
-    }
-}
-
 const isSignedUp = !!localStorage.getItem("isSignedUp")
-
-type FrontToHubMessage = {
-    label: string,
-    payload?: string
-}
 
 export default function App(){
 
     //TODO: Maybe read this from the store? For persistent login sessions
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)   
-    const [isHubReady, setIsHubReady] = useState(false)
+    const [isHubReady, setIsHubReady] = useState<boolean>(false)
 
     function setIsSigedUp(b: boolean){        
         localStorage.setItem("isSignedUp", String(b))
@@ -37,26 +21,40 @@ export default function App(){
 
     const requestLoginStatusFromHub: React.EffectCallback = () => {
         if (!isHubReady) { console.log("Hub not ready yet - no login status requested"); return; }
-        console.log("Requesting login status from Hub...");
-        postHubMessage({label: "requestLoginStatus"});
-        console.log("...Login status request requested");
+        console.log("Sending login status request to Hub...");
+        postHubRequest({label: "requestLoginStatus"})        
+        .then(val => {
+                console.log("...Login status received from Hub");    
+                const isLoggedIn = val.label === "userIsLoggedIn"
+                setIsLoggedIn(isLoggedIn)                    
+            },
+            reason => {throw new Error(`Problem getting login status from Hub: ${reason}`);}
+        )        
     };
     
-    const addMessageListener: React.EffectCallback = () => {
+    const listenOnceForHubReady: React.EffectCallback = () => {
         
-        const hubApi = new HubApi(new Map([
-            ["readyToListen", () => setIsHubReady(true)],
-            ["userIsLoggedIn", () => setIsLoggedIn(true)],
-            ["userNotLoggedIn", () => setIsLoggedIn(false)]
-        ]))
+        const allowedMessage = "readyToListen"
 
-        window.addEventListener("message", (msg) => hubApi.handleHubMessage(msg));
-        return () => {
-            window.removeEventListener("message", (msg) => hubApi.handleHubMessage(msg));
-        };
+        function handleReadyMessage(event: MessageEvent<any>){
+            if (event.origin !== HUB_ORIGIN_URL) {
+                //Note: we don't throw an exception here because there are other listeners that process messages from other origins
+                //For example, there seems to be web socket messages from self.origin when running this with NPM locally
+                return;
+            }
+            const data = event.data        
+            if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
+                throw new Error("Invalid message format received from Hub prior to readyToListen message.")
+            }            
+            setIsHubReady(true)                
+            //Removes itself once it's done its job
+            window.removeEventListener("message", handleReadyMessage);            
+        }
+
+        window.addEventListener("message", handleReadyMessage);
     };
 
-    useEffect(addMessageListener, []);
+    useEffect(listenOnceForHubReady, []);
     useEffect(requestLoginStatusFromHub, [isHubReady]);
 
     return (        

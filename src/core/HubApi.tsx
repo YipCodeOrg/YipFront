@@ -3,6 +3,11 @@ type HubToFrontMessage = {
     payload?: string
 }
 
+type FrontToHubMessage = {
+    label: string,
+    payload?: string
+}
+
 function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
     const label = obj.label
     return (typeof label === 'string' || label instanceof String) 
@@ -10,31 +15,56 @@ function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 
-export default class HubApi{
-    
-    private readonly _handlerMap: Map<string, (msg: HubToFrontMessage) => void>
-    
-    constructor(handlerMap: Map<string, (msg: HubToFrontMessage) => void>){
-        this._handlerMap = handlerMap
+ function extractHubMessage(event: MessageEvent<any>) : HubToFrontMessage{
+    if (event.origin !== HUB_ORIGIN_URL) {
+        throw new Error("Invalid origin: expected message from Hub")
     }
+    const data = event.data        
+    if(!isHubToFrontMessage(data)){            
+        throw new Error("Invalid message format received from Hub")
+    }
+    
+    return data      
+};
 
-    public handleHubMessage(event: MessageEvent<any>){
-        if (event.origin !== HUB_ORIGIN_URL) {
-            //Note: we don't throw an exception here because there are other listeners that process messages from other origins
-            //For example, there seems to be web socket messages from self.origin when running this with NPM locally
-            return;
-        }
-        const data = event.data        
-        if(!isHubToFrontMessage(data)){            
-            throw new Error("Invalid message format received from Hub")
-        }
-        
-        const label = data.label        
+function getHubWindow() : Window | null{
+    const expectedHubFrame = document.querySelector<HTMLIFrameElement>("#yipHubFrame")
+    const expectedHubWindow = expectedHubFrame?.contentWindow
+    if(!!expectedHubWindow){
+        return expectedHubWindow
+    }
+    else{
+        console.log("Problem retrieving Hub frame")
+        return null
+    }
+}
 
-        const handler = this._handlerMap.get(label)
-        if(!!handler){
-            handler(data)
-            console.log(`Processed message from Hub: ${label}`)
-        }        
-    };
+export default async function
+    postHubRequest(msg: FrontToHubMessage) : Promise<HubToFrontMessage>
+{
+    /*Non-MVP: Cache this so we don't have to retrieve it every time. 
+    Note: we can't just call this in the top-level of the file because the iframe mightn't be ready yet.*/
+    const hubWindow = getHubWindow()
+    return new Promise(
+        (resolve, reject) => {
+
+            const responseChannel = new MessageChannel();
+            
+            function handleResponse(event: MessageEvent<any>){
+                console.log("Reponse received from Hub")
+                const response = extractHubMessage(event)
+                resolve(response)
+            }
+            
+            if(!!hubWindow){
+                console.log("Posting request to Hub...")
+                hubWindow.postMessage(msg, HUB_ORIGIN_URL, [responseChannel.port2])
+                console.log("...Finished posting request to Hub")                
+                responseChannel.port1.addEventListener("message", handleResponse)
+            }
+            else{
+                reject("Error posting message to Hub - no valid port.")
+            }
+        }
+    )
 }
