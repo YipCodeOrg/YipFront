@@ -11,7 +11,6 @@ const isSignedUp = !!localStorage.getItem("isSignedUp")
 
 export default function App(){
 
-    //TODO: Maybe read this from the store? For persistent login sessions
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)   
     const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
 
