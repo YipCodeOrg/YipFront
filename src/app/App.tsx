@@ -1,30 +1,22 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import MainRouter from "../components/routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
-import * as React from "react"
-import { useAppDispatch } from "./hooks";
-import { loadLoginState } from "../features/profile/profileSlice";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
 
 const isSignedUp = !!localStorage.getItem("isSignedUp")
 
+export const HubPortContext = createContext<MessagePort | null>(null)
+
 export default function App(){
 
     const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
-    const dispatch = useAppDispatch()
 
     function setIsSigedUp(b: boolean){        
         localStorage.setItem("isSignedUp", String(b))
     }
 
-    const dispatchLoginLoadRequest: React.EffectCallback = () => {
-        if (!toHubPort) { console.log("Hub not ready yet - no login status requested"); return; }
-        console.log("Dispatching login load request to Hub...")
-        dispatch(loadLoginState(toHubPort))
-    }
-    
     const listenOnceForHubReady: React.EffectCallback = () => {
         
         const allowedMessage = "readyToListen"
@@ -49,16 +41,15 @@ export default function App(){
     };
 
     useEffect(listenOnceForHubReady, []);
-    useEffect(dispatchLoginLoadRequest, [toHubPort, dispatch]);
 
     return (    
-        <>
+        <HubPortContext.Provider value={toHubPort}>
             <ColorModeScript/>
             <iframe title="YipHub IFrame" id="yipHubFrame"
                 src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
             <MainRouter setIsSigedUp={setIsSigedUp} isSignedUp={isSignedUp}/>
-        </>
+        </HubPortContext.Provider>
     )
 }

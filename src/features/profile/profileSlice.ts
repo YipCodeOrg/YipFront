@@ -1,17 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { LoadState } from "../../app/types";
+import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import postHubRequest from "../../components/core/HubApi"
+import { useAsyncHubLoad } from "../../app/hooks";
 
 type ProfileSliceState = {
     isLoggedIn: boolean,
-    isLoggedInLoadState: LoadState
+    isLoggedInLoadState: LoadStatus
 }
 
 const initialState: ProfileSliceState = {
     isLoggedIn: false,
-    isLoggedInLoadState: LoadState.NotLoaded
+    isLoggedInLoadState: LoadStatus.NotLoaded
 }
 
 export const loadLoginState = createAsyncThunk(
@@ -38,19 +39,21 @@ export const profileSlice = createSlice({
     },
     extraReducers: builder => {
         builder.addCase(loadLoginState.pending, (state) => {
-            state.isLoggedInLoadState = LoadState.Pending
+            state.isLoggedInLoadState = LoadStatus.Pending
         })
         .addCase(loadLoginState.rejected, (state) => {
-            state.isLoggedInLoadState = LoadState.Failed
+            state.isLoggedInLoadState = LoadStatus.Failed
         })
         .addCase(loadLoginState.fulfilled, (state, action) => {
-            state.isLoggedInLoadState = LoadState.Loaded
+            state.isLoggedInLoadState = LoadStatus.Loaded
             state.isLoggedIn = action.payload
         })
     },
 })
 
 export const selectIsLoggedIn = (state: RootState) => state.profile.isLoggedIn
-export const selectIsLoggedInLoadState = (state: RootState) => state.profile.isLoggedInLoadState
+export const selectIsLoggedInStatus = (state: RootState) => state.profile.isLoggedInLoadState
+
+export const useLoginHubLoad = () => useAsyncHubLoad(loadLoginState, selectIsLoggedIn, selectIsLoggedInStatus)  
 
 export default profileSlice.reducer

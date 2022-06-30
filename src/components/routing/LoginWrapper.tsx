@@ -1,12 +1,10 @@
 import { FunctionComponent } from "react"
 import { useLocation } from "react-router-dom"
-import { useAppSelector } from "../../app/hooks"
-import { LoadState } from "../../app/types"
-import { selectIsLoggedInLoadState } from "../../features/profile/profileSlice"
+import { LoadStatus } from "../../app/types"
+import { useLoginHubLoad } from "../../features/profile/profileSlice"
 import {FullAppRoutingLayout} from "./routingLayouts"
 
 type IsLoggedInProps = {
-    isLoggedIn: boolean
     isSignedUp: boolean
     setIsSigedUp: (b: boolean) => void
 }
@@ -14,9 +12,9 @@ type IsLoggedInProps = {
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
 //TODO: Refactor this to a general-purpose HOC
-const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) => {
+const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isSignedUp, setIsSigedUp}) => {
   
-    const isLoggedInLoadState = useAppSelector(selectIsLoggedInLoadState)
+    const [isLoggedIn, isLoggedInLoadState] = useLoginHubLoad()
     const {pathname} = useLocation()
 
     const InnerWrapper = () =>{
@@ -38,13 +36,13 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedU
     }
 
     switch (isLoggedInLoadState) {
-        case LoadState.NotLoaded:
+        case LoadStatus.NotLoaded:
             return <></>
-        case LoadState.Failed:
+        case LoadStatus.Failed:
             return <>ERROR: Failed to get Login status.</>
-        case LoadState.Pending:
+        case LoadStatus.Pending:
             return <>Loading...</>        
-        case LoadState.Loaded:
+        case LoadStatus.Loaded:
             return InnerWrapper()
         default:
             throw new Error("Unexpected load state encountered");

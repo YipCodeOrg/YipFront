@@ -2,8 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { FullSiteRoutingLayout, TopLevelRoutingLayout } from "./routingLayouts"
 import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
-import { useAppSelector } from "../../app/hooks";
 import { selectIsLoggedIn } from "../../features/profile/profileSlice";
+import { useAppSelector } from "../../app/hooks";
 
 // Routes: lazy-loaded for performance
 const Home = lazy(() => import("../../features/routes/Home"))
@@ -35,7 +35,7 @@ type MainRouterProps = {
 }
 
 const MainRouter: React.FC<MainRouterProps> = ({setIsSigedUp, isSignedUp}) => {  
-  const isLoggedIn = useAppSelector(selectIsLoggedIn)  
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
   return (  
       <BrowserRouter>
       <Routes>
@@ -55,8 +55,7 @@ const MainRouter: React.FC<MainRouterProps> = ({setIsSigedUp, isSignedUp}) => {
               <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
               <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
             </Route>
-            <Route path="app" element={<LoginWrapper isLoggedIn={isLoggedIn}
-                      isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
+            <Route path="app" element={<LoginWrapper isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
               <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
               <Route path="create" element={<LoadingWrapper><Create/></LoadingWrapper>}/>
             </Route>
