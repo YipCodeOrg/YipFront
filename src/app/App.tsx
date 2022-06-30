@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import MainRouter from "../components/routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
-import postHubRequest from "../components/core/HubApi";
+import postHubRequest from "../components/core/HubApi"
+import { useAppDispatch } from "./hooks";
+import { setIsLoggedIn } from "../features/profile/profileSlice";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
@@ -11,8 +13,8 @@ const isSignedUp = !!localStorage.getItem("isSignedUp")
 
 export default function App(){
 
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)   
     const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
+    const dispatch = useAppDispatch()
 
     function setIsSigedUp(b: boolean){        
         localStorage.setItem("isSignedUp", String(b))
@@ -26,7 +28,7 @@ export default function App(){
                 const status = val.label
                 console.log(`...Login status received from Hub: ${status}`);    
                 const isLoggedIn = status === "userIsLoggedIn"
-                setIsLoggedIn(isLoggedIn)                    
+                dispatch(setIsLoggedIn(isLoggedIn))
             },
             reason => {throw new Error(`Problem getting login status from Hub: ${reason}`);}
         )        
@@ -56,16 +58,16 @@ export default function App(){
     };
 
     useEffect(listenOnceForHubReady, []);
-    useEffect(requestLoginStatusFromHub, [toHubPort]);
+    useEffect(requestLoginStatusFromHub, [toHubPort, dispatch]);
 
-    return (        
-        <React.StrictMode>
+    return (    
+        <>
             <ColorModeScript/>
             <iframe title="YipHub IFrame" id="yipHubFrame"
                 src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
-            <MainRouter isLoggedIn={isLoggedIn} setIsSigedUp={setIsSigedUp} isSignedUp={isSignedUp}/>
-        </React.StrictMode>
+            <MainRouter setIsSigedUp={setIsSigedUp} isSignedUp={isSignedUp}/>
+        </>
     )
 }
