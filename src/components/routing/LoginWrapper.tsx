@@ -14,9 +14,28 @@ type IsLoggedInProps = {
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
 //TODO: Refactor this to a general-purpose HOC
-const LoginWrapper: FunctionComponent<IsLoggedInProps> = (props) => {
+const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) => {
   
     const isLoggedInLoadState = useAppSelector(selectIsLoggedInLoadState)
+    const {pathname} = useLocation()
+
+    const InnerWrapper = () =>{
+
+        const encodedPathname = encodeURIComponent(pathname)
+        if(isLoggedIn){
+            return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
+        }
+        else{
+            if(isSignedUp){
+                window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodedPathname}`)
+                return <>Navigating to login...</>
+            } else{
+                setIsSigedUp(true)
+                window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodedPathname}`)
+                return <>Navigating to signup...</>
+            }
+        }
+    }
 
     switch (isLoggedInLoadState) {
         case LoadState.NotLoaded:
@@ -26,29 +45,12 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = (props) => {
         case LoadState.Pending:
             return <>Loading...</>        
         case LoadState.Loaded:
-            return InnerWrapper(props)
+            return InnerWrapper()
         default:
             throw new Error("Unexpected load state encountered");
     }
 }
 
-const InnerWrapper: FunctionComponent<IsLoggedInProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) =>{
 
-    const {pathname} = useLocation()
-    const encodedPathname = encodeURIComponent(pathname)
-    if(isLoggedIn){
-        return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
-    }
-    else{
-        if(isSignedUp){
-            window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodedPathname}`)
-            return <>Navigating to login...</>
-        } else{
-            setIsSigedUp(true)
-            window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodedPathname}`)
-            return <>Navigating to signup...</>
-        }
-    }
-}
 
 export default LoginWrapper

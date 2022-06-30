@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import MainRouter from "../components/routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
-import postHubRequest from "../components/core/HubApi"
 import { useAppDispatch } from "./hooks";
-import { setIsLoggedIn } from "../features/profile/profileSlice";
+import { loadLoginState } from "../features/profile/profileSlice";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
@@ -20,19 +19,11 @@ export default function App(){
         localStorage.setItem("isSignedUp", String(b))
     }
 
-    const requestLoginStatusFromHub: React.EffectCallback = () => {
+    const dispatchLoginLoadRequest: React.EffectCallback = () => {
         if (!toHubPort) { console.log("Hub not ready yet - no login status requested"); return; }
-        console.log("Sending login status request to Hub...");
-        postHubRequest({label: "requestLoginStatus"}, toHubPort)        
-        .then(val => {
-                const status = val.label
-                console.log(`...Login status received from Hub: ${status}`);    
-                const isLoggedIn = status === "userIsLoggedIn"
-                dispatch(setIsLoggedIn(isLoggedIn))
-            },
-            reason => {throw new Error(`Problem getting login status from Hub: ${reason}`);}
-        )        
-    };
+        console.log("Dispatching login load request to Hub...")
+        dispatch(loadLoginState(toHubPort))
+    }
     
     const listenOnceForHubReady: React.EffectCallback = () => {
         
@@ -58,7 +49,7 @@ export default function App(){
     };
 
     useEffect(listenOnceForHubReady, []);
-    useEffect(requestLoginStatusFromHub, [toHubPort, dispatch]);
+    useEffect(dispatchLoginLoadRequest, [toHubPort, dispatch]);
 
     return (    
         <>
