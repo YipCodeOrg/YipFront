@@ -4,19 +4,19 @@ import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
 
 // Routes: lazy-loaded for performance
-const Home = lazy(() => import("../routes/Home"))
-const About = lazy(() => import("../routes/site/About"))
-const Glossary = lazy(() => import("../routes/site/Glossary"))
-const Yiptionary = lazy(() => import("../routes/site/glossary/Yiptionary"))
-const Contact = lazy(() => import("../routes/site/Contact"))
-const Pricing = lazy(() => import("../routes/site/Pricing"))
-const Testimonials = lazy(() => import("../routes/site/Testimonials"))
-const Faq = lazy(() => import("../routes/site/Faq"))
-const Privacy = lazy(() => import("../routes/site/Privacy"))
-const Legal = lazy(() => import("../routes/site/Legal"))
-const Terms = lazy(() => import("../routes/site/Terms"))
-const Dashboard = lazy(() => import("../routes/app/Dashboard"));
-const Create = lazy(() => import("../routes/app/Create"));
+const Home = lazy(() => import("../../features/routes/Home"))
+const About = lazy(() => import("../../features/routes/site/About"))
+const Glossary = lazy(() => import("../../features/routes/site/Glossary"))
+const Yiptionary = lazy(() => import("../../features/routes/site/glossary/Yiptionary"))
+const Contact = lazy(() => import("../../features/routes/site/Contact"))
+const Pricing = lazy(() => import("../../features/routes/site/Pricing"))
+const Testimonials = lazy(() => import("../../features/routes/site/Testimonials"))
+const Faq = lazy(() => import("../../features/routes/site/Faq"))
+const Privacy = lazy(() => import("../../features/routes/site/Privacy"))
+const Legal = lazy(() => import("../../features/routes/site/Legal"))
+const Terms = lazy(() => import("../../features/routes/site/Terms"))
+const Dashboard = lazy(() => import("../../features/routes/app/Dashboard"));
+const Create = lazy(() => import("../../features/routes/app/Create"));
 
 type LoadingWrapperProps = {
 };

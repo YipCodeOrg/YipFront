@@ -1,8 +1,8 @@
 import {
   VStack,
 } from "@chakra-ui/react"
-import Hero from "../core/Hero"
-import { FullSiteLayout } from "../core/pageLayouts"
+import Hero from "../../components/core/Hero"
+import { FullSiteLayout } from "../../components/core/pageLayouts"
 
 type HomeProps = {
   isLoggedIn: boolean

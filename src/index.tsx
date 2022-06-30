@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom"
-import App from "./App"
+import App from "./app/App"
 import reportWebVitals from "./util/reportWebVitals"
 import * as serviceWorker from "./util/serviceWorker"
 

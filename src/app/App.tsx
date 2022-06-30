@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import MainRouter from "./routing/MainRouter"
+import MainRouter from "../components/routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
-import postHubRequest from "./core/HubApi";
+import postHubRequest from "../components/core/HubApi";
 
 const HUB_ORIGIN_URL = process.env.REACT_APP_HUB_ORIGIN_URL ?? "http://localhost:8000"
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
