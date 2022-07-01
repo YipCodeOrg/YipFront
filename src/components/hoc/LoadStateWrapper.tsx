@@ -1,5 +1,6 @@
 import { FunctionComponent } from "react"
 import { LoadStatus } from "../../app/types"
+import LoadingLogo from "../core/LoadingLogo"
 
 type LoadStateWrapperProps = {
     status: LoadStatus,
@@ -14,7 +15,7 @@ const LoadStateWrapper: FunctionComponent<LoadStateWrapperProps> =
         case LoadStatus.Failed:
             return <>ERROR: Failed to get component's load status.</>
         case LoadStatus.Pending:
-            return <>Loading...</>        
+            return <LoadingLogo lightCol='#000000' darkCol='#ffffff' logoSize={80} spinnerSize="md"/>
         case LoadStatus.Loaded:
             return element
         default:
