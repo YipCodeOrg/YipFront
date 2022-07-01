@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react"
 import { useLocation } from "react-router-dom"
 import { useLoginHubLoad } from "../../features/profile/profileSlice"
-import LoadStateWrapper from "../hoc/LoadStateWrapper"
+import { EmptyLoadStateWrapper } from "../hoc/LoadStateWrapper"
 import {FullAppRoutingLayout} from "./routingLayouts"
 
 type IsLoggedInProps = {
@@ -35,7 +35,7 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isSignedUp, setIsSige
         }
     }
 
-    return <LoadStateWrapper status={isLoggedInLoadStatus} element = {<InnerWrapper/>}/>
+    return <EmptyLoadStateWrapper status={isLoggedInLoadStatus} loadedElement = {<InnerWrapper/>}/>
     
 }
 
