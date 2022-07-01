@@ -4,6 +4,7 @@ import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import postHubRequest from "../../components/core/HubApi"
 import { useAsyncHubLoad } from "../../app/hooks";
+import { addStandardThunkReducers } from "../../util/reduxHelpers";
 
 type ProfileSliceState = {
     isLoggedIn: boolean,
@@ -37,18 +38,10 @@ export const profileSlice = createSlice({
             state.isLoggedIn = action.payload
         }
     },
-    extraReducers: builder => {
-        builder.addCase(loadLoginState.pending, (state) => {
-            state.isLoggedInLoadState = LoadStatus.Pending
-        })
-        .addCase(loadLoginState.rejected, (state) => {
-            state.isLoggedInLoadState = LoadStatus.Failed
-        })
-        .addCase(loadLoginState.fulfilled, (state, action) => {
-            state.isLoggedInLoadState = LoadStatus.Loaded
-            state.isLoggedIn = action.payload
-        })
-    },
+    extraReducers: addStandardThunkReducers(
+        (state, status) => state.isLoggedInLoadState = status,
+        (state, payload) => state.isLoggedIn = payload,
+        loadLoginState),
 })
 
 export const selectIsLoggedIn = (state: RootState) => state.profile.isLoggedIn
