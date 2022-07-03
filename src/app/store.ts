@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import profileReducer from "../features/profile/profileSlice"
+import yipcodesReducer from "../features/yipcodes/yipCodesSlice"
 
 const store = configureStore({
     reducer: {
-        profile: profileReducer
+        profile: profileReducer,
+        yipCodes: yipcodesReducer,
     }
 })
 
