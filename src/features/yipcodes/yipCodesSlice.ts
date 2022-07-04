@@ -17,9 +17,10 @@ const initialState: YipCodesSliceState = {
 
 export const loadYipCodes = createAsyncThunk(
     "yipcodes/load",
-    //TODO: Add & use generic Hub API functionality to send over REST request
+    //TODO: Add & use generic Hub API functionality to send over REST request    
     async (toHubPort: MessagePort) => {
-        return await ["Hello", "World"]
+        const mockResponse = ["Hello", "World"]
+        return new Promise<string[]>(resolve => setTimeout(() => resolve(mockResponse), 1000))
     }
 )
 
