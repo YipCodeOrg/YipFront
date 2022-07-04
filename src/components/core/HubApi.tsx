@@ -1,11 +1,22 @@
 type HubToFrontMessage = {
     label: string,
-    payload?: string
+    payload?: ApiResponsePayload
 }
 
 type FrontToHubMessage = {
     label: string,
-    payload?: string
+    payload?: ApiRequestPayload
+}
+
+type ApiResponsePayload = {
+    status: bigint,
+    body?: string
+}
+
+type ApiRequestPayload = {
+    method: string,
+    path: string,
+    body?: string
 }
 
 function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
@@ -13,8 +24,8 @@ function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
     return (typeof label === 'string' || label instanceof String) 
 }
 
-export default async function
-    postHubRequest(msg: FrontToHubMessage, toHubPort: MessagePort) : Promise<HubToFrontMessage>
+export async function
+    sendHubRequest(msg: FrontToHubMessage, toHubPort: MessagePort) : Promise<HubToFrontMessage>
 {
     function extractHubChannelMessage(event: MessageEvent<any>) : HubToFrontMessage{
         const data = event.data        
@@ -44,4 +55,15 @@ export default async function
             }
         }
     )
+}
+
+export async function sendApiRequest(payload: ApiRequestPayload, toHubPort: MessagePort): Promise<ApiResponsePayload>{
+    const msg:FrontToHubMessage = {label: "apiRequest", payload: payload}
+    return sendHubRequest(msg, toHubPort).then(val => {
+        const payload = val.payload
+        if(!!payload){
+            return payload
+        }
+        return Promise.reject("No response payload received from Hub")
+    })
 }

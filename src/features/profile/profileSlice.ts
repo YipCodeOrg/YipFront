@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import postHubRequest from "../../components/core/HubApi"
+import { sendHubRequest } from "../../components/core/HubApi"
 import { useAsyncHubLoad } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/reduxHelpers";
 
@@ -19,7 +19,7 @@ const initialState: ProfileSliceState = {
 export const loadLoginState = createAsyncThunk(
     "profile/loadLoginState",
     async (toHubPort: MessagePort) => {
-        return await postHubRequest({label: "requestLoginStatus"}, toHubPort)        
+        return await sendHubRequest({label: "requestLoginStatus"}, toHubPort)        
         .then(val => {
                 const status = val.label
                 console.log(`...Login status received from Hub: ${status}`);    
