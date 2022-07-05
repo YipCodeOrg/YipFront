@@ -47,7 +47,17 @@ export async function
                 const responseChannel = new MessageChannel();
                 responseChannel.port1.onmessage = handleChannelResponse
                 console.log("Posting request to Hub...")
-                toHubPort.postMessage(msg, [responseChannel.port2])
+                try{
+                    toHubPort.postMessage(msg, [responseChannel.port2])
+                }
+                catch(e: any){
+                    let errorMsg = "Error posting message"
+                    if(e instanceof Error){
+                        errorMsg += `: ${e.message}`
+                    }
+                    console.log(errorMsg)
+                    reject(errorMsg)
+                }
                 console.log("...Finished posting request to Hub")                
             }
             else{
