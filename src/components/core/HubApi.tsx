@@ -25,7 +25,26 @@ type ApiRequestPayload = {
 
 function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
     const label = obj.label
-    return (typeof label === 'string' || label instanceof String) 
+    if (!(typeof label == 'string' || label instanceof String)) {
+        return false
+    }
+    const payload = obj.payload
+    if(!!payload && !isValidResponsePayload(payload)){
+        return false
+    }
+    return true
+}
+
+function isValidResponsePayload(obj: any): obj is ApiResponsePayload{
+    const status = obj.status
+    if (!(typeof status == 'string' || status instanceof String)) {
+        return false
+    }
+    const body = obj.body
+    if(!!body && !(typeof body == 'string' || body instanceof String)){
+        return false
+    }
+    return true
 }
 
 export async function
