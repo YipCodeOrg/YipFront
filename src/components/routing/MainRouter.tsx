@@ -24,7 +24,7 @@ type LoadingWrapperProps = {
 };
 
 const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
-  <Suspense fallback={<h1>Loading...</h1>}>
+  <Suspense fallback={<></>}>
     {children}
   </Suspense>
 )
