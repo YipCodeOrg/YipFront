@@ -37,7 +37,7 @@ function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
 
 function isValidResponsePayload(obj: any): obj is ApiResponsePayload{
     const status = obj.status
-    if (!(typeof status == 'string' || status instanceof String)) {
+    if (!(typeof status == 'bigint' || status instanceof BigInt)) {
         return false
     }
     const body = obj.body
