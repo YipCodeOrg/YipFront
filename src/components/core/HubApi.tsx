@@ -1,3 +1,5 @@
+export const HttpStatusOk: bigint = BigInt(200)
+
 type HubToFrontMessage = {
     label: string,
     payload?: ApiResponsePayload
@@ -67,10 +69,17 @@ export async function
     )
 }
 
+const apiResponseLabel = "apiResponse"
+
 export async function sendApiRequest(payload: ApiRequestPayload, toHubPort: MessagePort): Promise<ApiResponsePayload>{
     const msg:FrontToHubMessage = {label: "apiRequest", payload: payload}
     return sendHubRequest(msg, toHubPort).then(val => {
+        const label = val.label
+        if(label !== apiResponseLabel){
+            return Promise.reject("Invalid response label")
+        }        
         const payload = val.payload
+        //Non-MVP: Convert status to BigInt here if it's not already one?
         if(!!payload){
             return payload
         }

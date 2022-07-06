@@ -4,7 +4,7 @@ import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { useAsyncHubLoad } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/reduxHelpers";
-import { sendApiRequest } from "../../components/core/HubApi";
+import { HttpStatusOk, sendApiRequest } from "../../components/core/HubApi";
 
 type YipCodesSliceState = {
     yipCodes: string[],
@@ -35,11 +35,15 @@ export const loadYipCodes = createAsyncThunk(
     async (toHubPort: MessagePort) => {
         const yipCodes = await sendApiRequest({method: "GET", path: "/yipcodes"}, toHubPort)
         .then(res => {
+            if(res.status !== HttpStatusOk){
+                return Promise.reject("Unexpected response status")
+            }
             const body = res.body
             if(!!body){
                 return body
-            }
-            return Promise.reject("No body in response")         
+            } else{
+                return Promise.reject("No body in response")         
+            }            
         })
         .then(body => {
             const obj = JSON.parse(body)
