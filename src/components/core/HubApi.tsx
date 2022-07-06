@@ -1,3 +1,5 @@
+import { logAndReject } from "../../util/misc"
+
 export const HttpStatusOk: bigint = BigInt(200)
 
 type HubToFrontMessage = {
@@ -58,12 +60,12 @@ export async function
                         errorMsg += `: ${e.message}`
                     }
                     console.log(errorMsg)
-                    reject(errorMsg)
+                    logAndReject(reject, errorMsg)
                 }
                 console.log("...Finished posting request to Hub")                
             }
             else{
-                reject("Error posting message to Hub - no valid port.")
+                logAndReject(reject, "Error posting message to Hub - no valid port.")
             }
         }
     )
