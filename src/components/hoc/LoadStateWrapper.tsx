@@ -19,7 +19,7 @@ const LoadStateWrapper: FunctionComponent<LoadStateWrapperProps> =
         case LoadStatus.NotLoaded:
             return <></>
         case LoadStatus.Failed:
-            return <>ERROR: Failed to get component's load status.</>
+            return <>ERROR: Component failed to load.</>
         case LoadStatus.Pending:
             return loadingElement
         case LoadStatus.Loaded:
