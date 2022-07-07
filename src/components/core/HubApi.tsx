@@ -1,4 +1,4 @@
-import { logAndReject } from "../../util/misc"
+import { logAndReject, logAndReturnRejectedPromise } from "../../util/misc"
 
 export const HttpStatusOk: number = 200
 
@@ -91,19 +91,22 @@ export async function
 }
 
 const apiResponseLabel = "apiResponse"
-
+const apiResponseErrorLabel = "apiResponseError"
 export async function sendApiRequest(payload: ApiRequestPayload, toHubPort: MessagePort): Promise<ApiResponsePayload>{
     const msg:FrontToHubMessage = {label: "apiRequest", payload: payload}
     return sendHubRequest(msg, toHubPort).then(val => {
         const label = val.label
+        if(label === apiResponseErrorLabel){
+            return logAndReturnRejectedPromise("An error occurred during the API request")
+        }
         if(label !== apiResponseLabel){
-            return Promise.reject("Invalid response label")
+            return logAndReturnRejectedPromise("Invalid response label")
         }        
         const payload = val.payload
         //Non-MVP: Convert status to number here if it's not already one?
         if(!!payload){
             return payload
         }
-        return Promise.reject("No response payload received from Hub")
+        return logAndReturnRejectedPromise("No response payload received from Hub")
     })
 }
