@@ -1,6 +1,6 @@
 import { logAndReject } from "../../util/misc"
 
-export const HttpStatusOk: bigint = BigInt(200)
+export const HttpStatusOk: number = 200
 
 type HubToFrontMessage = {
     label: string,
@@ -13,7 +13,7 @@ type FrontToHubMessage = {
 }
 
 type ApiResponsePayload = {
-    status: bigint,
+    status: number,
     body?: string
 }
 
@@ -37,7 +37,7 @@ function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
 
 function isValidResponsePayload(obj: any): obj is ApiResponsePayload{
     const status = obj.status
-    if (!(typeof status == 'bigint' || status instanceof BigInt)) {
+    if (!(typeof status == 'number' || status instanceof Number)) {
         return false
     }
     const body = obj.body
@@ -100,7 +100,7 @@ export async function sendApiRequest(payload: ApiRequestPayload, toHubPort: Mess
             return Promise.reject("Invalid response label")
         }        
         const payload = val.payload
-        //Non-MVP: Convert status to BigInt here if it's not already one?
+        //Non-MVP: Convert status to number here if it's not already one?
         if(!!payload){
             return payload
         }
