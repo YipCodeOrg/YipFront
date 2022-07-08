@@ -29,13 +29,15 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (
   </Suspense>
 )
 
-type MainRouterProps = {
-  setIsSigedUp: (_: boolean) => void
-  isSignedUp: boolean
+const isSignedUp = !!localStorage.getItem("isSignedUp")
+
+function setIsSigedUp(b: boolean){        
+  localStorage.setItem("isSignedUp", String(b))
 }
 
-const MainRouter: React.FC<MainRouterProps> = ({setIsSigedUp, isSignedUp}) => {  
+const MainRouter = () => {  
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
+  
   return (  
       <BrowserRouter>
       <Routes>

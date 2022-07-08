@@ -6,16 +6,9 @@ import { useHubHandshake } from "./hooks";
 
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
 
-const isSignedUp = !!localStorage.getItem("isSignedUp")
-
 export const HubPortContext = createContext<MessagePort | null>(null)
 
 export default function App(){
-
-    //Non-MVP: Move this down to the main router - no need to prop thread it from here
-    function setIsSigedUp(b: boolean){        
-        localStorage.setItem("isSignedUp", String(b))
-    }
 
     const toHubPort = useHubHandshake()
 
@@ -26,7 +19,7 @@ export default function App(){
                 src={HUB_API_URL}
                 style={{position: "absolute", width:0, height:0, border: "none"}}                
             />
-            <MainRouter setIsSigedUp={setIsSigedUp} isSignedUp={isSignedUp}/>
+            <MainRouter/>
         </HubPortContext.Provider>
     )
 }
