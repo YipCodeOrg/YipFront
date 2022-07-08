@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { sendHubRequest } from "../../components/core/HubApi"
+import { sendHubRequest } from "../../util/hubApi"
 import { useAsyncHubLoad } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/reduxHelpers";
 

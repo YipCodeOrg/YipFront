@@ -1,4 +1,4 @@
-import { logAndReject, logAndReturnRejectedPromise } from "../../util/misc"
+import { logAndReject, logAndReturnRejectedPromise } from "./misc"
 
 export const HttpStatusOk: number = 200
 

@@ -4,7 +4,7 @@ import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { useAsyncHubLoad } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/reduxHelpers";
-import { HttpStatusOk, sendApiRequest } from "../../components/core/HubApi";
+import { HttpStatusOk, sendApiRequest } from "../../util/hubApi";
 import { logAndReturnRejectedPromise } from "../../util/misc";
 
 type YipCodesSliceState = {
