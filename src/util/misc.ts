@@ -1,9 +1,9 @@
 export const logAndReturnRejectedPromise = (msg: string) => {
-    console.log(msg)
+    console.error(msg)
     return Promise.reject(msg)
 }
 
 export const logAndReject = (reject: (reason?: any) => void, msg: string) => {
-    console.log(msg)
+    console.error(msg)
     reject(msg)
 }
