@@ -40,13 +40,26 @@ export const useAsyncHubLoad:
 
 export function useHubHandshake(){
 
-    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
-
-    const listenOnceForHubReady: React.EffectCallback = () => {
+    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)    
+    
+    useEffect(() => {
         
-        const allowedMessage = "readyToListen"
+        const handleListeningMessage = (port: MessagePort) => (event: MessageEvent<any>) => {
+            const allowedMessage = "listening"   
+            const data = event.data
+            if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
+                throw new Error("Invalid message format received from Hub prior to listening message.")
+            }
+            if(!!toHubPort){
+                console.error("Listening message received when to Hub Port already set. Sending error to Hub.")
+                port.postMessage("handshakeError")
+            }
+            console.log("...Received listening status from Hub. Saving port for further communication.")
+            setToHubPort(port)
+        }
 
         function handleReadyMessage(event: MessageEvent<any>){
+            const allowedMessage = "readyToListen"   
             if (event.origin !== HUB_ORIGIN_URL) {
                 //Note: we don't throw an exception here because there are other listeners that process messages from other origins
                 //For example, there seems to be web socket messages from self.origin when running this with NPM locally
@@ -55,17 +68,23 @@ export function useHubHandshake(){
             const data = event.data
             if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
                 throw new Error("Invalid message format received from Hub prior to readyToListen message.")
-            }
-            const port = event.ports[0]      
-            setToHubPort(port)
-            //Removes itself once it's done its job
-            window.removeEventListener("message", handleReadyMessage);            
+            }        
+            console.log("...Received status: Hub ready to listen.")
+            setToHubPort(null)
+            const tempPort = event.ports[0]
+            const permanentChannel = new MessageChannel()
+            const myPort = permanentChannel.port1
+            const hubPort = permanentChannel.port2
+            console.log("Telling Hub to listen...")
+            tempPort.postMessage({label: "listen"}, [hubPort])
+            myPort.onmessage = handleListeningMessage(myPort)
         }
 
-        window.addEventListener("message", handleReadyMessage);
-    };
-
-    useEffect(listenOnceForHubReady, []);
+        window.addEventListener("message", handleReadyMessage)
+        return function(){
+            window.removeEventListener("message", handleReadyMessage);
+        }
+    }, [toHubPort]);
 
     return toHubPort
 }
