@@ -50,10 +50,10 @@ function isValidResponsePayload(obj: any): obj is ApiResponsePayload{
 export async function
     sendHubRequest(msg: FrontToHubMessage, toHubPort: MessagePort) : Promise<HubToFrontMessage>
 {
-    function extractHubChannelMessage(event: MessageEvent<any>) : HubToFrontMessage{
+    function extractHubChannelMessageIfValid(event: MessageEvent<any>) : HubToFrontMessage | null{
         const data = event.data        
         if(!isHubToFrontMessage(data)){            
-            throw new Error("Invalid message format received from Hub")
+            return null
         }
         
         return data
@@ -62,8 +62,12 @@ export async function
         (resolve, reject) => {
             function handleChannelResponse(event: MessageEvent<any>){
                 console.log("Reponse received from Hub")
-                const response = extractHubChannelMessage(event)
-                resolve(response)
+                const response = extractHubChannelMessageIfValid(event)
+                if(!!response){
+                    resolve(response)
+                } else{
+                    logAndReject(reject, "Invalid message format received from Hub")                
+                }                
             }
             
             if(!!toHubPort){
