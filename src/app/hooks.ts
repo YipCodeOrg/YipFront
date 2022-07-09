@@ -58,7 +58,7 @@ function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
             clearTimeoutIfExists()
         }
         return clearTimeoutIfExists
-    }, [state, timeoutId])
+    }, [state])
 
     return [state, setState]
 }
