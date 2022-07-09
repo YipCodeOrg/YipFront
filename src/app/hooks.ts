@@ -38,19 +38,40 @@ export const useAsyncHubLoad:
         return [data, status]
 }
 
-export function useHubHandshake() : [MessagePort | null, boolean]{
+function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
+    [TState | null, React.Dispatch<React.SetStateAction<TState | null>>]
+    {
+    const [state, setState] = useState<TState | null>(null)
+    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null >(null)
 
-    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
-    const [isHubLoadError, setIsHubLoadError] = useState(false)
+    function clearTimeoutIfExists(){
+        if(!!timeoutId){
+            clearTimeout(timeoutId);
+            setTimeoutId(null)
+        }
+    }
 
     useEffect(() => {
-        setTimeout(() => {
-            if(!toHubPort){
-                console.error("Hub handshake failed to be established in the expected time.")
-                setIsHubLoadError(true)
-            }
-        }, 1000);
-    }, [])
+        if(!state){
+            setTimeoutId(setTimeout(timeoutAction, timeoutMs));
+        } else {
+            clearTimeoutIfExists()
+        }
+        return clearTimeoutIfExists
+    }, [state, timeoutId])
+
+    return [state, setState]
+}
+
+export function useHubHandshake() : [MessagePort | null, boolean]{
+
+    const [toHubPort, setToHubPort] = useTimeoutState<MessagePort | null>(handleHandshakeTimeout, 1000)
+    const [isHubLoadError, setIsHubLoadError] = useState(false)
+
+    function handleHandshakeTimeout(){
+        console.error("Hub handshake failed to be established in the expected time.")
+        setIsHubLoadError(true)
+    }
     
     useEffect(() => {
         
