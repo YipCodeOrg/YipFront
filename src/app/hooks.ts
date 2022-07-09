@@ -2,7 +2,7 @@ import { AsyncThunk } from '@reduxjs/toolkit'
 import { useContext, useEffect, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { HUB_ORIGIN_URL } from '../util/misc'
-import { HubPortContext } from './App'
+import { HubContext } from './App'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
 
@@ -22,7 +22,7 @@ export const useAsyncHubLoad:
     statusSelector: (state: RootState) => LoadStatus) => {        
         const status = useAppSelector(statusSelector)
         const data = useAppSelector(dataSelector)
-        const hubPort = useContext(HubPortContext)
+        const [hubPort] = useContext(HubContext)
         const dispatch = useAppDispatch()
 
         useEffect(
@@ -38,9 +38,19 @@ export const useAsyncHubLoad:
         return [data, status]
 }
 
-export function useHubHandshake(){
+export function useHubHandshake() : [MessagePort | null, boolean]{
 
-    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)    
+    const [toHubPort, setToHubPort] = useState<MessagePort | null>(null)
+    const [isHubLoadError, setIsHubLoadError] = useState(false)
+
+    useEffect(() => {
+        setTimeout(() => {
+            if(!toHubPort){
+                console.error("Hub handshake failed to be established in the expected time.")
+                setIsHubLoadError(true)
+            }
+        }, 1000);
+    }, [])
     
     useEffect(() => {
         
@@ -56,6 +66,7 @@ export function useHubHandshake(){
             }
             console.log("...Received listening status from Hub. Saving port for further communication.")
             setToHubPort(port)
+            setIsHubLoadError(false)
         }
 
         function handleReadyMessage(event: MessageEvent<any>){
@@ -86,5 +97,5 @@ export function useHubHandshake(){
         }
     }, [toHubPort]);
 
-    return toHubPort
+    return [toHubPort, isHubLoadError]
 }

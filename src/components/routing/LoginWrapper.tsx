@@ -1,5 +1,7 @@
-import { FunctionComponent } from "react"
+import { Center } from "@chakra-ui/react"
+import { FunctionComponent, useContext } from "react"
 import { useLocation } from "react-router-dom"
+import { HubContext } from "../../app/App"
 import { useLoginHubLoad } from "../../features/profile/profileSlice"
 import { EmptyLoadStateWrapper } from "../hoc/LoadStateWrapper"
 import {FullAppRoutingLayout} from "./routingLayouts"
@@ -16,6 +18,7 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isSignedUp, setIsSige
   
     const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubLoad()
     const {pathname} = useLocation()
+    const [,isHubLoadError] = useContext(HubContext)
 
     const InnerWrapper = () =>{
 
@@ -35,8 +38,11 @@ const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isSignedUp, setIsSige
         }
     }
 
-    return <EmptyLoadStateWrapper status={isLoggedInLoadStatus} loadedElement = {<InnerWrapper/>}/>
-    
+    if(isHubLoadError){
+        return <Center>ERROR LOADING PAGE</Center>
+    } else{
+        return <EmptyLoadStateWrapper status={isLoggedInLoadStatus} loadedElement = {<InnerWrapper/>}/>
+    }        
 }
 
 
