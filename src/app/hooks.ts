@@ -44,21 +44,28 @@ function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     const [state, setState] = useState<TState | null>(null)
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null >(null)
 
-    function clearTimeoutIfExists(){
-        if(!!timeoutId){
-            clearTimeout(timeoutId);
-            setTimeoutId(null)
-        }
-    }
-
     useEffect(() => {
+
+        function clearTimeoutIfExists(){
+            if(!!timeoutId){
+                clearTimeout(timeoutId);
+                setTimeoutId(null)
+            }
+        }
+
+        function setTimeoutIfNull(){
+            if(!timeoutId){
+                setTimeoutId(setTimeout(timeoutAction, timeoutMs))
+            }
+        }
+
         if(!state){
-            setTimeoutId(setTimeout(timeoutAction, timeoutMs));
+            setTimeoutIfNull()
         } else {
             clearTimeoutIfExists()
         }
         return clearTimeoutIfExists
-    }, [state])
+    }, [state, timeoutId, timeoutAction, timeoutMs])
 
     return [state, setState]
 }
@@ -81,10 +88,6 @@ export function useHubHandshake() : [MessagePort | null, boolean]{
             if(!(typeof data === 'string' || data instanceof String) || data !== allowedMessage){            
                 throw new Error("Invalid message format received from Hub prior to listening message.")
             }
-            if(!!toHubPort){
-                console.error("Listening message received when to Hub Port already set. Sending error to Hub.")
-                port.postMessage("handshakeError")
-            }
             console.log("...Received listening status from Hub. Saving port for further communication.")
             setToHubPort(port)
             setIsHubLoadError(false)
@@ -103,12 +106,12 @@ export function useHubHandshake() : [MessagePort | null, boolean]{
             }        
             console.log("...Received status: Hub ready to listen.")
             setToHubPort(null)
-            const tempPort = event.ports[0]
+            const handshakePort = event.ports[0]
             const permanentChannel = new MessageChannel()
             const myPort = permanentChannel.port1
             const hubPort = permanentChannel.port2
             console.log("Telling Hub to listen...")
-            tempPort.postMessage({label: "listen"}, [hubPort])
+            handshakePort.postMessage({label: "listen"}, [hubPort])
             myPort.onmessage = handleListeningMessage(myPort)
         }
 
@@ -116,7 +119,13 @@ export function useHubHandshake() : [MessagePort | null, boolean]{
         return function(){
             window.removeEventListener("message", handleReadyMessage);
         }
-    }, [toHubPort]);
+
+        /*Non-MVP: Consider adding logic here that detects a second "ready to listen" message fro Hub.
+        In that case, we should warn Hub that something unexpected has happened and tell it something has gone wrong.
+        Hub should then act accordingly and shut down any of its own liseners.
+        */
+
+    }, [setToHubPort]);
 
     return [toHubPort, isHubLoadError]
 }
