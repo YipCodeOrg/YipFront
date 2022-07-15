@@ -106,6 +106,9 @@ export function useHubHandshake() : [MessagePort | null, boolean]{
             console.log("...Received status: Hub ready to listen.")
             setToHubPort(null)
             const handshakePort = event.ports[0]
+            if(!handshakePort){
+                throw new Error("No handshake port received. Cannot continue handshake.")
+            }
             const permanentChannel = new MessageChannel()
             const myPort = permanentChannel.port1
             const hubPort = permanentChannel.port2

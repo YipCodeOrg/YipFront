@@ -65,11 +65,11 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
-const CompanyLinks = [["/site/about", "About us"],
+const companyLinks: [link: string, path:string][] = [["/site/about", "About us"],
   ["/site/contact", "Contact us"],
   ["/site/pricing", "Pricing"]];
 
-const SupportLinks = [["/site/faq", "FAQ"], 
+const supportLinks: [link: string, path:string][] = [["/site/faq", "FAQ"], 
   ["/site/terms", "Terms of Service"], 
   ["/site/legal", "Legal"], 
   ["/site/privacy", "Privacy Policy"]]
@@ -118,14 +118,14 @@ export default function Footer() {
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader><b>Company</b></ListHeader>    
-            {CompanyLinks.map(([link, text]) => (
+            {companyLinks.map(([link, text]) => (
                 <NavLink key={link} path={link} text={text}/>
               ))}
             {/*TODO-FF: Wait until app is up & there are some testimonials <Link to="/testimonials">Testimonials</Link>*/}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader><b>Support</b></ListHeader>   
-            {SupportLinks.map(([link, text]) => (
+            {supportLinks.map(([link, text]) => (
                 <NavLink key={link} path={link} text={text}/>
               ))}
           </Stack>

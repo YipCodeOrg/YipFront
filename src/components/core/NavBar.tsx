@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from './Logo';
 
-const Links = [["/", "Home"],
+const links: [link: string, path:string][] = [["/", "Home"],
   ["/site/glossary", "Glossary"]];
 
 const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
@@ -73,7 +73,7 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) =
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>                         
-              {Links.map(([link, text]) => (
+              {links.map(([link, text]) => (
                 <NavLink key={link} path={link} text={text}/>
               ))}
             </HStack>
@@ -115,7 +115,7 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) =
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>                       
-              {Links.map(([link, text]) => (
+              {links.map(([link, text]) => (
                 <NavLink path={link} text={text}/>
               ))}
             </Stack>
