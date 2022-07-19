@@ -116,7 +116,7 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) =
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>                       
               {links.map(([link, text]) => (
-                <NavLink path={link} text={text}/>
+                <NavLink key ={link} path={link} text={text}/>
               ))}
             </Stack>
           </Box>
