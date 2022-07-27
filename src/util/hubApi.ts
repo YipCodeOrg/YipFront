@@ -1,4 +1,5 @@
-import { logAndReject, logAndReturnRejectedPromise } from "./misc"
+import { logAndReject, logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
+
 
 export const HttpStatusOk: number = 200
 
