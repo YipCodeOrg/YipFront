@@ -3,7 +3,7 @@ import { LoadStatus } from "../app/types"
 
 export const addStandardThunkReducers = <TState, TPayload>
     (statusSetter: (state: Draft<TState>, status: LoadStatus) => void,
-    payloadSetter: (sate: Draft<TState>, p: TPayload) => void,
+    payloadSetter: (state: Draft<TState>, p: TPayload) => void,
     thunk: AsyncThunk<TPayload, MessagePort, {}>) => 
     (builder: ActionReducerMapBuilder<TState>) => {
     builder.addCase(thunk.pending, (state) => {

@@ -9,17 +9,10 @@ import { LoadStatus } from './types'
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-export const useAsyncHubLoad:
-
-    <TReturn>(
+export function useAsyncHubLoad<TReturn>(
     thunk: AsyncThunk<TReturn, MessagePort, {}>,
-    dataSelector: (state: RootState) => TReturn,
-    statusSelector: (state: RootState) => LoadStatus) => [TReturn, LoadStatus]
-    
-    = <TReturn>(
-    thunk: AsyncThunk<TReturn, MessagePort, {}>,
-    dataSelector: (state: RootState) => TReturn,
-    statusSelector: (state: RootState) => LoadStatus) => {        
+    dataSelector: (state: RootState) => TReturn | undefined,
+    statusSelector: (state: RootState) => LoadStatus) : [TReturn | undefined, LoadStatus]{        
         const status = useAppSelector(statusSelector)
         const data = useAppSelector(dataSelector)
         const [hubPort] = useContext(HubContext)

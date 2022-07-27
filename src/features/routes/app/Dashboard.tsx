@@ -1,10 +1,11 @@
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { useYipCodesHubLoad } from "../../yipcodes/yipCodesSlice"
+import { useUserDataHubLoad } from "../../userdata/userDataSlice"
 
 export default function Dashboard(){
     
-    const [yipcodes, yipCodesStatus] = useYipCodesHubLoad()
+    const [userData, yipCodesStatus] = useUserDataHubLoad()
     
+    const loadedText = userData!! ? userData?.data.yipCodes.join(", ") : ""
 
-    return <LogoLoadStateWrapper status = {yipCodesStatus} loadedElement={<>{yipcodes.join(", ")}</>}></LogoLoadStateWrapper>
+    return <LogoLoadStateWrapper status = {yipCodesStatus} loadedElement={<>{loadedText}</>}></LogoLoadStateWrapper>
 }
