@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "env-cmd -r .env-cmdrc -e local, react-scripts start",
+    "build:local": "env-cmd -r .env-cmdrc -e local, react-scripts build",
     "build:prod": "env-cmd -r .env-cmdrc -e prod, react-scripts build",
     "build:dev": "env-cmd -r .env-cmdrc -e dev, react-scripts build",
     "test:local": "env-cmd -r .env-cmdrc -e local, react-scripts test",
