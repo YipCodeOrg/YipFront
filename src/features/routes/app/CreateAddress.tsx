@@ -42,7 +42,8 @@ import { useCreateAddressState } from './createAddressSlice';
                 <FormControl id="clear" float="right">
                     <Button
                     variant="solid"
-                    _hover={{}}>
+                    _hover={{}}
+                    onClick={() => setCreateAddressState("")}>
                     Clear
                     </Button>
                 </FormControl>
