@@ -15,8 +15,8 @@ import {
         <Flex>
             <Box m={8}>
                 <VStack spacing={5}>
-                <FormControl id="name">
-                    <FormLabel>Enter Your Address</FormLabel>
+                <FormControl id="address" isRequired={true}>
+                    <FormLabel>Address</FormLabel>
                     <Textarea
                     borderColor="gray.300"
                     _hover={{
@@ -25,7 +25,7 @@ import {
                     placeholder="123 Fake Street"
                     />
                 </FormControl>
-                <FormControl id="name" float="right">
+                <FormControl id="nextButton" float="right">
                     <Button
                     variant="solid"
                     _hover={{}}>
