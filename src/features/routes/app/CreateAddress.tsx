@@ -8,8 +8,17 @@ import {
     FormLabel,
     Textarea,
   } from '@chakra-ui/react';
+import { useCreateAddressState } from './createAddressSlice';
   
-  export default function contact() {
+  export default function CreateAddress() {
+    
+    const [createAddressState, setCreateAddressState] = useCreateAddressState()
+
+    const handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+      const inputValue = e.target.value
+      setCreateAddressState(inputValue)
+    }
+
     return (
       <Container maxW="full" mt={0} centerContent overflow="hidden">
         <Flex>
@@ -26,13 +35,15 @@ import {
                     resize="both"
                     rows={5}
                     cols={25}
+                    value={createAddressState.rawAddress}
+                    onChange={handleInputChange}
                     />
                 </FormControl>
-                <FormControl id="nextButton" float="right">
+                <FormControl id="clear" float="right">
                     <Button
                     variant="solid"
                     _hover={{}}>
-                    Next
+                    Clear
                     </Button>
                 </FormControl>
                 </VStack>

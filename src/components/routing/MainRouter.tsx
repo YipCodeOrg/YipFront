@@ -18,7 +18,7 @@ const Privacy = lazy(() => import("../../features/routes/site/Privacy"))
 const Legal = lazy(() => import("../../features/routes/site/Legal"))
 const Terms = lazy(() => import("../../features/routes/site/Terms"))
 const Dashboard = lazy(() => import("../../features/routes/app/Dashboard"));
-const Create = lazy(() => import("../../features/routes/app/Create"));
+const Create = lazy(() => import("../../features/routes/app/CreateAddress"));
 
 type LoadingWrapperProps = {
 };
