@@ -1,3 +1,6 @@
 [submodule "src/packages/YipStackLib"]
 	path = src/packages/YipStackLib
 	url = git@github.com:ColmBhandal/YipStackLib.git
+[submodule "src/packages/YipAddress"]
+	path = src/packages/YipAddress
+	url = git@github.com:ColmBhandal/YipAddress.git
