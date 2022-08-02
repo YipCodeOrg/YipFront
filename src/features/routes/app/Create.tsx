@@ -22,7 +22,10 @@ import {
                     _hover={{
                         borderRadius: 'gray.300',
                     }}
-                    placeholder="123 Fake Street"
+                    placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
+                    resize="both"
+                    rows={5}
+                    cols={25}
                     />
                 </FormControl>
                 <FormControl id="nextButton" float="right">
