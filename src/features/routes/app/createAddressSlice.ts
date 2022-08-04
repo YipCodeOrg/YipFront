@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useCallback } from "react"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
-import { Address, emptyAddress } from "../../../packages/YipAddress/core/address"
+import { Address, emptyAddress, shallowCopyUpdateLine } from "../../../packages/YipAddress/core/address"
 import { ParseOptions, parseStrToAddress } from "../../../packages/YipAddress/parse/parseAddress"
 
 type CreateAddressState = {
@@ -30,6 +30,12 @@ export const createAddressSlice = createSlice({
                 state.rawInput = newRawAddress
                 state.changeBuffer = [newAddress]
             }            
+        },
+        updateLine(state: CreateAddressState, action: PayloadAction<{index: number, content: string}>){
+            const {index, content} = action.payload
+            const currentAddress = getCurrentAddress(state)
+            const newAddress = shallowCopyUpdateLine(currentAddress, index, content)
+            state.changeBuffer.push(newAddress)
         }
     }
 })
@@ -46,7 +52,7 @@ function getCurrentAddress(state: CreateAddressState): Address{
     throw new Error("Current state not found");    
 }
 
-export const { setRawAddress } = createAddressSlice.actions
+export const { setRawAddress, updateLine } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -69,9 +75,15 @@ export const useIsRawCreateAddresInputLocked = () : boolean => {
     return isRawInputLocked(addressState)
 }
 
-export const useSetRawCreateAddress = () : (s: string) => void => {
+export const useSetRawCreateAddress = () : (rawAddress: string) => void => {
     const dispatch = useAppDispatch()
-    const callback = useCallback((s: string) => dispatch(setRawAddress(s)), [dispatch])
+    const callback = useCallback((rawAddress: string) => dispatch(setRawAddress(rawAddress)), [dispatch])
+    return callback
+}
+
+export const useSetCreateAddressLine = () : (index: number, content: string) => void => {
+    const dispatch = useAppDispatch()
+    const callback = useCallback((index: number, content: string) => dispatch(updateLine({index, content})), [dispatch])
     return callback
 }
 
