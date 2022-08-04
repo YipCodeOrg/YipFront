@@ -9,11 +9,13 @@ import {
     Textarea,
     Input,
   } from '@chakra-ui/react';
-import { useCreateAddressState } from './createAddressSlice';
+import { useCurrentCreateAddress, useRawCreateAddress, useSetRawCreateAddress } from './createAddressSlice';
   
 export default function CreateAddress() {
   
-  const [createAddressState, setCreateAddressState] = useCreateAddressState()
+  const rawCreateAddress = useRawCreateAddress()
+  const currentCreateAddress = useCurrentCreateAddress()
+  const setCreateAddressState = useSetRawCreateAddress()
 
   const handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     const inputValue = e.target.value
@@ -36,11 +38,11 @@ export default function CreateAddress() {
                   resize="both"
                   rows={5}
                   cols={25}
-                  value={createAddressState.rawAddress}
+                  value={rawCreateAddress}
                   onChange={handleInputChange}
                   />
               </FormControl>
-              {createAddressState.addressLines.map((line, index) => (<AddressLine mainAlias={`line${index+1}`} line={line}/>))}
+              {currentCreateAddress.addressLines.map((line, index) => (<AddressLine mainAlias={`line${index+1}`} line={line}/>))}
               <FormControl id="clear" float="right">
                   <Button
                   variant="solid"
