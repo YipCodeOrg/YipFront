@@ -64,6 +64,11 @@ export const useRawCreateAddress = () : string => {
     return useCreateAddressState().rawInput
 }
 
+export const useIsRawCreateAddresInputLocked = () : boolean => {
+    const addressState = useCreateAddressState()
+    return isRawInputLocked(addressState)
+}
+
 export const useSetRawCreateAddress = () : (s: string) => void => {
     const dispatch = useAppDispatch()
     const callback = useCallback((s: string) => dispatch(setRawAddress(s)), [dispatch])

@@ -9,13 +9,14 @@ import {
     Textarea,
     Input,
   } from '@chakra-ui/react';
-import { useCurrentCreateAddress, useRawCreateAddress, useSetRawCreateAddress } from './createAddressSlice';
+import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetRawCreateAddress } from './createAddressSlice';
   
 export default function CreateAddress() {
   
   const rawCreateAddress = useRawCreateAddress()
   const currentCreateAddress = useCurrentCreateAddress()
   const setCreateAddressState = useSetRawCreateAddress()
+  const isRawInputLocked = useIsRawCreateAddresInputLocked()
 
   const handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     const inputValue = e.target.value
@@ -27,9 +28,10 @@ export default function CreateAddress() {
       <Flex>
           <Box m={8}>
               <VStack spacing={5}>
-              <FormControl id="address" isRequired={true}>
+              <FormControl id="address" isRequired={true} 
+                  isDisabled={isRawInputLocked}>
                   <FormLabel>Address</FormLabel>
-                  <Textarea
+                  <Textarea                  
                   borderColor="gray.300"
                   _hover={{
                       borderRadius: 'gray.300',
