@@ -42,7 +42,7 @@ export default function CreateAddress() {
                   onChange={handleInputChange}
                   />
               </FormControl>
-              {currentCreateAddress.addressLines.map((line, index) => (<AddressLine mainAlias={`line${index+1}`} line={line}/>))}
+              {currentCreateAddress.addressLines.map((line, index) => (<AddressLine key={index} mainAlias={`line${index+1}`} line={line}/>))}
               <FormControl id="clear" float="right">
                   <Button
                   variant="solid"
