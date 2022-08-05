@@ -21,6 +21,7 @@ const Dashboard = lazy(() => import("../../features/routes/app/Dashboard"));
 const Create = lazy(() => import("../../features/routes/app/CreateAddress"));
 
 type LoadingWrapperProps = {
+  children?: React.ReactNode
 };
 
 const LoadingWrapper: React.FC<LoadingWrapperProps> = ({children}) => (

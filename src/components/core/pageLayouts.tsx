@@ -15,6 +15,7 @@ type LayoutProps = {
   isLoggedIn: boolean
   isSignedUp: boolean
   setIsSigedUp: (b: boolean) => void
+  children?: React.ReactNode
 }
 
 export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    

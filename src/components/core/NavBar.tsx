@@ -14,10 +14,8 @@ import {
   Stack,
   Avatar,
 } from '@chakra-ui/react';
-import {
-  GiHamburgerMenu as HamburgerIcon,
-  MdClose as CloseIcon,
-} from 'react-icons/all';
+import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
+import { MdClose as CloseIcon} from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from './Logo';
