@@ -1,5 +1,5 @@
 import { AsyncThunk } from '@reduxjs/toolkit'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
@@ -35,19 +35,20 @@ function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     [TState | null, React.Dispatch<React.SetStateAction<TState | null>>]
     {
     const [state, setState] = useState<TState | null>(null)
-    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null >(null)
+    const timeoutId = useRef<NodeJS.Timeout | null >(null)
 
     useEffect(() => {
 
         function clearTimeoutIfExists(){
-            if(!!timeoutId){
-                clearTimeout(timeoutId);
+            if(!!timeoutId.current){
+                clearTimeout(timeoutId.current);
             }
         }
 
         function setTimeoutIfNull(){
-            if(!timeoutId){
-                setTimeoutId(setTimeout(timeoutAction, timeoutMs))
+            if(!timeoutId.current){
+                const id = setTimeout(timeoutAction, timeoutMs)
+                timeoutId.current = id
             }
         }
 
@@ -56,7 +57,6 @@ function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
         } else {
             clearTimeoutIfExists()
         }
-        return clearTimeoutIfExists
     }, [state, timeoutId, timeoutAction, timeoutMs])
 
     return [state, setState]

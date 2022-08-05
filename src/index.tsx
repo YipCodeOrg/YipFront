@@ -1,21 +1,12 @@
-import ReactDOM from "react-dom"
 import App from "./app/App"
 import reportWebVitals from "./util/reportWebVitals"
 import * as serviceWorker from "./util/serviceWorker"
 import { Provider } from "react-redux"
 import store from "./app/store";
 import React from "react"
+import { createRoot } from "react-dom/client"
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App/>
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById("root"),
-)
-
-/*const container = document.getElementById("root")
+const container = document.getElementById("root")
 if(!!container){
   const root = createRoot(container)
   root.render(
@@ -25,7 +16,7 @@ if(!!container){
       </Provider>
     </React.StrictMode>
   )
-}*/
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
