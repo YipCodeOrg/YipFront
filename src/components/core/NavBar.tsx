@@ -13,6 +13,7 @@ import {
   useColorModeValue,
   Stack,
   Avatar,
+  UseDisclosureReturn,
 } from '@chakra-ui/react';
 import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
 import { MdClose as CloseIcon} from 'react-icons/md';
@@ -37,7 +38,7 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
-type NavBarProps = {
+type NavBarWrapperProps = {
   isLoggedIn: boolean
   isSignedUp: boolean
   setIsSigedUp: (b: boolean) => void
@@ -46,12 +47,18 @@ type NavBarProps = {
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 const HUB_LOGOUT_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/logout/init`
 
+
 /* TODO: Figure out links / buttons for app vs. site. 
    Perhaps the NavBar can be parametrised for use in different contexts e.g. by making Links / buttons props
 */
-const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const NavBarWrapper: React.FC<NavBarWrapperProps> = (props) => {
+  const disclosure = useDisclosure();
+  return <NavBar {...{...disclosure,  ...props}} />  
+}
 
+export type NavbarProps = UseDisclosureReturn & NavBarWrapperProps
+
+export const NavBar: React.FC<NavbarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp, isOpen, onOpen, onClose}) => {
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -133,4 +140,4 @@ const NavBar: React.FC<NavBarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp}) =
   }
 }
 
-export default NavBar
+export default NavBarWrapper

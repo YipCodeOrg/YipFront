@@ -2,7 +2,7 @@ import {
     VStack,
     Box,
 } from "@chakra-ui/react"
-import NavBar from "./NavBar"
+import NavBarWrapper from "./NavBar"
 import Footer from "./Footer"  
 
 const mainFlexPropVals = {
@@ -21,7 +21,7 @@ type LayoutProps = {
 export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
+      <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
       </Box>
       <main style={mainFlexPropVals}>
         {children}
@@ -35,7 +35,7 @@ export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isS
 export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBar isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
+      <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
       </Box>
       <main style={mainFlexPropVals}>
         {children}
