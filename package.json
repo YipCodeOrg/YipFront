@@ -24,12 +24,28 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "env-cmd": "^10.1.0",
-    "react-scripts": "^5.0.1",
+    "@chakra-ui/storybook-addon": "^4.0.6",
+    "@mdx-js/react": "^2.1.2",
+    "@storybook/addon-actions": "^6.5.10",
+    "@storybook/addon-essentials": "^6.5.10",
+    "@storybook/addon-interactions": "^6.5.10",
+    "@storybook/addon-links": "^6.5.10",
+    "@storybook/builder-webpack4": "^6.5.10",
+    "@storybook/builder-webpack5": "^6.5.10",
+    "@storybook/manager-webpack4": "^6.5.10",
+    "@storybook/manager-webpack5": "^6.5.10",
+    "@storybook/mdx2-csf": "^0.0.3",
+    "@storybook/node-logger": "^6.5.10",
+    "@storybook/preset-create-react-app": "^4.1.2",
+    "@storybook/react": "^6.5.10",
+    "@storybook/testing-library": "^0.0.13",
+    "@types/jest": "^28.1.6",
+    "@types/node": "^18.6.4",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "@types/jest": "^28.1.6",
-    "@types/node": "^18.6.4"
+    "env-cmd": "^10.1.0",
+    "react-scripts": "^5.0.1",
+    "webpack": "5"
   },
   "scripts": {
     "start": "env-cmd -r .env-cmdrc -e local, react-scripts start",
@@ -37,10 +53,22 @@
     "build:prod": "env-cmd -r .env-cmdrc -e prod, react-scripts build",
     "build:dev": "env-cmd -r .env-cmdrc -e dev, react-scripts build",
     "test:local": "env-cmd -r .env-cmdrc -e local, react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
