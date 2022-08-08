@@ -1,5 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import SimpleSidebar, { SimpleSidebarProps, SideBarItemData } from "./SideBar";
+import SimpleSidebar, { SimpleSidebarProps } from "./SideBar";
 import { FaRegEnvelope } from 'react-icons/fa'
 
 type SideBarType = typeof SimpleSidebar
