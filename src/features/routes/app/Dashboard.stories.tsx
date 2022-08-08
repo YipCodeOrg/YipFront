@@ -11,11 +11,25 @@ export default {
 
 const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>
 
-export const NotLoaded = Template.bind({})
-NotLoaded.args = {
-    userData: undefined,
-    userDataStatus: LoadStatus.NotLoaded,
-    userAddressData: undefined,
-    userAddressDataStatus: LoadStatus.NotLoaded
+const userData= {
+  sub: "cognito-sub",
+  data: {
+      yipCodes: ["YIP1", "YIP2", "YIP3"]
+  }
+}
+
+const userAddressData1 = {
+  sub: "cognito-sub",
+  yipCode: "YIP1",
+  address: "TODO: Change address to structured type"
+}
+
+
+export const Standard = Template.bind({})
+Standard.args = {
+    userData: userData,
+    userDataStatus: LoadStatus.Loaded,
+    userAddressData: [userAddressData1],
+    userAddressDataStatus: LoadStatus.Loaded
 }
 
