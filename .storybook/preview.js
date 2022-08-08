@@ -1,6 +1,11 @@
-import { withRouter } from 'storybook-addon-react-router-v6'
+import { BrowserRouter } from "react-router-dom";
 
-export const decorators = [withRouter];
+export const decorators = [
+  (Story) => (
+    <BrowserRouter>
+      <Story />
+    </BrowserRouter>
+  )];
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
