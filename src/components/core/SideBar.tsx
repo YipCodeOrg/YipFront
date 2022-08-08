@@ -10,12 +10,14 @@ import {
   useDisclosure,
   BoxProps,
   FlexProps,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   FiMenu,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 export type SideBarItemData = {
   name: string,
@@ -23,12 +25,18 @@ export type SideBarItemData = {
   link: string
 }
 
-export type SimpleSidebarProps = {
-    itemData: SideBarItemData[]
-    children?: React.ReactNode
+export type SideBarButtonData = {
+  hoverText: string,
+  icon: IconType,
+  link: string
 }
 
-const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, children}) => {
+export type SimpleSidebarProps = {
+    itemData: SideBarItemData[]
+    buttonData: SideBarButtonData[]
+}
+
+const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -36,8 +44,8 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, children}) => {
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
         itemData={itemData}
+        buttonData={buttonData}
       >
-        {children}
       </SidebarContent>
       <Drawer
         autoFocus={false}
@@ -48,7 +56,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, children}) => {
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent {...{onClose, itemData}}>{children}</SidebarContent>
+          <SidebarContent {...{onClose, itemData, buttonData}}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -62,9 +70,10 @@ export default SimpleSidebar
 interface SidebarContentProps extends BoxProps {
   onClose: () => void;
   itemData: SideBarItemData[];
+  buttonData: SideBarButtonData[]
 }
 
-const SidebarContent = ({ onClose, itemData, children, ...rest }: SidebarContentProps) => {  
+const SidebarContent = ({ onClose, itemData, buttonData, ...rest }: SidebarContentProps) => {  
   return (
     <Box
       bg={useColorModeValue('white', 'gray.900')}
@@ -74,14 +83,54 @@ const SidebarContent = ({ onClose, itemData, children, ...rest }: SidebarContent
       pos="fixed"
       h="full"
       {...rest}>
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        {children}
+      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">              
+        {buttonData.map((item) => (
+            <ButtonItem key={item.hoverText} icon={item.icon} hoverText={item.hoverText} link={item.link}/>          
+          ))}
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {itemData.map((item) => (
         <SideBarItem key={item.name} icon={item.icon} content={item.name} link={item.link}/>          
       ))}
     </Box>
+  );
+};
+
+interface ButtonItemProps extends FlexProps {
+  icon: IconType;
+  hoverText: string;
+  link: string;
+}
+
+const ButtonItem = ({ icon, link, hoverText, ...rest }: ButtonItemProps) => {
+  return (          
+  <Tooltip label={hoverText}>    
+    <Link to={link}>
+      <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+          bg: 'cyan.400',
+          color: 'white',
+          }}
+          {...rest}>
+          {icon && (
+            <Icon
+                mr="4"
+                fontSize="28"
+                _groupHover={{
+                color: 'white',
+                }}
+                as={icon}
+            />
+          )}
+      </Flex>
+    </Link>
+  </Tooltip>      
   );
 };
 

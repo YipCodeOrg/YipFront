@@ -1,8 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import SimpleSidebar, { SimpleSidebarProps } from "./SideBar";
-import { FaRegEnvelope } from 'react-icons/fa'
-import { GrAddCircle } from 'react-icons/gr';
-import { Icon } from "@chakra-ui/react";
+import { FaRegEnvelope, FaPlusCircle } from 'react-icons/fa'
 
 type SideBarType = typeof SimpleSidebar
 
@@ -11,18 +9,19 @@ export default {
     title: 'components/SideBar',
   } as ComponentMeta<SideBarType>
 
-const Template: ComponentStory<SideBarType> = (args: SimpleSidebarProps) => (<SimpleSidebar {...args}>         
-    <Icon mr="4" fontSize="16"
-        _groupHover={{ color: 'white',}} as={GrAddCircle}/> 
-</SimpleSidebar>)
+const Template: ComponentStory<SideBarType> = (args: SimpleSidebarProps) => (<SimpleSidebar {...args}/>)
 
 export const Standard = Template.bind({})
 Standard.args = {
     itemData: [{
-        name: "item1",
+        name: "Home Address",
         icon: FaRegEnvelope,
-        link: "/dud/link"
-    }
-    ]
+        link: "/fake/address/home"
+    }],
+    buttonData: [{
+        hoverText: "Add a new Address",
+        icon: FaPlusCircle,
+        link: "/fake/add"
+    }]
 }
 
