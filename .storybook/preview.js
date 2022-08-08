@@ -1,11 +1,6 @@
-import { BrowserRouter } from "react-router-dom";
+import ReactRouterDecorator from "./ReactRouterDecorator"
 
-export const decorators = [
-  (Story) => (
-    <BrowserRouter>
-      <Story />
-    </BrowserRouter>
-  )];
+export const decorators = [ReactRouterDecorator];
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
