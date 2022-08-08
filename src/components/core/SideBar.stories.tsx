@@ -1,5 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import SimpleSidebar from "./SideBar";
+import SimpleSidebar, { SimpleSidebarProps, SideBarItemData } from "./SideBar";
+import { FaRegEnvelope } from 'react-icons/fa'
 
 type SideBarType = typeof SimpleSidebar
 
@@ -8,7 +9,15 @@ export default {
     title: 'components/SideBar',
   } as ComponentMeta<SideBarType>
 
-const Template: ComponentStory<SideBarType> = () => <SimpleSidebar/>
+const Template: ComponentStory<SideBarType> = (args: SimpleSidebarProps) => <SimpleSidebar {...args}/>
 
 export const Standard = Template.bind({})
+Standard.args = {
+    itemData: [{
+        name: "item1",
+        icon: FaRegEnvelope,
+        link: "/dud/link"
+    }
+    ]
+}
 

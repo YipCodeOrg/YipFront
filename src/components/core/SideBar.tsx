@@ -12,34 +12,28 @@ import {
   FlexProps,
 } from '@chakra-ui/react';
 import {
-  FiHome,
-  FiTrendingUp,
-  FiCompass,
-  FiStar,
-  FiSettings,
   FiMenu,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 
-interface SideBarItemData {
-  name: string;
-  icon: IconType;
+export type SideBarItemData = {
+  name: string,
+  icon: IconType,
+  link: string
 }
-const sideBarData: Array<SideBarItemData> = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Trending', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
-];
 
-export default function SimpleSidebar() {
+export type SimpleSidebarProps = {
+    itemData: SideBarItemData[]
+}
+
+const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
+        itemData={itemData}
       />
       <Drawer
         autoFocus={false}
@@ -50,7 +44,7 @@ export default function SimpleSidebar() {
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent onClose={onClose} itemData={itemData}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -59,11 +53,14 @@ export default function SimpleSidebar() {
   );
 }
 
-interface SidebarProps extends BoxProps {
+export default SimpleSidebar
+
+interface SidebarContentProps extends BoxProps {
   onClose: () => void;
+  itemData: SideBarItemData[];
 }
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ onClose, itemData, ...rest }: SidebarContentProps) => {
   return (
     <Box
       bg={useColorModeValue('white', 'gray.900')}
@@ -77,7 +74,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         TODO: ADD BUTTONS
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {sideBarData.map((link) => (
+      {itemData.map((link) => (
         <SideBarItem key={link.name} icon={link.icon} content={link.name}/>          
       ))}
     </Box>
