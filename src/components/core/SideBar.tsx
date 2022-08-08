@@ -25,9 +25,10 @@ export type SideBarItemData = {
 
 export type SimpleSidebarProps = {
     itemData: SideBarItemData[]
+    children?: React.ReactNode
 }
 
-const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData}) => {
+const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, children}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -35,7 +36,9 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData}) => {
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
         itemData={itemData}
-      />
+      >
+        {children}
+      </SidebarContent>
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -45,7 +48,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData}) => {
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent onClose={onClose} itemData={itemData}/>
+          <SidebarContent {...{onClose, itemData}}>{children}</SidebarContent>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -61,7 +64,7 @@ interface SidebarContentProps extends BoxProps {
   itemData: SideBarItemData[];
 }
 
-const SidebarContent = ({ onClose, itemData, ...rest }: SidebarContentProps) => {
+const SidebarContent = ({ onClose, itemData, children, ...rest }: SidebarContentProps) => {  
   return (
     <Box
       bg={useColorModeValue('white', 'gray.900')}
@@ -72,7 +75,7 @@ const SidebarContent = ({ onClose, itemData, ...rest }: SidebarContentProps) => 
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        TODO: ADD BUTTONS
+        {children}
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {itemData.map((item) => (
