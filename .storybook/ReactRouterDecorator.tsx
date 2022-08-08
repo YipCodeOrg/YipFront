@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { action } from '@storybook/addon-actions'
-import { BrowserRouter, useLocation } from 'react-router-dom'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { Args, ReactFramework } from '@storybook/react'
 import { DecoratorFunction } from '@storybook/csf'
 
@@ -17,11 +17,11 @@ const LocationChangeAction = ({children}) => {
 
 const ReactRouterDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context) => {
   return (
-    <BrowserRouter>
+    <MemoryRouter>
       <LocationChangeAction>
         <Story {...context}/>
       </LocationChangeAction>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 }
 
