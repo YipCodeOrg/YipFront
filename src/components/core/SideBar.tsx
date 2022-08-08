@@ -15,6 +15,7 @@ import {
   FiMenu,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
+import { Link } from 'react-router-dom';
 
 export type SideBarItemData = {
   name: string,
@@ -74,8 +75,8 @@ const SidebarContent = ({ onClose, itemData, ...rest }: SidebarContentProps) => 
         TODO: ADD BUTTONS
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {itemData.map((link) => (
-        <SideBarItem key={link.name} icon={link.icon} content={link.name}/>          
+      {itemData.map((item) => (
+        <SideBarItem key={item.name} icon={item.icon} content={item.name} link={item.link}/>          
       ))}
     </Box>
   );
@@ -84,33 +85,36 @@ const SidebarContent = ({ onClose, itemData, ...rest }: SidebarContentProps) => 
 interface SideBarItemProps extends FlexProps {
   icon: IconType;
   content: string;
+  link: string;
 }
-const SideBarItem = ({ icon, content: children, ...rest }: SideBarItemProps) => {
+const SideBarItem = ({ icon, content: children, link, ...rest }: SideBarItemProps) => {
   return (
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: 'cyan.400',
-          color: 'white',
-        }}
-        {...rest}>
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: 'white',
+      <Link to={link}>
+        <Flex
+            align="center"
+            p="4"
+            mx="4"
+            borderRadius="lg"
+            role="group"
+            cursor="pointer"
+            _hover={{
+            bg: 'cyan.400',
+            color: 'white',
             }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
+            {...rest}>
+            {icon && (
+            <Icon
+                mr="4"
+                fontSize="16"
+                _groupHover={{
+                color: 'white',
+                }}
+                as={icon}
+            />
+            )}
+            {children}
+        </Flex>
+      </Link>
   );
 };
 
