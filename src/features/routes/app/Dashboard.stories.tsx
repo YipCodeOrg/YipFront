@@ -50,6 +50,7 @@ const parentsAddress = {
 export const Standard = Template.bind({})
 Standard.args = {
     userAddressData: [homeAddress, workAddress, parentsAddress],
-    userAddressDataStatus: LoadStatus.Loaded
+    userAddressDataStatus: LoadStatus.Loaded,
+    selectedYipCode: workAddress.yipCode
 }
 
