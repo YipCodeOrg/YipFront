@@ -24,7 +24,6 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "react-legacy": "npm:react@^17",
     "@chakra-ui/storybook-addon": "^4.0.6",
     "@mdx-js/react": "^2.1.2",
     "@storybook/addon-actions": "^6.5.10",
@@ -48,6 +47,9 @@
     "react-scripts": "^5.0.1",
     "webpack": "5"
   },
+  "overrides": {
+    "react-refresh": "0.11.0"
+  },
   "scripts": {
     "start": "env-cmd -r .env-cmdrc -e local, react-scripts start",
     "build:local": "env-cmd -r .env-cmdrc -e local, react-scripts build",
@@ -55,8 +57,8 @@
     "build:dev": "env-cmd -r .env-cmdrc -e dev, react-scripts build",
     "test:local": "env-cmd -r .env-cmdrc -e local, react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "eslintConfig": {
     "extends": "react-app",
