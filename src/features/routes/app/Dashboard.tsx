@@ -5,13 +5,13 @@ import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { UserData } from "../../../packages/YipStackLib/types/userData"
 import { serialize } from "../../../packages/YipStackLib/util/misc"
-import { useUserAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
+import { useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 import { useUserDataHubLoad } from "../../userdata/userDataSlice"
 
 export default function DashboardWrapper(){
     
     const [userData, userDataStatus] = useUserDataHubLoad()
-    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad()
+    const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad()
     return <Dashboard {...{userData, userDataStatus, userAddressData, userAddressDataStatus}}/>
 }
 
