@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 
 export type SideBarItemData = {
+  key: string,
   name: string,
   icon: IconType,
   link: string
@@ -34,12 +35,14 @@ export type SideBarButtonData = {
 export type SimpleSidebarProps = {
     itemData: SideBarItemData[]
     buttonData: SideBarButtonData[]
+    selectedItemKey: string | null
 }
 
-const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData}) => {
+const Sidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData, selectedItemKey}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+      {`TODO, CHOOSE SELECTED: ${selectedItemKey}`}
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
@@ -65,7 +68,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData}) => 
   );
 }
 
-export default SimpleSidebar
+export default Sidebar
 
 interface SidebarContentProps extends BoxProps {
   onClose: () => void;
@@ -90,7 +93,7 @@ const SidebarContent = ({ onClose, itemData, buttonData, ...rest }: SidebarConte
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {itemData.map((item) => (
-        <SideBarItem key={item.name} icon={item.icon} content={item.name} link={item.link}/>          
+        <SideBarItem key={item.key} icon={item.icon} content={item.name} link={item.link}/>          
       ))}
     </Box>
   );

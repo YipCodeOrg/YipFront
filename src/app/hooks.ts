@@ -1,6 +1,7 @@
 import { AsyncThunk } from '@reduxjs/toolkit'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
 import type { RootState, AppDispatch } from './store'
@@ -8,6 +9,12 @@ import { LoadStatus } from './types'
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+export function useUrlParams(): URLSearchParams {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  return params
+}
 
 export function useAsyncHubLoad<TReturn>(
     thunk: AsyncThunk<TReturn, MessagePort, {}>,
