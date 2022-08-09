@@ -11,13 +11,6 @@ export default {
 
 const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>
 
-const userData= {
-  sub: "cognito-sub",
-  data: {
-      yipCodes: ["YIP1", "YIP2", "YIP3"]
-  }
-}
-
 const homeAddress = {
   sub: "cognito-sub",
   yipCode: "YIP2",
@@ -56,8 +49,6 @@ const parentsAddress = {
 
 export const Standard = Template.bind({})
 Standard.args = {
-    userData: userData,
-    userDataStatus: LoadStatus.Loaded,
     userAddressData: [homeAddress, workAddress, parentsAddress],
     userAddressDataStatus: LoadStatus.Loaded
 }
