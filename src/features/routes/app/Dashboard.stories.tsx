@@ -21,9 +21,13 @@ const userData= {
 const userAddressData1 = {
   sub: "cognito-sub",
   yipCode: "YIP1",
-  address: "TODO: Change address to structured type"
+  address: {
+    addressLines: ["123 Fake Street, Imaginary Road, Nowhereville, Nonexistentland, FUNPOSTCODE123"],
+    aliasMap: {
+      postCode: 4
+    }
+  }
 }
-
 
 export const Standard = Template.bind({})
 Standard.args = {
