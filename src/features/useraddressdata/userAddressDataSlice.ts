@@ -7,6 +7,7 @@ import { useUserDataHubLoad } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
 import { sortByKeyFunction } from "../../packages/YipStackLib/util/misc";
 import { useMemo } from "react";
+import { UserData } from "../../packages/YipStackLib/types/userData";
 
 export const loadUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
     "userAddressData/load", "/addresses", isUserAddressDataArray)
@@ -25,18 +26,20 @@ export const useSortedAddressDataHubLoad: () => [UserAddressData[] | undefined, 
 
     const status = getLowestLoadStatus(userAddressDataStatus, [userDataStatus])
     let sortedDataOrUndefined: UserAddressData[] | undefined = undefined
-
-    if(!!userAddressData && !!userData){
-        const yipCodes = userData.data.yipCodes
-        sortedDataOrUndefined = useMemo(() => 
-            sortUserAddressDataByYipCodes(userAddressData, yipCodes), [userAddressData, yipCodes])
-    }
+    
+    sortedDataOrUndefined = useMemo(() => 
+        sortUserAddressDataByYipCodes(userAddressData, userData), [userAddressData, userData])
 
     return [sortedDataOrUndefined, status]
 }
 
-function sortUserAddressDataByYipCodes(userAddressData: UserAddressData[], yipCodes: string[]) : UserAddressData[]{
-    return sortByKeyFunction(yipCodes, userAddressData, (data: UserAddressData) => data.yipCode)
+function sortUserAddressDataByYipCodes(userAddressData: UserAddressData[] | undefined,
+        userData: UserData | undefined) : UserAddressData[] | undefined{
+    if(!!userAddressData && !!userData){
+        const yipCodes = userData.data.yipCodes
+        return sortByKeyFunction(yipCodes, userAddressData, (data: UserAddressData) => data.yipCode)
+    }
+    return undefined
 }
 
 export default userAddressDataSlice.reducer
