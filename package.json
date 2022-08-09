@@ -48,7 +48,7 @@
     "webpack": "5"
   },
   "overrides": {
-    "react-refresh": "0.11.0"
+    "react-refresh": "0.14.0"
   },
   "scripts": {
     "start": "env-cmd -r .env-cmdrc -e local, react-scripts start",
