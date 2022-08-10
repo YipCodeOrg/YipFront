@@ -1,6 +1,7 @@
 import ReactRouterDecorator from "./ReactRouterDecorator"
+import LayoutDecorator from "./LayoutDecorator"
 
-export const decorators = [ReactRouterDecorator];
+export const decorators = [LayoutDecorator, ReactRouterDecorator];
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
