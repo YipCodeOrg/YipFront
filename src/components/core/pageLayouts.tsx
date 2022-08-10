@@ -4,12 +4,7 @@ import {
 } from "@chakra-ui/react"
 import NavBarWrapper from "./NavBar"
 import Footer from "./Footer"  
-
-const mainFlexPropVals = {
-  flexGrow: "1",
-  flexShrink: "0",
-  flexBasis: "auto"
-}
+import { growFlexProps } from "../../util/cssHelpers"
 
 type LayoutProps = {
   isLoggedIn: boolean
@@ -18,30 +13,21 @@ type LayoutProps = {
   children?: React.ReactNode
 }
 
-export const FullSiteLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
+export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
     <VStack minHeight="100vh" minWidth="100vw">
       <Box minWidth="100vw">
-      <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
+        <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
       </Box>
-      <main style={mainFlexPropVals}>
-        {children}
-      </main>
+      <Box minWidth="100vw" style={growFlexProps} alignItems="stretch" display="table">        
+        <main>
+          {children}
+        </main>
+      </Box>
       <Box minWidth="100vw">
         <Footer/>
       </Box>    
     </VStack>
 )
 
-export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSignedUp, setIsSigedUp}) => (    
-    <VStack minHeight="100vh" minWidth="100vw">
-      <Box minWidth="100vw">
-      <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
-      </Box>
-      <main style={mainFlexPropVals}>
-        {children}
-      </main>
-      <Box minWidth="100vw">
-        <Footer/>
-      </Box>    
-    </VStack>
-)
+// For now, layouts are the same. In future, if they diverge, we can write a separate site layout.
+export const FullSiteLayout = FullAppLayout

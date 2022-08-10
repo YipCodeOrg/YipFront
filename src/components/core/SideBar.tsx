@@ -11,9 +11,10 @@ import {
   BoxProps,
   FlexProps,
   Tooltip,
+  HStack,
 } from '@chakra-ui/react';
 import {
-  FiMenu,
+  FiList,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { Link } from 'react-router-dom';
@@ -32,24 +33,42 @@ export type SideBarButtonData = {
   link: string
 }
 
-export type SimpleSidebarProps = {
+export type SidebarProps = {
     itemData: SideBarItemData[]
     buttonData: SideBarButtonData[]
     selectedItemKey: string | null
 }
 
-const Sidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData, selectedItemKey}) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const Sidebar: React.FC<SidebarProps> = (props) => {
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Flex minH="100%">
+      <HStack minH="100%" bg={useColorModeValue('gray.100', 'gray.900')} display={{ base: 'none', md: 'block' }}>
+        <StandardSideBar {...props}/>
+      </HStack>
+      <HStack display={{ base: 'flex', md: 'none' }}>
+        <MobileSideBar {...props}/>
+      </HStack>
+    </Flex>    
+  );
+}
+
+const StandardSideBar: React.FC<SidebarProps> = ({itemData, buttonData, selectedItemKey}) => {  
+  return (    
       <SidebarContent
-        onClose={() => onClose}
-        display={{ base: 'none', md: 'block' }}
+        onClose={() => {}}
         itemData={itemData}
         buttonData={buttonData}
         selectedItemKey={selectedItemKey}
-      >
-      </SidebarContent>
+        pos="relative"
+        minH="100%"
+      />
+  );
+}
+
+const MobileSideBar: React.FC<SidebarProps> = ({itemData, buttonData, selectedItemKey}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <Box minH="100%" bg={useColorModeValue('gray.100', 'gray.900')}>
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -59,11 +78,10 @@ const Sidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData, selectedIt
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent {...{onClose, itemData, buttonData, selectedItemKey}}/>
+          <SidebarContent {...{onClose, itemData, buttonData, selectedItemKey, pos: "fixed"}}/>
         </DrawerContent>
       </Drawer>
-      {/* mobilenav */}
-      <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
+      <MobileNav onOpen={onOpen} />
     </Box>
   );
 }
@@ -77,14 +95,14 @@ interface SidebarContentProps extends BoxProps {
   selectedItemKey: string | null
 }
 
-const SidebarContent = ({ onClose, itemData, buttonData, selectedItemKey, ...rest }: SidebarContentProps) => {  
+const SidebarContent = ({ onClose, itemData, buttonData, selectedItemKey, pos, ...rest }: SidebarContentProps) => {  
   return (
     <Box
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}
-      pos="fixed"
+      pos={pos ?? "initial"}
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">              
@@ -197,10 +215,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         variant="outline"
         onClick={onOpen}
         aria-label="open menu"
-        icon={<FiMenu />}
-      />
-
-    TODO: ADD BUTTONS
+        icon={<FiList />}
+      />    
     </Flex>
   );
 };

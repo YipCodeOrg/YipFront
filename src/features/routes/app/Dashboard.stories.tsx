@@ -6,7 +6,7 @@ type DashboardType = typeof Dashboard
 
 export default {
     component: Dashboard,
-    title: 'routes/Dashboard',
+    title: 'app/routes/Dashboard',
   } as ComponentMeta<DashboardType>
 
 const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>

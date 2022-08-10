@@ -3,7 +3,7 @@ import { Args, ReactFramework } from '@storybook/react'
 import { DecoratorFunction } from '@storybook/csf'
 import { FullAppLayout, FullSiteLayout } from '../src/components/core/pageLayouts'
 import { action } from '@storybook/addon-actions'
-import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
 import { ColorModeSwitcher } from '../src/components/core/ColorModeSwitcher'
 
 const LayoutDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context) => {
@@ -39,7 +39,7 @@ const DefaultLayout = ({children}) => {
 }
 
 const AppLayoutDecorator = ({children}) => {      
-    return <ChakraProvider>
+    return <ChakraProvider theme={theme}>
         <ColorModeScript/>
         <FullAppLayout {...layoutProps}>
             {children}

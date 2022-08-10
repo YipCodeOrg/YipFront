@@ -1,10 +1,12 @@
+import { Center, HStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
-import Sidebar, { SideBarItemData, SimpleSidebarProps } from "../../../components/core/SideBar"
+import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
+import { growFlexProps } from "../../../util/cssHelpers"
 import { useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 
 export default function DashboardWrapper(){
@@ -22,7 +24,7 @@ export type DashboardProps = {
 
 export const Dashboard: React.FC<DashboardProps> = ({userAddressData, userAddressDataStatus, selectedYipCode}) => {
 
-    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode}}/> : <></>
+    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode}}/> : <></>    
 
     return <LogoLoadStateWrapper status = {userAddressDataStatus} loadedElement={loadedElement}/>
 }
@@ -34,7 +36,7 @@ type LoadedDashboardProps = {
 
 const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selectedYipCode}) =>{
 
-    const sideBarProps: SimpleSidebarProps = {
+    const sideBarProps: SidebarProps = {
         selectedItemKey: selectedYipCode,
         itemData: userAddressData.map(sideBarItemDataFromUserAddressData),
         buttonData: [{
@@ -44,7 +46,12 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         }]
     }
 
-    return <Sidebar {...sideBarProps}/>
+    return <HStack style={growFlexProps}>
+        <Sidebar {...sideBarProps}/>
+        <Center style={growFlexProps}>
+            {`Selected: ${selectedYipCode}`}        
+        </Center>
+    </HStack>
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
@@ -54,7 +61,7 @@ function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : 
         key: yipCode,
         name,
         icon: getIconFromName(name),
-        link: "TODO"
+        link: `/app?yipcode=${yipCode}`
     }
 }
 
