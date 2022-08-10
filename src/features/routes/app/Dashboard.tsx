@@ -1,7 +1,7 @@
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
-import { useUrlParams } from "../../../app/hooks"
 import { LoadStatus } from "../../../app/types"
+import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import Sidebar, { SideBarItemData, SimpleSidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
@@ -9,11 +9,7 @@ import { useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDa
 
 export default function DashboardWrapper(){
     
-    const searchParams = useUrlParams()
-    let selectedYipCode = null
-    if(searchParams.has("yipcode")){
-        selectedYipCode = searchParams.get("yipcode")
-    }
+    const selectedYipCode = useYipCodeUrlParam()
     const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad()
     return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>
 }
