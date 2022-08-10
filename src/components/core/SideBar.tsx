@@ -42,12 +42,12 @@ const Sidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData, selectedIt
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      {`TODO, CHOOSE SELECTED: ${selectedItemKey}`}
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
         itemData={itemData}
         buttonData={buttonData}
+        selectedItemKey={selectedItemKey}
       >
       </SidebarContent>
       <Drawer
@@ -59,7 +59,7 @@ const Sidebar: React.FC<SimpleSidebarProps> = ({itemData, buttonData, selectedIt
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent {...{onClose, itemData, buttonData}}/>
+          <SidebarContent {...{onClose, itemData, buttonData, selectedItemKey}}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -74,9 +74,10 @@ interface SidebarContentProps extends BoxProps {
   onClose: () => void;
   itemData: SideBarItemData[];
   buttonData: SideBarButtonData[]
+  selectedItemKey: string | null
 }
 
-const SidebarContent = ({ onClose, itemData, buttonData, ...rest }: SidebarContentProps) => {  
+const SidebarContent = ({ onClose, itemData, buttonData, selectedItemKey, ...rest }: SidebarContentProps) => {  
   return (
     <Box
       bg={useColorModeValue('white', 'gray.900')}
@@ -93,7 +94,8 @@ const SidebarContent = ({ onClose, itemData, buttonData, ...rest }: SidebarConte
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {itemData.map((item) => (
-        <SideBarItem key={item.key} icon={item.icon} content={item.name} link={item.link}/>          
+        <SideBarItem key={item.key} icon={item.icon}
+          content={item.name} link={item.link} isSelected={item.key === selectedItemKey}/>
       ))}
     </Box>
   );
@@ -141,8 +143,10 @@ interface SideBarItemProps extends FlexProps {
   icon: IconType;
   content: string;
   link: string;
+  isSelected: boolean;
 }
-const SideBarItem = ({ icon, content: children, link, ...rest }: SideBarItemProps) => {
+const SideBarItem = ({ icon, content: children, link, isSelected, ...rest }: SideBarItemProps) => {
+  const selectedItemBg = useColorModeValue('gray.200', 'gray.600')
   return (
       <Link to={link}>
         <Flex
@@ -156,6 +160,7 @@ const SideBarItem = ({ icon, content: children, link, ...rest }: SideBarItemProp
             bg: 'cyan.400',
             color: 'white',
             }}
+            bg={isSelected ? selectedItemBg: "initial"}
             {...rest}>
             {icon && (
             <Icon
