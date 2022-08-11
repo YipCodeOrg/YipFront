@@ -1,4 +1,4 @@
-import { Box, Center, Flex, HStack, IconButton, Input, Textarea, useClipboard, VStack } from "@chakra-ui/react"
+import { Box, Center, Flex, HStack, IconButton, Input, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { LoadStatus } from "../../../app/types"
@@ -79,15 +79,18 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
     
     const addressLines = selectedAddress.address.addressLines
-    
+
     return <Flex style={{flex:1}} maxW="100%">
         {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
         <VStack maxW="100%" id="dashboard-content">
             <HStack maxW="100%" id="dashboard-yipcode">
                 <label>YipCode</label>
                 <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
-                <IconButton aria-label={hasCopied ? "YipCode Copied" : "Copy YipCode"}
-                    icon={<FaCopy/>} onClick={onCopy}/>
+                {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
+                <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
+                    <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
+                        icon={<FaCopy/>} onClick={onCopy}/>
+                </Tooltip>
             </HStack>
             <VStack maxW="100%" id="dashboard-address">
                 <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
