@@ -14,7 +14,17 @@ const LayoutDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context
                 <Story {...context}/>
             </AppLayoutDecorator>
     }
+    
     if(lowercaseTitle.startsWith("site")){
+        // For now, "Home" page is special and defines its own layout wrapper, so don't wrap it
+        // But for Storybook organisation, we may want to have Home nested under site
+        // So we add an exception to the rule of wrapping titles starting with "site"
+        if(lowercaseTitle.endsWith("home")){
+            return <ChakraProvider>
+                <ColorModeScript/>
+                <Story {...context}/>
+            </ChakraProvider>
+        }
         return <SiteLayoutDecorator>
                 <Story {...context}/>
             </SiteLayoutDecorator>
