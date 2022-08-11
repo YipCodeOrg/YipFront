@@ -1,6 +1,6 @@
-import { Center, HStack } from "@chakra-ui/react"
+import { Box, Center, Flex, HStack, IconButton, Input, Textarea, useClipboard, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
-import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
+import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
@@ -48,10 +48,43 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
 
     return <HStack style={growFlexProps} minW="100vw">
         <Sidebar {...sideBarProps}/>
-        <Center style={growFlexProps}>
-            {`Selected: ${selectedYipCode}`}        
-        </Center>
+        {!!selectedYipCode ?
+            <DashboardContent {...{userAddressData, selectedYipCode}}/> :
+            <Center style={growFlexProps}>
+                <Box>
+                    You have no addresses yet! Add one.
+                </Box>
+            </Center>
+        }        
     </HStack>
+}
+
+type DashboardContentProps = {
+    userAddressData: UserAddressData[],
+    selectedYipCode: string
+}
+
+
+const DashboardContent: React.FC<DashboardContentProps> = ({userAddressData, selectedYipCode}) =>{
+    
+    const { hasCopied, onCopy } = useClipboard(selectedYipCode)
+    
+    return <Flex style={growFlexProps} maxW="100%">
+        {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
+        <VStack>
+            <HStack>
+                <label>YipCode</label>
+                <Input readOnly={true} value={selectedYipCode}/>            
+                <IconButton aria-label={hasCopied ? "YipCode Copied" : "Copy YipCode"}
+                    icon={<FaCopy/>} onClick={onCopy}/>
+            </HStack>
+            <VStack>
+                <Textarea>
+                    {`TODO CHANGE PROPS TO PASS SELECTED ADDRESS: ${userAddressData[0]?.address.addressLines.join("\n")}`}
+                </Textarea>
+            </VStack>
+        </VStack>
+    </Flex>
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
