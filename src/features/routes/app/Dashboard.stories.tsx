@@ -16,7 +16,7 @@ const homeAddress = {
   yipCode: "YIP2",
   name: "Home",
   address: {
-    addressLines: ["123 Fake Street, Imaginary Road, Nowhereville, Nonexistentland, FUNPOSTCODE123"],
+    addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
     aliasMap: {
       postCode: 4
     }
@@ -28,7 +28,7 @@ const workAddress = {
   yipCode: "YIP4",
   name: "Work",
   address: {
-    addressLines: ["456 Money Lane, Profit Road, Slaveryshire, Workland, BORINGPOSTCODE456"],
+    addressLines: ["456 Money Lane", "Profit Road", "Ninetofiveshire", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
@@ -40,7 +40,7 @@ const parentsAddress = {
   yipCode: "YIP1",
   name: "Parents",
   address: {
-    addressLines: ["890 Memory Lane, Childhood Road, Co. Youth, Youngland, NOSTALGICPOSTCODE890"],
+    addressLines: ["890 Memory Lane", "Childhood Road", "Co. Youth", "Youngland", "NOSTALGICPOSTCODE890"],
     aliasMap: {
       postCode: 4
     }
@@ -54,3 +54,9 @@ Standard.args = {
     selectedYipCode: workAddress.yipCode
 }
 
+export const Empty = Template.bind({})
+Empty.args = {
+  userAddressData: [],
+  userAddressDataStatus: LoadStatus.Loaded,
+  selectedYipCode: null
+}
