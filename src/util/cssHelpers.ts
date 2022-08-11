@@ -3,3 +3,8 @@ export const growFlexProps = {
     flexShrink: "0",
     flexBasis: "auto"
 }
+
+export const shrinkToParent = {
+    flexShrink: "1",
+    flexBasis: "100%"
+}

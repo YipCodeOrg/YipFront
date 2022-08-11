@@ -5,8 +5,9 @@ import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
+import { emptyAddress } from "../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
-import { growFlexProps } from "../../../util/cssHelpers"
+import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 
 export default function DashboardWrapper(){
@@ -46,13 +47,15 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         }]
     }
 
-    return <HStack style={growFlexProps} minW="100vw">
+    return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
         <Sidebar {...sideBarProps}/>
         {!!selectedYipCode ?
             <DashboardContent {...{userAddressData, selectedYipCode}}/> :
-            <Center style={growFlexProps}>
+            <Center style={{flex:1}} maxW="100%">
                 <Box>
-                    You have no addresses yet! Add one.
+                    <p>
+                        You have no addresses yet! Add one.
+                    </p>
                 </Box>
             </Center>
         }        
@@ -68,19 +71,23 @@ type DashboardContentProps = {
 const DashboardContent: React.FC<DashboardContentProps> = ({userAddressData, selectedYipCode}) =>{
     
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
+
+    //TODO: Pass selected address to this component
+    const selectedAddress: UserAddressData = userAddressData[0] ?? {sub:"", yipCode:"", address:emptyAddress}
+    const addressLines = selectedAddress.address.addressLines
     
-    return <Flex style={growFlexProps} maxW="100%">
+    return <Flex style={{flex:1}} maxW="100%">
         {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
-        <VStack>
-            <HStack>
+        <VStack maxW="100%" id="dashboard-content">
+            <HStack maxW="100%" id="dashboard-yipcode">
                 <label>YipCode</label>
-                <Input readOnly={true} value={selectedYipCode}/>            
+                <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
                 <IconButton aria-label={hasCopied ? "YipCode Copied" : "Copy YipCode"}
                     icon={<FaCopy/>} onClick={onCopy}/>
             </HStack>
-            <VStack>
-                <Textarea>
-                    {`TODO CHANGE PROPS TO PASS SELECTED ADDRESS: ${userAddressData[0]?.address.addressLines.join("\n")}`}
+            <VStack maxW="100%" id="dashboard-address">
+                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}>
+                    {addressLines.join("\n")}
                 </Textarea>
             </VStack>
         </VStack>

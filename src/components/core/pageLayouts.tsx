@@ -4,7 +4,7 @@ import {
 } from "@chakra-ui/react"
 import NavBarWrapper from "./NavBar"
 import Footer from "./Footer"  
-import { growFlexProps } from "../../util/cssHelpers"
+import { growFlexProps, shrinkToParent } from "../../util/cssHelpers"
 
 type LayoutProps = {
   isLoggedIn: boolean
@@ -25,7 +25,7 @@ export const FullAppLayout: React.FC<LayoutProps> = ({children, isLoggedIn, isSi
           <NavBarWrapper isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
         </Box>
         <main style={mainFlexProps}>
-          <VStack minWidth="100vw" style={growFlexProps}>        
+          <VStack minWidth="100vw" style={shrinkToParent}>        
               {children}
           </VStack>
         </main>
