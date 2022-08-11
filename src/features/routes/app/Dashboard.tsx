@@ -5,10 +5,9 @@ import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { emptyAddress } from "../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
-import { useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
+import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 
 export default function DashboardWrapper(){
     
@@ -36,6 +35,8 @@ type LoadedDashboardProps = {
 }
 
 const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selectedYipCode}) =>{
+    
+    const addressMap = useMemoisedYipCodeToAddressMap(userAddressData)
 
     const sideBarProps: SidebarProps = {
         selectedItemKey: selectedYipCode,
@@ -47,10 +48,15 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         }]
     }
 
+    let selectedAddress: UserAddressData | null = null
+    if(selectedYipCode != null && addressMap.has(selectedYipCode)){
+        selectedAddress = addressMap.get(selectedYipCode) ?? null
+    }
+
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
         <Sidebar {...sideBarProps}/>
-        {!!selectedYipCode ?
-            <DashboardContent {...{userAddressData, selectedYipCode}}/> :
+        {!!selectedAddress && !!selectedYipCode ?
+            <DashboardContent {...{selectedYipCode, selectedAddress}}/> :
             <Center style={{flex:1}} maxW="100%">
                 <Box>
                     <p>
@@ -63,17 +69,15 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
 }
 
 type DashboardContentProps = {
-    userAddressData: UserAddressData[],
-    selectedYipCode: string
+    selectedYipCode: string,
+    selectedAddress: UserAddressData
 }
 
 
-const DashboardContent: React.FC<DashboardContentProps> = ({userAddressData, selectedYipCode}) =>{
+const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, selectedAddress}) =>{
     
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
-
-    //TODO: Pass selected address to this component
-    const selectedAddress: UserAddressData = userAddressData[0] ?? {sub:"", yipCode:"", address:emptyAddress}
+    
     const addressLines = selectedAddress.address.addressLines
     
     return <Flex style={{flex:1}} maxW="100%">
@@ -86,9 +90,8 @@ const DashboardContent: React.FC<DashboardContentProps> = ({userAddressData, sel
                     icon={<FaCopy/>} onClick={onCopy}/>
             </HStack>
             <VStack maxW="100%" id="dashboard-address">
-                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}>
-                    {addressLines.join("\n")}
-                </Textarea>
+                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
+                    value={addressLines.join("\n")}/>
             </VStack>
         </VStack>
     </Flex>

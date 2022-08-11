@@ -5,7 +5,7 @@ import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStack
 import { createApiGetThunk, createStandardSlice } from "../../util/slices";
 import { useUserDataHubLoad } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
-import { sortByKeyFunction } from "../../packages/YipStackLib/util/misc";
+import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/util/misc";
 import { useMemo } from "react";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 
@@ -31,6 +31,28 @@ export const useSortedAddressDataHubLoad: () => [UserAddressData[] | undefined, 
         sortUserAddressDataByYipCodes(userAddressData, userData), [userAddressData, userData])
 
     return [sortedDataOrUndefined, status]
+}
+
+export const useYipCodeToUserAddressMap: () => [Map<string, UserAddressData>, LoadStatus]
+    = () => {
+    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad()
+    const map = useMemoisedYipCodeToAddressMap(userAddressData)
+    return [map, userAddressDataStatus]
+}
+
+export function useMemoisedYipCodeToAddressMap
+(userAddressData: UserAddressData[] | undefined): Map<string, UserAddressData>{
+    const map = useMemo(() => getYipCodeToUserAddressMap(userAddressData), [userAddressData])
+    return map
+}
+
+export function getYipCodeToUserAddressMap(userAddressData: UserAddressData[] | undefined)
+: Map<string, UserAddressData>{
+    if(!userAddressData){
+        return new Map<string, UserAddressData>() 
+    } 
+    const map: Map<string, UserAddressData> = inverseDataMap(userAddressData, a => a.yipCode)
+    return map
 }
 
 function sortUserAddressDataByYipCodes(userAddressData: UserAddressData[] | undefined,
