@@ -46,7 +46,7 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         }]
     }
 
-    return <HStack style={growFlexProps}>
+    return <HStack style={growFlexProps} minW="100vw">
         <Sidebar {...sideBarProps}/>
         <Center style={growFlexProps}>
             {`Selected: ${selectedYipCode}`}        
