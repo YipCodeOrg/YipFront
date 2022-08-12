@@ -96,11 +96,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
     
     const addressLines = selectedAddress.address.addressLines
 
-    return <Flex style={{flex:1}} maxW="100%">
-        {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
-        <VStack maxW="100%" id="dashboard-content">
-            <HStack maxW="100%" id="dashboard-yipcode">
-                <label>YipCode</label>
+    {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
+    return <VStack maxW="100%" maxH="100%" height="100%" id="dashboard-content" align="left" justify="top" style={{flex:1}}>
+        <VStack maxW="100%" id="dashboard-yipcode" align="left">
+            <label>YipCode</label>
+            <HStack>
                 <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
                 {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
                 <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
@@ -108,12 +108,13 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
                         icon={<FaCopy/>} onClick={onCopy}/>
                 </Tooltip>
             </HStack>
-            <VStack maxW="100%" id="dashboard-address">
-                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                    value={addressLines.join("\n")}/>
-            </VStack>
         </VStack>
-    </Flex>
+        <VStack maxW="100%" id="dashboard-address" align="left">
+            <label>Address</label>
+            <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
+                value={addressLines.join("\n")}/>
+        </VStack>
+    </VStack>
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
