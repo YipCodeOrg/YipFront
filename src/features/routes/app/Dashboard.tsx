@@ -1,4 +1,4 @@
-import { Button, Center, Heading, HStack, IconButton, Input, Stack, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
+import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { Link } from "react-router-dom"
@@ -98,37 +98,54 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
     
     const addressLines = selectedAddress.address.addressLines
-
-    {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
-    return <VStack maxW="100%" maxH="100%" height="100%" id="dashboard-content" align="left" justify="top" style={{flex:1}}>
-        <VStack maxW="100%" id="dashboard-yipcode" align="left">
-            <label>YipCode</label>
-            <HStack>
-                <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
-                {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
-                <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
-                    <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
-                        icon={<FaCopy/>} onClick={onCopy}/>
-                </Tooltip>
-            </HStack>
+    const addressName = getDisplayLabelForAddress(selectedAddress)
+    
+    return <VStack maxW="100%" maxH="100%" height="100%"
+            id="dashboard-content" style={{flex:1}} align="left" spacing={{ base: '10px', sm: '20px', md: '50px' }}>
+        <Center>
+            {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
+            <Heading
+                fontWeight={600}
+                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
+                lineHeight={'110%'}>
+                {`${addressName}    `}
+                <Icon as={getIconFromName(addressName)}/>
+            </Heading>
+        </Center>
+        <VStack  align="left" justify="top">        
+            <VStack maxW="100%" id="dashboard-yipcode" align="left">
+                <label>YipCode</label>
+                <HStack>
+                    <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
+                    {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
+                    <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
+                        <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
+                            icon={<FaCopy/>} onClick={onCopy}/>
+                    </Tooltip>
+                </HStack>
+            </VStack>
+            <VStack maxW="100%" id="dashboard-address" align="left">
+                <label>Address</label>
+                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
+                    value={addressLines.join("\n")}/>
+            </VStack>
         </VStack>
-        <VStack maxW="100%" id="dashboard-address" align="left">
-            <label>Address</label>
-            <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                value={addressLines.join("\n")}/>
-        </VStack>
-    </VStack>
+    </VStack>    
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
     const yipCode = userAddressData.yipCode
-    const name = userAddressData.name ?? yipCode
+    const name = getDisplayLabelForAddress(userAddressData)
     return {
         key: yipCode,
         name,
         icon: getIconFromName(name),
         link: `/app?yipcode=${yipCode}`
     }
+}
+
+function getDisplayLabelForAddress(userAddressData: UserAddressData){
+    return userAddressData.name ?? userAddressData.yipCode
 }
 
 function getIconFromName(name: string): IconType{
