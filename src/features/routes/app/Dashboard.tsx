@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, HStack, IconButton, Input, Stack, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
+import { Button, Center, Heading, HStack, IconButton, Input, Stack, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { Link } from "react-router-dom"
@@ -58,37 +58,40 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         <Sidebar {...sideBarProps}/>
         {!!selectedAddress && !!selectedYipCode ?
             <DashboardContent {...{selectedYipCode, selectedAddress}}/> :
-            <Center style={{flex:1}} maxW="100%">        
-                <Stack spacing={6}>
-                    <Heading
-                        fontWeight={600}
-                        fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
-                        lineHeight={'110%'}>
-                            You have no addresses yet!{' '}
-                    </Heading>
-                    <Center>
-                        <Link to="/app/create">
-                            <Button
-                            rounded={'full'}
-                            px={6}
-                            colorScheme={'blue'}
-                            bg={'blue.400'}
-                            _hover={{ bg: 'blue.500' }}>                  
-                                Create Address
-                            </Button>
-                        </Link>
-                    </Center>
-                </Stack>
-            </Center>
+            <EmptyDashboardContent/>
         }        
     </HStack>
+}
+
+const EmptyDashboardContent = () => {
+    return <Center style={{flex:1}} maxW="100%">        
+        <Stack spacing={6}>
+            <Heading
+                fontWeight={600}
+                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
+                lineHeight={'110%'}>
+                    You have no addresses yet!{' '}
+            </Heading>
+            <Center>
+                <Link to="/app/create">
+                    <Button
+                    rounded={'full'}
+                    px={6}
+                    colorScheme={'blue'}
+                    bg={'blue.400'}
+                    _hover={{ bg: 'blue.500' }}>                  
+                        Create Address
+                    </Button>
+                </Link>
+            </Center>
+        </Stack>
+    </Center>
 }
 
 type DashboardContentProps = {
     selectedYipCode: string,
     selectedAddress: UserAddressData
 }
-
 
 const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, selectedAddress}) =>{
     
