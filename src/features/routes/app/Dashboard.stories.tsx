@@ -32,7 +32,8 @@ const homeAddress = {
     aliasMap: {
       postCode: 4
     }
-  }
+  },
+  registrations: ["DentalDevils.ie", "HealthInsuranceHeretics.com"]
 }
 
 const workAddress = {
@@ -44,7 +45,8 @@ const workAddress = {
     aliasMap: {
       postCode: 4
     }
-  }
+  },
+  registrations: ["HateYourBoss.co.uk"]
 }
 
 const parentsAddress = {
@@ -56,7 +58,8 @@ const parentsAddress = {
     aliasMap: {
       postCode: 4
     }
-  }
+  },
+  registrations: ["Childhood School Alumni Club"]
 }
 
 const noNameAddress = {
@@ -65,7 +68,8 @@ const noNameAddress = {
   address: {
     addressLines: ["747 Mystery Road", "Bermuda Trianble", "Nowhere"],
     aliasMap: {}
-  }
+  },
+  registrations: []
 }
 
 export const Standard = Template.bind({})
