@@ -1,4 +1,4 @@
-import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
+import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack, Text, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { Link } from "react-router-dom"
@@ -112,25 +112,50 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
                 <Icon as={getIconFromName(addressName)}/>
             </Heading>
         </Center>
-        <VStack  align="left" justify="top">        
-            <VStack maxW="100%" id="dashboard-yipcode" align="left">
-                <label>YipCode</label>
-                <HStack>
-                    <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
-                    {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
-                    <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
-                        <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
-                            icon={<FaCopy/>} onClick={onCopy}/>
-                    </Tooltip>
-                </HStack>
+        <HStack>
+            <VStack  align="left" justify="top">        
+                <VStack maxW="100%" id="dashboard-yipcode" align="left">
+                    <label>YipCode</label>
+                    <HStack>
+                        <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
+                        {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
+                        <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
+                            <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
+                                icon={<FaCopy/>} onClick={onCopy}/>
+                        </Tooltip>
+                    </HStack>
+                </VStack>
+                <VStack maxW="100%" id="dashboard-address" align="left">
+                    <label>Address</label>
+                    <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
+                        value={addressLines.join("\n")}/>
+                </VStack>
             </VStack>
-            <VStack maxW="100%" id="dashboard-address" align="left">
-                <label>Address</label>
-                <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                    value={addressLines.join("\n")}/>
-            </VStack>
-        </VStack>
-    </VStack>    
+            <RegistrationPanel registrations={selectedAddress.registrations}/>
+        </HStack>
+    </VStack>
+}
+
+type RegistrationPanelPrpos = {
+    registrations: string[]
+}
+
+const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
+    return <VStack>
+        {registrations.map((v, i) => <RegistrationCard registration={v} key = {i}/>)}
+    </VStack>
+}
+
+type RegistrationCardProps = {
+    registration: string
+}
+
+const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
+    return (
+        <Stack p="4" boxShadow="lg" m="4" borderRadius="lg" borderWidth="1px">
+            <Text fontWeight="semibold">{registration}</Text>
+        </Stack>
+    )
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
