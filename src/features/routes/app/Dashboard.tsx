@@ -1,4 +1,5 @@
-import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack, Text, Textarea, Tooltip, useClipboard, VStack } from "@chakra-ui/react"
+import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
+    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { Link } from "react-router-dom"
@@ -141,9 +142,11 @@ type RegistrationPanelPrpos = {
 }
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
-    return <VStack id="dashboard-registration" align="left" spacing="5px" justify="top" display={{ base: 'none', md: 'block' }}>
+    return <VStack id="dashboard-registration" align="left" spacing="5px"
+        justify="top" display={{ base: 'none', md: 'block' }}>
         <label>Registrations</label>
-        <VStack align="left" spacing="8px" justify="top">
+        <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
+            bg={useColorModeValue('gray.50', 'whiteAlpha.100')}>
             {registrations.map((v, i) => <RegistrationCard registration={v} key = {i}/>)}
         </VStack>
     </VStack>
@@ -155,8 +158,9 @@ type RegistrationCardProps = {
 
 const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
     return (
-        <Stack p="4" boxShadow="lg" borderRadius="lg" borderWidth="1px" maxW="400px">
-            <Text fontWeight="semibold">{registration}</Text>
+        <Stack p="4" boxShadow="lg"  maxW="400px"
+        bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">
+            <Text>{registration}</Text>
         </Stack>
     )
 }
