@@ -111,10 +111,16 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
                 <Icon as={getIconFromName(addressName)}/>
             </Heading>
         </Center>
-        <HStack align="top" spacing="15px">
+        {/*Medium-to-large screen*/}
+        <HStack align="top" spacing="15px" display={{ base: 'none', md: 'flex' }}>
             <YipCodeAndAddressContent {...props}/>
             <RegistrationPanel registrations={selectedAddress.registrations}/>
         </HStack>
+        {/*Mobile*/}
+        <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
+            <YipCodeAndAddressContent {...props}/>
+            <RegistrationPanel registrations={selectedAddress.registrations}/>
+        </VStack>
     </VStack>
 }
 
