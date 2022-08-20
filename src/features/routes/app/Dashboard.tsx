@@ -94,11 +94,9 @@ type DashboardContentProps = {
     selectedAddress: UserAddressData
 }
 
-const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, selectedAddress}) =>{
+const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
-    const { hasCopied, onCopy } = useClipboard(selectedYipCode)
-    
-    const addressLines = selectedAddress.address.addressLines
+    const {selectedAddress} = props
     const addressName = getDisplayLabelForAddress(selectedAddress)
     
     return <VStack maxW="100%" maxH="100%" height="100%"
@@ -114,26 +112,39 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
             </Heading>
         </Center>
         <HStack align="top" spacing="15px">
-            <VStack  align="left" justify="top" maxW="100%">        
-                <VStack maxW="100%" id="dashboard-yipcode" align="left">
-                    <label>YipCode</label>
-                    <HStack>
-                        <Input readOnly={true} value={selectedYipCode}/>
-                        {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
-                        <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
-                            <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
-                                icon={<FaCopy/>} onClick={onCopy}/>
-                        </Tooltip>
-                    </HStack>
-                </VStack>
-                <VStack id="dashboard-address" align="left">
-                    <label>Address</label>
-                    <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                        value={addressLines.join("\n")} resize="both"/>
-                </VStack>
-            </VStack>
+            <YipCodeAndAddressContent {...props}/>
             <RegistrationPanel registrations={selectedAddress.registrations}/>
         </HStack>
+    </VStack>
+}
+
+type YipCodeAndAddressContentProps = {
+    selectedYipCode: string,
+    selectedAddress: UserAddressData
+}
+
+const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({selectedYipCode, selectedAddress}) =>{
+    
+    const addressLines = selectedAddress.address.addressLines
+    
+    const { hasCopied, onCopy } = useClipboard(selectedYipCode)
+    return <VStack  align="left" justify="top" maxW="100%">        
+        <VStack maxW="100%" id="dashboard-yipcode" align="left">
+            <label>YipCode</label>
+            <HStack>
+                <Input readOnly={true} value={selectedYipCode}/>
+                {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
+                <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
+                    <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
+                        icon={<FaCopy/>} onClick={onCopy}/>
+                </Tooltip>
+            </HStack>
+        </VStack>
+        <VStack id="dashboard-address" align="left">
+            <label>Address</label>
+            <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
+                value={addressLines.join("\n")} resize="both"/>
+        </VStack>
     </VStack>
 }
 
@@ -143,7 +154,7 @@ type RegistrationPanelPrpos = {
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
     return <VStack id="dashboard-registration" align="left" spacing="5px"
-        justify="top" display={{ base: 'none', md: 'block' }}>
+        justify="top">
         <label>Registrations</label>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
             bg={useColorModeValue('gray.50', 'whiteAlpha.100')}>
