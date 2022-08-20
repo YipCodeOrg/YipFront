@@ -8,7 +8,8 @@ enum StoryYipCode {
   Home = "YIP2",
   Work = "YIP4",
   Parents = "YIP1",
-  NoName = "XY4BSRRB1TU5F9"
+  NoName = "XY4BSRRB1TU5F9",
+  EmptyAddress = "QR6CRPE0TV5G8"
 }
 
 export default {
@@ -72,9 +73,20 @@ const noNameAddress = {
   registrations: []
 }
 
+// Tests that the YipCode Input still displays the full YipCode even when there is no address
+const emptyAddress = {
+  sub: "cognito-sub",
+  yipCode: StoryYipCode.EmptyAddress,
+  address: {
+    addressLines: [],
+    aliasMap: {}
+  },
+  registrations: []
+}
+
 export const Standard = Template.bind({})
 Standard.args = {
-    userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress],
+    userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
     userAddressDataStatus: LoadStatus.Loaded,
     selectedYipCode: workAddress.yipCode
 }
