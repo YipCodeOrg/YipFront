@@ -5,6 +5,7 @@ import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "re
 import { Link } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
+import { Logo } from "../../../components/core/Logo"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
@@ -136,7 +137,10 @@ const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({sele
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
     return <VStack  align="left" justify="top" maxW="100%">        
         <VStack maxW="100%" id="dashboard-yipcode" align="left">
-            <label>YipCode</label>
+            <HStack>
+                <Logo lightCol='#000000' darkCol='#ffffff'size={17}/> 
+                <label>YipCode</label>
+            </HStack>
             <HStack>
                 <Input readOnly={true} value={selectedYipCode}/>
                 {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
