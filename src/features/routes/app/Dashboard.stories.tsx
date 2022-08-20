@@ -42,12 +42,12 @@ const workAddress = {
   yipCode: StoryYipCode.Work,
   name: "Work",
   address: {
-    addressLines: ["456 Money Lane", "Profit Road", "A longer-than-expected address line which serves to test how the UI handles this case. Some extra characters added here to make it even longer.", "Workland", "BORINGPOSTCODE456"],
+    addressLines: ["456 Money Lane", "Profit Road", "Cashville", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case.", "Bored.of.myjob", "That big teddy bear delivery company"]
+  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "WorkyMcWorkerson", "Bored.of.myjob", "That big teddy bear delivery company"]
 }
 
 const parentsAddress = {
@@ -84,6 +84,19 @@ const emptyAddress = {
   registrations: []
 }
 
+const longAddress = {
+  sub: "cognito-sub",
+  yipCode: StoryYipCode.Work,
+  name: "Work",
+  address: {
+    addressLines: ["456 Money Lane", "Profit Road", "A longer-than-expected address line which serves to test how the UI handles this case. Some extra characters added here to make it even longer.", "Workland", "BORINGPOSTCODE456"],
+    aliasMap: {
+      postCode: 4
+    }
+  },
+  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case.", "Bored.of.myjob", "That big teddy bear delivery company", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration"]
+}
+
 export const Standard = Template.bind({})
 Standard.args = {
     userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
@@ -96,4 +109,11 @@ Empty.args = {
   userAddressData: [],
   userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: null
+}
+
+export const Long = Template.bind({})
+Long.args = {
+  userAddressData: [longAddress],
+  userAddressDataStatus: LoadStatus.Loaded,
+  selectedYipCode: longAddress.yipCode
 }
