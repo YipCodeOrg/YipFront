@@ -41,12 +41,12 @@ const workAddress = {
   yipCode: StoryYipCode.Work,
   name: "Work",
   address: {
-    addressLines: ["456 Money Lane", "Profit Road", "Ninetofiveshire", "Workland", "BORINGPOSTCODE456"],
+    addressLines: ["456 Money Lane", "Profit Road", "A longer-than-expected address line which serves to test how the UI handles this case. Some extra characters added here to make it even longer.", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: ["HateYourBoss.co.uk"]
+  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case."]
 }
 
 const parentsAddress = {
