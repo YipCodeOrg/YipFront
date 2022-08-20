@@ -5,9 +5,9 @@ import { Dashboard, DashboardProps } from "./Dashboard";
 type DashboardType = typeof Dashboard
 
 enum StoryYipCode {
-  Home = "YIP2",
-  Work = "YIP4",
-  Parents = "YIP1",
+  Home = "QLC9229ALDN04",
+  Work = "FXL82830124",
+  Parents = "YY2K1FHAL1",
   NoName = "XY4BSRRB1TU5F9",
   EmptyAddress = "QR6CRPE0TV5G8"
 }
