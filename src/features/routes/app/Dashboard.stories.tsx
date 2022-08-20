@@ -47,7 +47,7 @@ const workAddress = {
       postCode: 4
     }
   },
-  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case."]
+  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case.", "Bored.of.myjob", "That big teddy bear delivery company"]
 }
 
 const parentsAddress = {

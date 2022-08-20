@@ -112,12 +112,12 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
                 <Icon as={getIconFromName(addressName)}/>
             </Heading>
         </Center>
-        <HStack>
-            <VStack  align="left" justify="top">        
+        <HStack align="top" spacing="15px">
+            <VStack  align="left" justify="top" maxW="100%">        
                 <VStack maxW="100%" id="dashboard-yipcode" align="left">
                     <label>YipCode</label>
                     <HStack>
-                        <Input readOnly={true} value={selectedYipCode} style={{flex:1}}/>
+                        <Input readOnly={true} value={selectedYipCode}/>
                         {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
                         <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
                             <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
@@ -125,10 +125,10 @@ const DashboardContent: React.FC<DashboardContentProps> = ({selectedYipCode, sel
                         </Tooltip>
                     </HStack>
                 </VStack>
-                <VStack maxW="100%" id="dashboard-address" align="left">
+                <VStack id="dashboard-address" align="left">
                     <label>Address</label>
                     <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                        value={addressLines.join("\n")}/>
+                        value={addressLines.join("\n")} resize="both"/>
                 </VStack>
             </VStack>
             <RegistrationPanel registrations={selectedAddress.registrations}/>
@@ -141,8 +141,11 @@ type RegistrationPanelPrpos = {
 }
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
-    return <VStack>
-        {registrations.map((v, i) => <RegistrationCard registration={v} key = {i}/>)}
+    return <VStack id="dashboard-registration" align="left" spacing="5px" justify="top" display={{ base: 'none', md: 'block' }}>
+        <label>Registrations</label>
+        <VStack align="left" spacing="8px" justify="top">
+            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i}/>)}
+        </VStack>
     </VStack>
 }
 
@@ -152,7 +155,7 @@ type RegistrationCardProps = {
 
 const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
     return (
-        <Stack p="4" boxShadow="lg" m="4" borderRadius="lg" borderWidth="1px">
+        <Stack p="4" boxShadow="lg" borderRadius="lg" borderWidth="1px" maxW="400px">
             <Text fontWeight="semibold">{registration}</Text>
         </Stack>
     )
