@@ -3,6 +3,7 @@ import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { IoIosCheckmarkCircle } from "react-icons/io"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
@@ -182,13 +183,17 @@ const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
     
     const hyperlink = registration.hyperlink
 
-    const CardWithoutLink = () => <HStack p="4" boxShadow="lg"  maxW="400px"
+    const CardWithoutLink = () => <HStack boxShadow="lg"  maxW="400px"
     bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">            
-        <Text flexGrow={1}>{registration.name}
-        </Text>           
-        {hyperlink!! ?
-        <Icon as={BsFillArrowUpRightSquareFill} position="relative" bottom={2} left={2}/>
-        : <></>} 
+        <Text p="4" flexGrow={1}>{registration.name}
+        </Text>
+        <VStack alignSelf="stretch" p="1">
+            {hyperlink!! ?
+            <Icon as={BsFillArrowUpRightSquareFill}/>
+            : <></>}
+            <Stack flexGrow={1}/>
+            <Icon as={IoIosCheckmarkCircle}/>
+        </VStack> 
     </HStack>
 
     return hyperlink!! ? <Link href={hyperlink} target="_blank"><CardWithoutLink/></Link> : <CardWithoutLink/>
