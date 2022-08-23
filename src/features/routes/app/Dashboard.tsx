@@ -1,8 +1,9 @@
 import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
-    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue, Link } from "@chakra-ui/react"
+    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue, Link, Box } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
-import { BsExclamationCircleFill, BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { HiExclamationCircle } from "react-icons/hi"
 import { IoIosCheckmarkCircle } from "react-icons/io"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
@@ -192,7 +193,7 @@ const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
         <Text p="4" flexGrow={1}>{registration.name}
         </Text>
         <VStack alignSelf="stretch" p="1">
-            {hyperlink!! ?
+            {hyperlink!! ?            
             <Icon as={BsFillArrowUpRightSquareFill}/>
             : <></>}
             <Stack flexGrow={1}/>
@@ -207,9 +208,17 @@ const RegistrationUpdateStatusIcon: React.FC<RegistrationCardProps> =
     ({registration, addressLastUpdated}) => {
     const isUpToDate = isRegistrationUpToDate(registration, addressLastUpdated)
     if(isUpToDate){
-        return <Icon as={IoIosCheckmarkCircle} color="green.500"/>
+        return <Tooltip label="The address registered at this organisation is up to date.">
+                <Box h="16px">
+                    <Icon as={IoIosCheckmarkCircle} color="green.500"/>
+                </Box>
+            </Tooltip>
     } else {
-        return <Icon as={BsExclamationCircleFill} color="red.500"/>
+        return <Tooltip label="The address registered at this organisation is out of date. Consider updating it.">
+            <Box h="16px">
+                <Icon as={HiExclamationCircle} color="red.500"/>
+            </Box>
+        </Tooltip>
     }
 }
 
