@@ -2,7 +2,7 @@ import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
     Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue, Link } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
-import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { BsExclamationCircleFill, BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { IoIosCheckmarkCircle } from "react-icons/io"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
@@ -10,7 +10,7 @@ import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import { Logo } from "../../../components/core/Logo"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
+import { isRegistrationUpToDate, Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 
@@ -101,6 +101,7 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
     const {selectedAddress} = props
     const addressName = getDisplayLabelForAddress(selectedAddress)
+    const addressLastUpdated = selectedAddress.address.addressMetadata.lastUpdated
     
     return <VStack maxW="100%" maxH="100%" height="100%"
             id="dashboard-content" style={{flex:1}} align="left" spacing={{ base: '10px', sm: '20px', md: '50px' }}>
@@ -117,12 +118,12 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         {/*Medium-to-large screen*/}
         <HStack align="top" spacing="15px" display={{ base: 'none', md: 'flex' }}>
             <YipCodeAndAddressContent {...props}/>
-            <RegistrationPanel registrations={selectedAddress.registrations}/>
+            <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
             <YipCodeAndAddressContent {...props}/>
-            <RegistrationPanel registrations={selectedAddress.registrations}/>
+            <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
         </VStack>
     </VStack>
 }
@@ -161,26 +162,29 @@ const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({sele
 }
 
 type RegistrationPanelPrpos = {
-    registrations: Registration[]
+    registrations: Registration[],
+    addressLastUpdated: Date
 }
 
-const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
+const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations, addressLastUpdated: addressLasUpdated}) => {
     return <VStack id="dashboard-registration" align="left" spacing="5px"
         justify="top">
         <label>Registrations</label>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
             bg={useColorModeValue('gray.50', 'whiteAlpha.100')}>
-            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i}/>)}
+            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLasUpdated}/>)}
         </VStack>
     </VStack>
 }
 
 type RegistrationCardProps = {
-    registration: Registration
+    registration: Registration,
+    addressLastUpdated: Date
 }
 
-const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
+const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
     
+    const {registration } = props
     const hyperlink = registration.hyperlink
 
     const CardWithoutLink = () => <HStack boxShadow="lg"  maxW="400px"
@@ -192,11 +196,21 @@ const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
             <Icon as={BsFillArrowUpRightSquareFill}/>
             : <></>}
             <Stack flexGrow={1}/>
-            <Icon as={IoIosCheckmarkCircle} color="green.500"/>
+            <RegistrationUpdateStatusIcon {...props}/>
         </VStack> 
     </HStack>
 
     return hyperlink!! ? <Link href={hyperlink} target="_blank"><CardWithoutLink/></Link> : <CardWithoutLink/>
+}
+
+const RegistrationUpdateStatusIcon: React.FC<RegistrationCardProps> =
+    ({registration, addressLastUpdated}) => {
+    const isUpToDate = isRegistrationUpToDate(registration, addressLastUpdated)
+    if(isUpToDate){
+        return <Icon as={IoIosCheckmarkCircle} color="green.500"/>
+    } else {
+        return <Icon as={BsExclamationCircleFill} color="red.500"/>
+    }
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
