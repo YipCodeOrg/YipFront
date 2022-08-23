@@ -1,14 +1,15 @@
 import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
-    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue } from "@chakra-ui/react"
+    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue, Link } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
-import { Link } from "react-router-dom"
+import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import { Logo } from "../../../components/core/Logo"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
+import { Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 
@@ -75,7 +76,7 @@ const EmptyDashboardContent = () => {
                     You have no addresses yet!{' '}
             </Heading>
             <Center>
-                <Link to="/app/create">
+                <RouterLink to="/app/create">
                     <Button
                     rounded={'full'}
                     px={6}
@@ -84,7 +85,7 @@ const EmptyDashboardContent = () => {
                     _hover={{ bg: 'blue.500' }}>                  
                         Create Address
                     </Button>
-                </Link>
+                </RouterLink>
             </Center>
         </Stack>
     </Center>
@@ -159,7 +160,7 @@ const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({sele
 }
 
 type RegistrationPanelPrpos = {
-    registrations: string[]
+    registrations: Registration[]
 }
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) => {
@@ -174,16 +175,23 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations}) =>
 }
 
 type RegistrationCardProps = {
-    registration: string
+    registration: Registration
 }
 
 const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
-    return (
-        <Stack p="4" boxShadow="lg"  maxW="400px"
-        bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">
-            <Text>{registration}</Text>
-        </Stack>
-    )
+    
+    const hyperlink = registration.hyperlink
+
+    const CardWithoutLink = () => <HStack p="4" boxShadow="lg"  maxW="400px"
+    bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">            
+        <Text flexGrow={1}>{registration.name}
+        </Text>           
+        {hyperlink!! ?
+        <Icon as={BsFillArrowUpRightSquareFill} position="relative" bottom={2} left={2}/>
+        : <></>} 
+    </HStack>
+
+    return hyperlink!! ? <Link href={hyperlink} target="_blank"><CardWithoutLink/></Link> : <CardWithoutLink/>
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{

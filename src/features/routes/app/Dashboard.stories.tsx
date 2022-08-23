@@ -1,5 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { LoadStatus } from "../../../app/types";
+import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData";
 import { Dashboard, DashboardProps } from "./Dashboard";
 
 type DashboardType = typeof Dashboard
@@ -24,7 +25,9 @@ export default {
 
 const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>
 
-const homeAddress = {
+const arbitraryDate = new Date(2022, 12)
+
+const homeAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Home,
   name: "Home",
@@ -34,10 +37,10 @@ const homeAddress = {
       postCode: 4
     }
   },
-  registrations: ["DentalDevils.ie", "HealthInsuranceHeretics.com"]
+  registrations: [{name: "DentalDevils.ie", addressLastUpdated: arbitraryDate}, {name: "HealthInsuranceHeretics.com", addressLastUpdated: arbitraryDate}]
 }
 
-const workAddress = {
+const workAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Work,
   name: "Work",
@@ -47,10 +50,10 @@ const workAddress = {
       postCode: 4
     }
   },
-  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "WorkyMcWorkerson", "Bored.of.myjob", "That big teddy bear delivery company"]
+  registrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate}, {name: "OWASP", addressLastUpdated: arbitraryDate, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate}]
 }
 
-const parentsAddress = {
+const parentsAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Parents,
   name: "Parents",
@@ -60,10 +63,10 @@ const parentsAddress = {
       postCode: 4
     }
   },
-  registrations: ["Childhood School Alumni Club"]
+  registrations: [{name: "Childhood School Alumni Club", addressLastUpdated: arbitraryDate}]
 }
 
-const noNameAddress = {
+const noNameAddress : UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.NoName,
   address: {
@@ -74,7 +77,7 @@ const noNameAddress = {
 }
 
 // Tests that the YipCode Input still displays the full YipCode even when there is no address
-const emptyAddress = {
+const emptyAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.EmptyAddress,
   address: {
@@ -84,7 +87,7 @@ const emptyAddress = {
   registrations: []
 }
 
-const longAddress = {
+const longAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Work,
   name: "Work",
@@ -94,7 +97,7 @@ const longAddress = {
       postCode: 4
     }
   },
-  registrations: ["HateYourBoss.co.uk", "Whistle While you work", "A longer-than-expected registration description which serves to test what happens the display in this case.", "Bored.of.myjob", "That big teddy bear delivery company", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration", "Another registration"]
+  registrations: [{name: "HateYourBoss.co.uk", addressLastUpdated: arbitraryDate}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate}, {name: "A longer-than-expected registration description which serves to test what happens the display in this case.", addressLastUpdated: arbitraryDate}, {name: "Bored.of.myjob", addressLastUpdated: arbitraryDate}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}]
 }
 
 export const Standard = Template.bind({})
