@@ -167,15 +167,40 @@ type RegistrationPanelPrpos = {
     addressLastUpdated: Date
 }
 
-const RegistrationPanel: React.FC<RegistrationPanelPrpos> = ({registrations, addressLastUpdated: addressLasUpdated}) => {
+const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
+    const {registrations, addressLastUpdated} = props
     return <VStack id="dashboard-registration" align="left" spacing="5px"
         justify="top">
-        <label>Registrations</label>
+        <HStack>
+            <label>Registrations</label>
+            <HStack flexGrow={1}/>
+            <HStack paddingRight="2">
+                <AggregatedRegistrationUpdateStatusIcon {...props}/>
+            </HStack>
+        </HStack>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
             bg={useColorModeValue('gray.50', 'whiteAlpha.100')}>
-            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLasUpdated}/>)}
+            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLastUpdated}/>)}
         </VStack>
     </VStack>
+}
+
+const AggregatedRegistrationUpdateStatusIcon: React.FC<RegistrationPanelPrpos> =
+    ({registrations, addressLastUpdated}) => {
+    const allUpToDate = registrations.every(r => isRegistrationUpToDate(r, addressLastUpdated))
+    if(allUpToDate){
+        return <Tooltip label="All registered addresses are up to date.">
+                <Box h="16px">
+                    <Icon as={IoIosCheckmarkCircle} color="green.500"/>
+                </Box>
+            </Tooltip>
+    } else {
+        return <Tooltip label="Some registered addresses are out of date. Consider updating them.">
+            <Box h="16px">
+                <Icon as={HiExclamationCircle} color="red.500"/>
+            </Box>
+        </Tooltip>
+    }
 }
 
 type RegistrationCardProps = {
