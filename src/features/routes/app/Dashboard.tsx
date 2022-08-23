@@ -134,7 +134,7 @@ type YipCodeAndAddressContentProps = {
 
 const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({selectedYipCode, selectedAddress}) =>{
     
-    const addressLines = selectedAddress.address.addressLines
+    const addressLines = selectedAddress.address.address.addressLines
     
     const { hasCopied, onCopy } = useClipboard(selectedYipCode)
     return <VStack  align="left" justify="top" maxW="100%">        

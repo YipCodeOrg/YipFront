@@ -25,54 +25,60 @@ export default {
 
 const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>
 
-const arbitraryDate = new Date(2022, 12)
+const arbitraryDate1 = new Date(2020, 12)
+const arbitraryDate2 = new Date(2021, 12)
+const arbitraryDate3 = new Date(2021, 12)
 
 const homeAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Home,
   name: "Home",
-  address: {
+  address: {address: {
     addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: [{name: "DentalDevils.ie", addressLastUpdated: arbitraryDate}, {name: "HealthInsuranceHeretics.com", addressLastUpdated: arbitraryDate}]
+  addressMetadata: {lastUpdated: arbitraryDate3}},
+  registrations: [{name: "DentalDevils.ie", addressLastUpdated: arbitraryDate2}, {name: "HealthInsuranceHeretics.com", addressLastUpdated: arbitraryDate2}]
 }
 
 const workAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Work,
   name: "Work",
-  address: {
+  address: {address:  {
     addressLines: ["456 Money Lane", "Profit Road", "Cashville", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate}, {name: "OWASP", addressLastUpdated: arbitraryDate, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate}]
+  addressMetadata: {lastUpdated: arbitraryDate3}},
+  registrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate2}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate2, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate2}]
 }
 
 const parentsAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Parents,
   name: "Parents",
-  address: {
+  address: {address:  {
     addressLines: ["890 Memory Lane", "Childhood Road", "Co. Youth", "Youngland", "NOSTALGICPOSTCODE890"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: [{name: "Childhood School Alumni Club", addressLastUpdated: arbitraryDate}]
+  addressMetadata: {lastUpdated: arbitraryDate3}},
+  registrations: [{name: "Childhood School Alumni Club", addressLastUpdated: arbitraryDate2}]
 }
 
 const noNameAddress : UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.NoName,
-  address: {
+  address: {address:  {
     addressLines: ["747 Mystery Road", "Bermuda Trianble", "Nowhere"],
     aliasMap: {}
   },
+  addressMetadata: {lastUpdated: arbitraryDate3}},
   registrations: []
 }
 
@@ -80,10 +86,11 @@ const noNameAddress : UserAddressData = {
 const emptyAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.EmptyAddress,
-  address: {
+  address: {address:  {
     addressLines: [],
     aliasMap: {}
   },
+  addressMetadata: {lastUpdated: arbitraryDate3}},
   registrations: []
 }
 
@@ -91,13 +98,14 @@ const longAddress: UserAddressData = {
   sub: "cognito-sub",
   yipCode: StoryYipCode.Work,
   name: "Work",
-  address: {
+  address: {address:  {
     addressLines: ["456 Money Lane", "Profit Road", "A longer-than-expected address line which serves to test how the UI handles this case. Some extra characters added here to make it even longer.", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
   },
-  registrations: [{name: "HateYourBoss.co.uk", addressLastUpdated: arbitraryDate}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate}, {name: "A longer-than-expected registration description which serves to test what happens the display in this case.", addressLastUpdated: arbitraryDate}, {name: "Bored.of.myjob", addressLastUpdated: arbitraryDate}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}, {name: "Another registration", addressLastUpdated: arbitraryDate}]
+  addressMetadata: {lastUpdated: arbitraryDate3}},
+  registrations: [{name: "HateYourBoss.co.uk", addressLastUpdated: arbitraryDate2}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate2}, {name: "A longer-than-expected registration description which serves to test what happens the display in this case.", addressLastUpdated: arbitraryDate2}, {name: "Bored.of.myjob", addressLastUpdated: arbitraryDate2}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}, {name: "Another registration", addressLastUpdated: arbitraryDate2}]
 }
 
 export const Standard = Template.bind({})
