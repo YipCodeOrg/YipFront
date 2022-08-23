@@ -192,7 +192,7 @@ const RegistrationCard: React.FC<RegistrationCardProps> = ({registration}) => {
             <Icon as={BsFillArrowUpRightSquareFill}/>
             : <></>}
             <Stack flexGrow={1}/>
-            <Icon as={IoIosCheckmarkCircle}/>
+            <Icon as={IoIosCheckmarkCircle} color="green.500"/>
         </VStack> 
     </HStack>
 
