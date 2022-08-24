@@ -1,4 +1,6 @@
-import { Center, Grid, GridItem, Heading, Icon, Input, InputProps, VStack } from "@chakra-ui/react"
+import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip } from "@chakra-ui/react"
+import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
 
@@ -8,6 +10,9 @@ export type EditRegistrationsProps = {
 }
 
 export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel}) => {
+    
+    const addNewRegistrationTooltip = "Add new registration"
+
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
          spacing={{ base: '10px', sm: '20px', md: '50px' }}>
@@ -20,10 +25,22 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                 <Icon as={MdEditNote}/>
             </Heading>
         </Center>
-        <Grid width="100%" p = {{ base: 2, sm: 4, md: 8 }}
-        gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(2, 1fr)'>
-            {registrations.map(r => <EditRegistrationRow registration={r}/>)}
-        </Grid>
+        <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
+            <HStack w="100%" justifyContent="flex-start">
+                <ButtonGroup isAttached variant='outline'
+                    bg={useColorModeValue('gray.50', 'gray.900')} borderRadius="lg">                
+                    <Button>Save</Button>
+                    <Tooltip label={addNewRegistrationTooltip}>
+                        <IconButton aria-label={addNewRegistrationTooltip} icon={<Icon as={FaPlusCircle}/>}/>
+                    </Tooltip>
+                </ButtonGroup>
+            </HStack>
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(2, 1fr)'
+                bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
+                borderRadius="lg">
+                {registrations.map(r => <EditRegistrationRow registration={r}/>)}
+            </Grid>
+        </VStack>
     </VStack>        
 }
 
@@ -46,13 +63,19 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration})
         return <Input {...props}/>
     }
 
+    const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
+        return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
+            {children}
+        </GridItem>
+    }
+    
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
-        <GridItem>
+        <CustomGridItem>
             <Input value={name}/>
-        </GridItem>
-        <GridItem>
+        </CustomGridItem>
+        <CustomGridItem>
             <HyperLinkCell/>
-        </GridItem>
+        </CustomGridItem>
     </>
 }
