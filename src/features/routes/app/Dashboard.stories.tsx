@@ -15,7 +15,7 @@ enum StoryYipCode {
 
 export default {
     component: Dashboard,
-    title: 'app/routes/Dashboard',
+    title: 'app/Dashboard',
     argTypes: {
       selectedYipCode: {
         options: StoryYipCode
