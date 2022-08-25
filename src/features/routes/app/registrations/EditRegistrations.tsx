@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
+import { ImBin } from "react-icons/im"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
 
 export type EditRegistrationsProps = {
@@ -57,7 +58,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
-            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(2, 1fr)'
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='min-content repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 {registrations.map((r, i) => <EditRegistrationRow registration={r}
@@ -76,6 +77,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
     
     const name = registration.name
     const hyperlink = registration.hyperlink
+    const deleteButtonLabel = "Delete this registration"
 
     const handleInputRegistrationChange =
         (updater: (r: Registration, s: string) => Registration) =>
@@ -84,6 +86,14 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
     }
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
+        <GridItem flexShrink={1}>
+            <ButtonGroup>                
+                <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
+                    <IconButton aria-label={deleteButtonLabel}
+                        icon={<Icon as={ImBin}/>} /*onClick={addNewRegistration}*//>
+                </Tooltip>
+            </ButtonGroup>            
+        </GridItem>
         <CustomGridItem>
             <NameCell {...{name, handleInputRegistrationChange}}/>
         </CustomGridItem>
@@ -91,6 +101,12 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
             <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
         </CustomGridItem>
     </>
+}
+
+const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
+    return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
+        {children}
+    </GridItem>
 }
 
 type GridCellProps = {
@@ -127,11 +143,4 @@ const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegi
         props.placeholder="Add optional hyperlink"
     }
     return <Input {...props}/>
-}
-
-
-const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
-    return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
-        {children}
-    </GridItem>
 }
