@@ -98,10 +98,9 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
         <GridItem>
-            <ButtonGroup>       
+            <ButtonGroup variant="ghost">
                 <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
                     <IconButton aria-label={deleteButtonLabel}
-                        bg="inherit"
                         icon={<Icon as={ImBin}/>} onClick={removeRegistration}/>
                 </Tooltip>
             </ButtonGroup>
