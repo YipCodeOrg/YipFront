@@ -6,13 +6,28 @@ import { Registration } from "../../../../packages/YipStackLib/types/userAddress
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
-    addressLabel: string,
-    handleRegsitrationChange: (index: number) => (change: (r : Registration) => Registration) => void
+    setRegistrations: (newRegistrations: Registration[]) => void
+    addressLabel: string
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, handleRegsitrationChange}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
+
+    const handleRegsitrationChange = (index: number) => 
+        (change: (r : Registration) => Registration) => 
+    {
+        const registrationToChange = registrations[index]
+        if(!!registrationToChange){
+            const updatedRegistration = change(registrationToChange)
+            const newRegistrations = [...registrations]
+            newRegistrations[index] = updatedRegistration
+            setRegistrations(newRegistrations)
+        }
+        else{
+            throw new Error("Problem getting registration at index");            
+        }
+    }
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"

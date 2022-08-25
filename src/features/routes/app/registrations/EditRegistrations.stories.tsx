@@ -24,25 +24,10 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     
     const [registrations, setRegistrations] = useState(initialRegistrations)
 
-    const handleRegsitrationChange = (index: number) => 
-        (change: (r : Registration) => Registration) => 
-    {
-        const registrationToChange = registrations[index]
-        if(!!registrationToChange){
-            const updatedRegistration = change(registrationToChange)
-            const newRegistrations = [...registrations]
-            newRegistrations[index] = updatedRegistration
-            setRegistrations(newRegistrations)
-        }
-        else{
-            throw new Error("Problem getting registration at index");            
-        }
-    }
-
     const childProps: EditRegistrationsProps = {
         addressLabel,
         registrations,
-        handleRegsitrationChange
+        setRegistrations
     }
 
     return <EditRegistrations {...childProps}/>
