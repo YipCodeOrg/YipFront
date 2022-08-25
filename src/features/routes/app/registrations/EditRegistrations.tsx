@@ -81,32 +81,49 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
         (updater: (r: Registration, s: string) => Registration) =>
         (e : React.ChangeEvent<HTMLInputElement>) => {
             handleRegistrationChange(r => updater(r, e.target.value))
-            e.target.focus()
     }
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
         <CustomGridItem>
-            <Input value={name}
-                onChange={handleInputRegistrationChange((r, s) => {return {...r, name: s}})}/>
+            <NameCell {...{name, handleInputRegistrationChange}}/>
         </CustomGridItem>
         <CustomGridItem>
-            <HyperLinkCell {...{hyperlink, handleInputRegistrationChange}}/>
+            <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
         </CustomGridItem>
     </>
 }
 
-type HyperLinkCellProps = {
-    hyperlink: string | undefined,
+type GridCellProps = {
     handleInputRegistrationChange: (updater: (r: Registration, s: string) => Registration)
         => (e: React.ChangeEvent<HTMLInputElement>) => void
 }
+
+type NameCellProps = {
+    name: string
+} & GridCellProps
+
+const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange}) => {
+    const props: InputProps = {
+        value: name,
+        onChange: handleInputRegistrationChange((r, s) => {return {...r, name: s}})
+    }
+    if(!name){
+        props.placeholder="Add name"
+    }
+    return <Input {...props}/>
+}
+
+
+type HyperLinkCellProps = {
+    hyperlink: string
+} & GridCellProps
 
 const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegistrationChange}) => {
     const props: InputProps = {
         value: hyperlink,
         onChange: handleInputRegistrationChange((r, s) => {return {...r, hyperlink: s}})
     }
-    if(hyperlink === undefined){
+    if(!hyperlink){
         props.placeholder="Add optional hyperlink"
     }
     return <Input {...props}/>
