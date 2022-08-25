@@ -46,8 +46,8 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='min-content repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
-                {registrations.map((_, i) => <EditRegistrationRow registrations={registrations}
-                    index={i} key={i} setRegistrations={setRegistrations}/>)}
+                {registrations.map((r, i) => <EditRegistrationRow registrations={registrations}
+                    index={i} key={r.name} setRegistrations={setRegistrations}/>)}
             </Grid>
         </VStack>
     </VStack>        
