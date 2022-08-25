@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { ImBin } from "react-icons/im"
+import { BiMoveVertical } from "react-icons/bi"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
 import { useDrag, useDrop } from "react-dnd"
 import { useCallback } from "react"
@@ -45,7 +46,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
-            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='min-content repeat(2, auto)'
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 {registrations.map((r, i) => <EditRegistrationRow registrations={registrations}
@@ -114,21 +115,42 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     function removeRegistration(){
         setRegistrations(registrations.filter((_, i) => i != index))
     }
+    
+    const [{isDragging}, drag] = useDrag({
+        type: ItemTypes.row,
+        collect: monitor => ({
+          isDragging: !!monitor.isDragging()
+        }),
+        item: {dragIndex: index}
+      })
+  
+      const [{ isOver }, drop] = useDrop(() => ({
+          accept: ItemTypes.row,
+          drop: ({dragIndex}: DragItem) => handleMove(dragIndex, index),
+          collect: monitor => ({
+            isOver: !!monitor.isOver(),
+          }),
+    }), [handleMove])
+
+    const inputBg = isOver! ? 'cyan.400' : useColorModeValue('gray.100', 'gray.900')
+
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
-    return <>
+    return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
         <GridItem>
-            <ButtonGroup variant="ghost">
+            <ButtonGroup variant="ghost" isAttached>
+                <IconButton aria-label={"Move registration up or down"}
+                    icon={<Icon as={BiMoveVertical}/>} ref={drag}/>
                 <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
                     <IconButton aria-label={deleteButtonLabel}
                         icon={<Icon as={ImBin}/>} onClick={removeRegistration}/>
                 </Tooltip>
             </ButtonGroup>
         </GridItem>
-        <NameCell {...{index, name, handleInputRegistrationChange, handleMove}}/>
-        <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
+        <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
+        <GridItem bg={inputBg} borderRadius="lg">
             <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
         </GridItem>
-    </>
+    </div>
 }
 
 type GridCellProps = {
@@ -137,32 +159,15 @@ type GridCellProps = {
 }
 
 type NameCellProps = {
-    index: number,
     name: string,
-    handleMove: (from: number, to: number) => void
+    bg: string
 } & GridCellProps
 
 type DragItem = {
     dragIndex: number
 }
 
-const NameCell: React.FC<NameCellProps> = ({index, name, handleInputRegistrationChange, handleMove}) => {
-    
-    const [{isDragging}, drag] = useDrag({
-      type: ItemTypes.row,
-      collect: monitor => ({
-        isDragging: !!monitor.isDragging()
-      }),
-      item: {dragIndex: index}
-    })
-
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: ItemTypes.row,
-        drop: ({dragIndex}: DragItem) => handleMove(dragIndex, index),
-        collect: monitor => ({
-          isOver: !!monitor.isOver(),
-        }),
-      }), [handleMove])
+const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange, bg}) => {
 
     const props: InputProps = {
         value: name,
@@ -171,9 +176,8 @@ const NameCell: React.FC<NameCellProps> = ({index, name, handleInputRegistration
     if(!name){
         props.placeholder="Add name"
     }
-    return <GridItem bg={isOver! ? 'cyan.400' : useColorModeValue('gray.100', 'gray.900')} borderRadius="lg"
-        ref={drag} style={{opacity: isDragging ? 0.5 : 1}}>
-            <Input {...props} ref={drop}/>
+    return <GridItem bg={bg} borderRadius="lg">
+            <Input {...props}/>
     </GridItem>
 }
 
