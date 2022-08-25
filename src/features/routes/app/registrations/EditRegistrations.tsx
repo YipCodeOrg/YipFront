@@ -29,6 +29,11 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
         }
     }
 
+    function addNewRegistration(){
+        const addressLastUpdated = new Date()
+        setRegistrations([{name: "", addressLastUpdated}, ...registrations])
+    }
+
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
          spacing={{ base: '10px', sm: '20px', md: '50px' }}>
@@ -46,8 +51,9 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                 <ButtonGroup isAttached variant='outline'
                     bg={useColorModeValue('gray.50', 'gray.900')} borderRadius="lg">                
                     <Button>Save</Button>
-                    <Tooltip label={addNewRegistrationTooltip}>
-                        <IconButton aria-label={addNewRegistrationTooltip} icon={<Icon as={FaPlusCircle}/>}/>
+                    <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
+                        <IconButton aria-label={addNewRegistrationTooltip}
+                            icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
