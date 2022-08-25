@@ -61,7 +61,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 {registrations.map((r, i) => <EditRegistrationRow registration={r}
-                    handleRegistrationChange={handleRegsitrationChange(i)}/>)}
+                    key={i} handleRegistrationChange={handleRegsitrationChange(i)}/>)}
             </Grid>
         </VStack>
     </VStack>        
