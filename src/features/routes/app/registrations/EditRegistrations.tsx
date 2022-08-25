@@ -4,6 +4,8 @@ import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
+import { useDrag, useDrop } from "react-dnd"
+import { useCallback } from "react"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -59,6 +61,10 @@ type EditRegistrationRowProps = {
     setRegistrations: (newRegistrations: Registration[]) => void
 }
 
+const ItemTypes = {
+    row: 'row'
+}
+
 const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index}) => {
     
     const registration = registrations[index]
@@ -77,6 +83,20 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         }
     }
 
+    const handleMove = useCallback(function (from: number, to: number){
+        //alert(JSON.stringify(registrations.map(r => r.name)))
+        const moveElement = registrations.splice(from, 1)[0]        
+        if(moveElement !== undefined){
+            //alert(JSON.stringify(moveElement.name))
+            registrations.splice(to, 0, moveElement)
+            //alert(JSON.stringify(registrations.map(r => r.name)))
+            setRegistrations([...registrations])
+        }
+        else{
+            throw new Error("Problem getting registration at index");            
+        }
+    }, [registrations])    
+
     if(!registration){
         throw new Error("Problem getting registration from registrations list");        
     }
@@ -94,7 +114,6 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     function removeRegistration(){
         setRegistrations(registrations.filter((_, i) => i != index))
     }
-
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
         <GridItem>
@@ -105,19 +124,11 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
                 </Tooltip>
             </ButtonGroup>
         </GridItem>
-        <CustomGridItem>
-            <NameCell {...{name, handleInputRegistrationChange}}/>
-        </CustomGridItem>
-        <CustomGridItem>
+        <NameCell {...{index, name, handleInputRegistrationChange, handleMove}}/>
+        <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
             <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
-        </CustomGridItem>
+        </GridItem>
     </>
-}
-
-const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
-    return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
-        {children}
-    </GridItem>
 }
 
 type GridCellProps = {
@@ -126,10 +137,33 @@ type GridCellProps = {
 }
 
 type NameCellProps = {
-    name: string
+    index: number,
+    name: string,
+    handleMove: (from: number, to: number) => void
 } & GridCellProps
 
-const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange}) => {
+type DragItem = {
+    dragIndex: number
+}
+
+const NameCell: React.FC<NameCellProps> = ({index, name, handleInputRegistrationChange, handleMove}) => {
+    
+    const [{isDragging}, drag] = useDrag({
+      type: ItemTypes.row,
+      collect: monitor => ({
+        isDragging: !!monitor.isDragging()
+      }),
+      item: {dragIndex: index}
+    })
+
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: ItemTypes.row,
+        drop: ({dragIndex}: DragItem) => handleMove(dragIndex, index),
+        collect: monitor => ({
+          isOver: !!monitor.isOver(),
+        }),
+      }), [handleMove])
+
     const props: InputProps = {
         value: name,
         onChange: handleInputRegistrationChange((r, s) => {return {...r, name: s}})
@@ -137,7 +171,10 @@ const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange}
     if(!name){
         props.placeholder="Add name"
     }
-    return <Input {...props}/>
+    return <GridItem bg={isOver! ? 'cyan.400' : useColorModeValue('gray.100', 'gray.900')} borderRadius="lg"
+        ref={drag} style={{opacity: isDragging ? 0.5 : 1}}>
+            <Input {...props} ref={drop}/>
+    </GridItem>
 }
 
 

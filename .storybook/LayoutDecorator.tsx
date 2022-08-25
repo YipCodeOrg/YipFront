@@ -5,6 +5,8 @@ import { FullAppLayout, FullSiteLayout } from '../src/components/core/pageLayout
 import { action } from '@storybook/addon-actions'
 import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
 import { ColorModeSwitcher } from '../src/components/core/ColorModeSwitcher'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const LayoutDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context) => {
   
@@ -42,27 +44,33 @@ const layoutProps = {
 
 const DefaultLayout = ({children}) => {      
     return <ChakraProvider>
-        <ColorModeScript/>
-        <ColorModeSwitcher justifySelf="flex-end" padding={3}/>
-        {children}
+        <DndProvider backend={HTML5Backend}>
+            <ColorModeScript/>
+            <ColorModeSwitcher justifySelf="flex-end" padding={3}/>
+            {children}
+        </DndProvider>
     </ChakraProvider>
 }
 
 const AppLayoutDecorator = ({children}) => {      
     return <ChakraProvider theme={theme}>
-        <ColorModeScript/>
-        <FullAppLayout {...layoutProps}>
-            {children}
-        </FullAppLayout>
+        <DndProvider backend={HTML5Backend}>
+            <ColorModeScript/>
+            <FullAppLayout {...layoutProps}>
+                {children}
+            </FullAppLayout>
+        </DndProvider>
     </ChakraProvider>
 }
 
 const SiteLayoutDecorator = ({children}) => {      
     return <ChakraProvider>
-        <ColorModeScript/>
-        <FullSiteLayout {...layoutProps}>
-            {children}
-        </FullSiteLayout>
+        <DndProvider backend={HTML5Backend}>
+            <ColorModeScript/>
+            <FullSiteLayout {...layoutProps}>
+                {children}
+            </FullSiteLayout>
+        </DndProvider>
     </ChakraProvider>
 }
 
