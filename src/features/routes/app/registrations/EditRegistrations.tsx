@@ -15,21 +15,6 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
     
     const addNewRegistrationTooltip = "Add new registration"
 
-    const handleRegsitrationChange = (index: number) => 
-        (change: (r : Registration) => Registration) => 
-    {
-        const registrationToChange = registrations[index]
-        if(!!registrationToChange){
-            const updatedRegistration = change(registrationToChange)
-            const newRegistrations = [...registrations]
-            newRegistrations[index] = updatedRegistration
-            setRegistrations(newRegistrations)
-        }
-        else{
-            throw new Error("Problem getting registration at index");            
-        }
-    }
-
     function addNewRegistration(){
         const addressLastUpdated = new Date()
         setRegistrations([{name: "", addressLastUpdated}, ...registrations])
@@ -61,20 +46,41 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='min-content repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
-                {registrations.map((r, i) => <EditRegistrationRow registration={r}
-                    key={i} handleRegistrationChange={handleRegsitrationChange(i)}/>)}
+                {registrations.map((_, i) => <EditRegistrationRow registrations={registrations}
+                    index={i} key={i} setRegistrations={setRegistrations}/>)}
             </Grid>
         </VStack>
     </VStack>        
 }
 
 type EditRegistrationRowProps = {
-    registration: Registration,
-    handleRegistrationChange: (change: (r : Registration) => Registration) => void
+    registrations: Registration[],
+    index: number,
+    setRegistrations: (newRegistrations: Registration[]) => void
 }
 
-const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, handleRegistrationChange}) => {
+const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index}) => {
     
+    const registration = registrations[index]
+
+    const handleRegistrationChange = (change: (r : Registration) => Registration) => 
+    {
+        const registrationToChange = registrations[index]
+        if(!!registrationToChange){
+            const updatedRegistration = change(registrationToChange)
+            const newRegistrations = [...registrations]
+            newRegistrations[index] = updatedRegistration
+            setRegistrations(newRegistrations)
+        }
+        else{
+            throw new Error("Problem getting registration at index");            
+        }
+    }
+
+    if(!registration){
+        throw new Error("Problem getting registration from registrations list");        
+    }
+
     const name = registration.name
     const hyperlink = registration.hyperlink
     const deleteButtonLabel = "Delete this registration"
@@ -84,6 +90,11 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
         (e : React.ChangeEvent<HTMLInputElement>) => {
             handleRegistrationChange(r => updater(r, e.target.value))
     }
+
+    function removeRegistration(){
+        setRegistrations(registrations.filter((_, i) => i != index))
+    }
+
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
         <GridItem>
@@ -91,7 +102,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, 
                 <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
                     <IconButton aria-label={deleteButtonLabel}
                         bg="inherit"
-                        icon={<Icon as={ImBin}/>} /*onClick={addNewRegistration}*//>
+                        icon={<Icon as={ImBin}/>} onClick={removeRegistration}/>
                 </Tooltip>
             </ButtonGroup>
         </GridItem>
