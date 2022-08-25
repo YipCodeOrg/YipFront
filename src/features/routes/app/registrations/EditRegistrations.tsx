@@ -6,10 +6,11 @@ import { Registration } from "../../../../packages/YipStackLib/types/userAddress
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
-    addressLabel: string
+    addressLabel: string,
+    handleRegsitrationChange: (index: number) => (change: (r : Registration) => Registration) => void
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, handleRegsitrationChange}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
 
@@ -38,44 +39,61 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(2, 1fr)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
-                {registrations.map(r => <EditRegistrationRow registration={r}/>)}
+                {registrations.map((r, i) => <EditRegistrationRow registration={r}
+                    handleRegistrationChange={handleRegsitrationChange(i)}/>)}
             </Grid>
         </VStack>
     </VStack>        
 }
 
 type EditRegistrationRowProps = {
-    registration: Registration
+    registration: Registration,
+    handleRegistrationChange: (change: (r : Registration) => Registration) => void
 }
 
-const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration}) => {
+const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registration, handleRegistrationChange}) => {
     
     const name = registration.name
     const hyperlink = registration.hyperlink
 
-    const HyperLinkCell = () => {
-        const props: InputProps = {
-            value: hyperlink
-        }
-        if(hyperlink === undefined){
-            props.placeholder="Add optional hyperlink"
-        }
-        return <Input {...props}/>
+    const handleInputRegistrationChange =
+        (updater: (r: Registration, s: string) => Registration) =>
+        (e : React.ChangeEvent<HTMLInputElement>) => {
+            handleRegistrationChange(r => updater(r, e.target.value))
+            e.target.focus()
     }
-
-    const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
-        return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
-            {children}
-        </GridItem>
-    }
-    
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <>
         <CustomGridItem>
-            <Input value={name}/>
+            <Input value={name}
+                onChange={handleInputRegistrationChange((r, s) => {return {...r, name: s}})}/>
         </CustomGridItem>
         <CustomGridItem>
-            <HyperLinkCell/>
+            <HyperLinkCell {...{hyperlink, handleInputRegistrationChange}}/>
         </CustomGridItem>
     </>
+}
+
+type HyperLinkCellProps = {
+    hyperlink: string | undefined,
+    handleInputRegistrationChange: (updater: (r: Registration, s: string) => Registration)
+        => (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegistrationChange}) => {
+    const props: InputProps = {
+        value: hyperlink,
+        onChange: handleInputRegistrationChange((r, s) => {return {...r, hyperlink: s}})
+    }
+    if(hyperlink === undefined){
+        props.placeholder="Add optional hyperlink"
+    }
+    return <Input {...props}/>
+}
+
+
+const CustomGridItem: React.FC<{children: JSX.Element}> = ({children}) => {
+    return <GridItem bg={useColorModeValue('gray.100', 'gray.900')} borderRadius="lg">
+        {children}
+    </GridItem>
 }
