@@ -49,11 +49,37 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
+                <TitleRow/>
                 {registrations.map((r, i) => <EditRegistrationRow registrations={registrations}
                     index={i} key={r.name} setRegistrations={setRegistrations}/>)}
             </Grid>
         </VStack>
     </VStack>        
+}
+
+const TitleRow = () => {
+    return <div style={{display: "contents"}}>
+        <GridItem/>
+        <GridItem>
+            <TitleHeading heading="Name"/>
+        </GridItem>
+        <GridItem>
+        <TitleHeading heading="Link"/>
+        </GridItem>
+    </div>
+}
+
+type TitleHeadingProps = {
+    heading: string
+}
+
+const TitleHeading: React.FC<TitleHeadingProps> = ({heading}) => {
+    return <Heading
+        fontWeight={600}
+        fontSize={{ base: 's', sm: 'm', md: 'l' }}
+        lineHeight={'110%'}>
+    {heading}
+    </Heading>
 }
 
 type EditRegistrationRowProps = {
