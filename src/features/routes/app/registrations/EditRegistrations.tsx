@@ -48,7 +48,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
-            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto)'
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow {...{registrations, setRegistrations}}/>
@@ -81,6 +81,11 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, setRegistrations}) =>
                 <TitleHeading heading="Link"/>
                 <AlphaSortButtons arr={registrations} setter={setRegistrations}
                     sortField={r => r.hyperlink ?? ""} />
+            </HStack>
+        </GridItem>
+        <GridItem>
+            <HStack h="100%">
+                <TitleHeading heading="Last Updated"/>
             </HStack>
         </GridItem>
     </div>
@@ -191,6 +196,11 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         </GridItem>
         <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
+        <GridItem bg={inputBg} borderRadius="lg">
+            <HStack justify="center" h="100%" p={1}>
+                <label>{registration.addressLastUpdated.toDateString()}</label>
+            </HStack>
+        </GridItem>
     </div>
 }
 
