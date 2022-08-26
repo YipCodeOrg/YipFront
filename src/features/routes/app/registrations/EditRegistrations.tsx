@@ -9,14 +9,16 @@ import { useDrag, useDrop } from "react-dnd"
 import { useCallback } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
+import { RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
     setRegistrations: (newRegistrations: Registration[]) => void
-    addressLabel: string
+    addressLabel: string,
+    addressLastUpdated: Date
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
 
@@ -48,11 +50,12 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
-            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content'
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content min-content'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow {...{registrations, setRegistrations}}/>
-                {registrations.map((_, i) => <EditRegistrationRow registrations={registrations}
+                {registrations.map((_, i) => <EditRegistrationRow
+                    {...{addressLastUpdated, registrations}}
                     index={i} key={i} setRegistrations={setRegistrations}/>)}
             </Grid>
         </VStack>
@@ -88,6 +91,11 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, setRegistrations}) =>
                 <TitleHeading heading="Last Updated"/>
             </HStack>
         </GridItem>
+        <GridItem>
+            <HStack h="100%">
+                <TitleHeading heading="Status"/>
+            </HStack>
+        </GridItem>
     </div>
 }
 
@@ -109,14 +117,15 @@ const TitleHeading: React.FC<TitleHeadingProps> = ({heading}) => {
 type EditRegistrationRowProps = {
     registrations: Registration[],
     index: number,
-    setRegistrations: (newRegistrations: Registration[]) => void
+    setRegistrations: (newRegistrations: Registration[]) => void,
+    addressLastUpdated: Date
 }
 
 const ItemTypes = {
     row: 'row'
 }
 
-const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index}) => {
+const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index, addressLastUpdated}) => {
     
     const registration = registrations[index]
 
@@ -199,6 +208,11 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <GridItem bg={inputBg} borderRadius="lg">
             <HStack justify="center" h="100%" p={1}>
                 <label>{registration.addressLastUpdated.toDateString()}</label>
+            </HStack>
+        </GridItem>
+        <GridItem bg={inputBg} borderRadius="lg">
+            <HStack justify="center" h="100%" p={1}>
+                <RegistrationUpdateStatusIcon {...{addressLastUpdated, registration}}/>
             </HStack>
         </GridItem>
     </div>

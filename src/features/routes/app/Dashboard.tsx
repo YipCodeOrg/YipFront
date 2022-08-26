@@ -14,6 +14,7 @@ import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { isRegistrationUpToDate, Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
+import { RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 
 export default function DashboardWrapper(){
     
@@ -227,24 +228,6 @@ const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
     </HStack>
 
     return hyperlink!! ? <Link href={hyperlink} target="_blank"><CardWithoutLink/></Link> : <CardWithoutLink/>
-}
-
-const RegistrationUpdateStatusIcon: React.FC<RegistrationCardProps> =
-    ({registration, addressLastUpdated}) => {
-    const isUpToDate = isRegistrationUpToDate(registration, addressLastUpdated)
-    if(isUpToDate){
-        return <Tooltip label="The address registered at this organisation is up to date.">
-                <Box h="16px">
-                    <Icon as={IoIosCheckmarkCircle} color="green.500"/>
-                </Box>
-            </Tooltip>
-    } else {
-        return <Tooltip label="The address registered at this organisation is out of date. Consider updating it.">
-            <Box h="16px">
-                <Icon as={HiExclamationCircle} color="red.500"/>
-            </Box>
-        </Tooltip>
-    }
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{

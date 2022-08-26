@@ -27,7 +27,8 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     const childProps: EditRegistrationsProps = {
         addressLabel,
         registrations,
-        setRegistrations
+        setRegistrations,
+        addressLastUpdated: arbitraryDate2
     }
 
     return <EditRegistrations {...childProps}/>
