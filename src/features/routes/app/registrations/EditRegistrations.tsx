@@ -50,8 +50,8 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow/>
-                {registrations.map((r, i) => <EditRegistrationRow registrations={registrations}
-                    index={i} key={r.name} setRegistrations={setRegistrations}/>)}
+                {registrations.map((_, i) => <EditRegistrationRow registrations={registrations}
+                    index={i} key={i} setRegistrations={setRegistrations}/>)}
             </Grid>
         </VStack>
     </VStack>        
