@@ -137,7 +137,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
 
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
-        <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg">
+        <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg" opacity="inherit">
             <ButtonGroup variant="ghost" isAttached>
                 <IconButton aria-label={"Move registration up or down"}
                     icon={<Icon as={BiMoveVertical}/>} ref={drag}/>
@@ -148,7 +148,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
             </ButtonGroup>
         </GridItem>
         <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
-        <GridItem bg={inputBg} borderRadius="lg">
+        <GridItem bg={inputBg} borderRadius="lg" opacity="inherit">
             <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
         </GridItem>
     </div>
@@ -177,7 +177,7 @@ const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange,
     if(!name){
         props.placeholder="Add name"
     }
-    return <GridItem bg={bg} borderRadius="lg">
+    return <GridItem bg={bg} borderRadius="lg" opacity="inherit">
             <Input {...props}/>
     </GridItem>
 }
