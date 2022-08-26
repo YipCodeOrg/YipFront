@@ -1,12 +1,13 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip } from "@chakra-ui/react"
-import { FaPlusCircle, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa"
+import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { BiMoveVertical } from "react-icons/bi"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
 import { useDrag, useDrop } from "react-dnd"
 import { useCallback } from "react"
+import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -84,48 +85,7 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, setRegistrations}) =>
     </div>
 }
 
-type FieldSortButtonsProps<T> = {
-    arr: T[],
-    setter: (newArr: T[]) => void,
-    sortField: (r: T) => string
-}
 
-function AlphaSortButtons<T>(props: React.PropsWithChildren<FieldSortButtonsProps<T>>){
-    
-    const {arr, setter, sortField} = props
-
-    const sortAtoZ = "Sort A to Z"
-    const sortZtoA = "Sort Z to A"
-
-    function compareForward(v1: T, v2: T) : number{
-        const f1 = sortField(v1)
-        const f2 = sortField(v2)
-        return f1.localeCompare(f2)
-    }
-
-    function compareBackward(v1: T, v2: T) : number{
-        return -compareForward(v1, v2)
-    }
-
-    function sortForward(){
-        setter([...arr.sort(compareForward)])
-    }
-
-    function sortBackward(){
-        setter([...arr.sort(compareBackward)])
-    }
-
-    return <ButtonGroup variant="ghost" isAttached>
-        <Tooltip label={sortAtoZ} placement="top" openDelay={1500}>
-            <IconButton aria-label={sortAtoZ}
-                icon={<Icon as={FaSortAlphaDown}/>} onClick={sortForward}/>
-        </Tooltip>
-        <Tooltip label={sortZtoA} placement="top" openDelay={1500}>
-            <IconButton aria-label={sortZtoA}
-                icon={<Icon as={FaSortAlphaUp}/>} onClick={sortBackward}/>
-        </Tooltip>
-    </ButtonGroup>
-}
 
 type TitleHeadingProps = {
     heading: string
