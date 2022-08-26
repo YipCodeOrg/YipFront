@@ -50,7 +50,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                     </Tooltip>
                 </ButtonGroup>
             </HStack>
-            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content min-content'
+            <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow {...{registrations, setRegistrations}}/>
@@ -89,11 +89,6 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, setRegistrations}) =>
         <GridItem>
             <HStack h="100%">
                 <TitleHeading heading="Last Updated"/>
-            </HStack>
-        </GridItem>
-        <GridItem>
-            <HStack h="100%">
-                <TitleHeading heading="Status"/>
             </HStack>
         </GridItem>
     </div>
@@ -216,20 +211,12 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
         <GridItem bg={inputBg} borderRadius="lg">
             <HStack justify="center" h="100%" p={2}>
-                <HStack>
-                    <label>{registration.addressLastUpdated.toDateString()}</label>
-                </HStack>
+                <label>{registration.addressLastUpdated.toDateString()}</label>
                 <HStack flexGrow={1}/>
-                <HStack>
-                    <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
-                        <IconButton aria-label={updateButtonlLabel}
-                            icon={<Icon as={MdUpdate}/>} onClick={updateRegistrationDate}/>
-                    </Tooltip>
-                </HStack>
-            </HStack>
-        </GridItem>
-        <GridItem bg={inputBg} borderRadius="lg">
-            <HStack justify="center" h="100%" p={1}>
+                <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
+                    <IconButton aria-label={updateButtonlLabel}
+                        icon={<Icon as={MdUpdate}/>} onClick={updateRegistrationDate}/>
+                </Tooltip>
                 <RegistrationUpdateStatusIcon {...{addressLastUpdated, registration}}/>
             </HStack>
         </GridItem>
