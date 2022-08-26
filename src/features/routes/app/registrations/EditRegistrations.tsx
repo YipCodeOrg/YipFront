@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip } from "@chakra-ui/react"
-import { FaPlusCircle } from "react-icons/fa"
+import { FaPlusCircle, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { BiMoveVertical } from "react-icons/bi"
@@ -49,7 +49,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto)'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
-                <TitleRow/>
+                <TitleRow {...{registrations, setRegistrations}}/>
                 {registrations.map((_, i) => <EditRegistrationRow registrations={registrations}
                     index={i} key={i} setRegistrations={setRegistrations}/>)}
             </Grid>
@@ -57,16 +57,74 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
     </VStack>        
 }
 
-const TitleRow = () => {
+type TitleRowProps = {
+    registrations: Registration[],
+    setRegistrations: (newRegistrations: Registration[]) => void
+}
+
+
+const TitleRow: React.FC<TitleRowProps> = ({registrations, setRegistrations}) => {
+
     return <div style={{display: "contents"}}>
         <GridItem/>
         <GridItem>
-            <TitleHeading heading="Name"/>
+            <HStack h="100%">
+                <TitleHeading heading="Name"/>
+                <AlphaSortButtons arr={registrations} setter={setRegistrations}
+                    sortField={r => r.name} />
+            </HStack>
         </GridItem>
         <GridItem>
-        <TitleHeading heading="Link"/>
+            <HStack h="100%">
+                <TitleHeading heading="Link"/>
+                <AlphaSortButtons arr={registrations} setter={setRegistrations}
+                    sortField={r => r.hyperlink ?? ""} />
+            </HStack>
         </GridItem>
     </div>
+}
+
+type FieldSortButtonsProps<T> = {
+    arr: T[],
+    setter: (newArr: T[]) => void,
+    sortField: (r: T) => string
+}
+
+function AlphaSortButtons<T>(props: React.PropsWithChildren<FieldSortButtonsProps<T>>){
+    
+    const {arr, setter, sortField} = props
+
+    const sortAtoZ = "Sort A to Z"
+    const sortZtoA = "Sort Z to A"
+
+    function compareForward(v1: T, v2: T) : number{
+        const f1 = sortField(v1)
+        const f2 = sortField(v2)
+        return f1.localeCompare(f2)
+    }
+
+    function compareBackward(v1: T, v2: T) : number{
+        return -compareForward(v1, v2)
+    }
+
+    function sortForward(){
+        setter(arr.sort(compareForward))
+    }
+
+    function sortBackward(){
+        setter(arr.sort(compareBackward))
+    }
+
+    return <ButtonGroup variant="ghost" isAttached>
+        <Tooltip label={sortAtoZ} placement="top" openDelay={1500}>
+            <IconButton aria-label={sortAtoZ}
+                icon={<Icon as={FaSortAlphaDown}/>} onClick={sortForward}/>
+        </Tooltip>
+        <Tooltip label={sortZtoA} placement="top" openDelay={1500}>
+            <IconButton aria-label={sortZtoA}
+                icon={<Icon as={FaSortAlphaUp}/>} onClick={sortBackward}/>
+        </Tooltip>
+    </ButtonGroup>
 }
 
 type TitleHeadingProps = {
