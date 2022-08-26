@@ -108,11 +108,11 @@ function AlphaSortButtons<T>(props: React.PropsWithChildren<FieldSortButtonsProp
     }
 
     function sortForward(){
-        setter(arr.sort(compareForward))
+        setter([...arr.sort(compareForward)])
     }
 
     function sortBackward(){
-        setter(arr.sort(compareBackward))
+        setter([...arr.sort(compareBackward)])
     }
 
     return <ButtonGroup variant="ghost" isAttached>
