@@ -137,7 +137,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
 
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
-        <GridItem>
+        <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg">
             <ButtonGroup variant="ghost" isAttached>
                 <IconButton aria-label={"Move registration up or down"}
                     icon={<Icon as={BiMoveVertical}/>} ref={drag}/>
