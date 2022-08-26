@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -8,6 +8,7 @@ import { Registration } from "../../../../packages/YipStackLib/types/userAddress
 import { useDrag, useDrop } from "react-dnd"
 import { useCallback } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
+import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -129,12 +130,9 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     }
 
     const handleMove = useCallback(function (from: number, to: number){
-        //alert(JSON.stringify(registrations.map(r => r.name)))
         const moveElement = registrations.splice(from, 1)[0]        
         if(moveElement !== undefined){
-            //alert(JSON.stringify(moveElement.name))
             registrations.splice(to, 0, moveElement)
-            //alert(JSON.stringify(registrations.map(r => r.name)))
             setRegistrations([...registrations])
         }
         else{
@@ -192,9 +190,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
             </ButtonGroup>
         </GridItem>
         <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
-        <GridItem bg={inputBg} borderRadius="lg" opacity="inherit">
-            <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}}/>
-        </GridItem>
+        <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
     </div>
 }
 
@@ -228,10 +224,11 @@ const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange,
 
 
 type HyperLinkCellProps = {
-    hyperlink: string
+    hyperlink: string,
+    bg: string
 } & GridCellProps
 
-const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegistrationChange}) => {
+const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegistrationChange, bg}) => {
     const props: InputProps = {
         value: hyperlink,
         onChange: handleInputRegistrationChange((r, s) => {return {...r, hyperlink: s}})
@@ -239,5 +236,14 @@ const HyperLinkCell: React.FC<HyperLinkCellProps> = ({hyperlink, handleInputRegi
     if(!hyperlink){
         props.placeholder="Add optional hyperlink"
     }
-    return <Input {...props}/>
+    return <GridItem bg="inherit">
+        <HStack>
+            <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
+            {hyperlink!!?  <Link href={hyperlink} target="_blank">
+                    <Icon as={BsFillArrowUpRightSquareFill}/>
+                </Link>
+                : <></>
+            }
+        </HStack>
+    </GridItem>
 }
