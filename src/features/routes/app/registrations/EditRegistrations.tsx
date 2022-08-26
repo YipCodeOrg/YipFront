@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
-import { MdEditNote } from "react-icons/md"
+import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { BiMoveVertical } from "react-icons/bi"
 import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
@@ -143,6 +143,14 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         }
     }
 
+    function updateRegistrationDate(){
+        function updateDate(r: Registration){
+            r.addressLastUpdated = new Date()
+            return r
+        }
+        handleRegistrationChange(updateDate)
+    }
+
     const handleMove = useCallback(function (from: number, to: number){
         const moveElement = registrations.splice(from, 1)[0]        
         if(moveElement !== undefined){
@@ -161,6 +169,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     const name = registration.name
     const hyperlink = registration.hyperlink
     const deleteButtonLabel = "Delete this registration"
+    const updateButtonlLabel = "Mark registration as up to date"
 
     const handleInputRegistrationChange =
         (updater: (r: Registration, s: string) => Registration) =>
@@ -206,8 +215,17 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
         <GridItem bg={inputBg} borderRadius="lg">
-            <HStack justify="center" h="100%" p={1}>
-                <label>{registration.addressLastUpdated.toDateString()}</label>
+            <HStack justify="center" h="100%" p={2}>
+                <HStack>
+                    <label>{registration.addressLastUpdated.toDateString()}</label>
+                </HStack>
+                <HStack flexGrow={1}/>
+                <HStack>
+                    <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
+                        <IconButton aria-label={updateButtonlLabel}
+                            icon={<Icon as={MdUpdate}/>} onClick={updateRegistrationDate}/>
+                    </Tooltip>
+                </HStack>
             </HStack>
         </GridItem>
         <GridItem bg={inputBg} borderRadius="lg">
