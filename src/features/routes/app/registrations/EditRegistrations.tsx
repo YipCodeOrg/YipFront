@@ -132,7 +132,8 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
           }),
     }), [handleMove])
 
-    const inputBg = isOver! ? 'cyan.400' : useColorModeValue('gray.100', 'gray.900')
+    const standardInputBg = useColorModeValue('gray.100', 'gray.900')
+    const inputBg = isOver! ? 'cyan.400' : standardInputBg
 
     //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
     return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
