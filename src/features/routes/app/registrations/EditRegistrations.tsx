@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -9,8 +9,8 @@ import { useCallback } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
-import { Registration, RegistrationsValidationResult } from "../../../../packages/YipStackLib/types/registrations"
-import { ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
+import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -29,7 +29,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
         setRegistrations([{name: "", addressLastUpdated}, ...registrations])
     }
 
-    function getRegsitrationValidation(i: number) : ValidationResult | null{
+    function getRegsitrationValidation(i: number) : RegistrationValidationResult | null{
         if(validation === null){
             return null
         }
@@ -142,7 +142,7 @@ type EditRegistrationRowProps = {
     index: number,
     setRegistrations: (newRegistrations: Registration[]) => void,
     addressLastUpdated: Date,
-    validation: ValidationResult | null
+    validation: RegistrationValidationResult | null
 }
 
 const ItemTypes = {
@@ -154,7 +154,7 @@ function updateDate(r: Registration){
     return r
 }
 
-const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index, addressLastUpdated}) => {
+const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations, setRegistrations, index, addressLastUpdated, validation}) => {
     
     const registration = registrations[index]
 
@@ -225,7 +225,8 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     const standardInputBg = useColorModeValue('gray.100', 'gray.900')
     const inputBg = isOver! ? 'cyan.400' : standardInputBg
 
-    //Non-MVP: Add FormControls here & use them to display validation errors around invalid entries?
+    const nameValidationResult = validation?.name ?? null
+
     return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
         <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg" opacity="inherit">
             <ButtonGroup variant="ghost" isAttached>
@@ -237,7 +238,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
                 </Tooltip>
             </ButtonGroup>
         </GridItem>
-        <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
+        <NameCell {...{name, handleInputRegistrationChange, nameValidationResult}} bg={inputBg}/>
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
         <GridItem bg={inputBg} borderRadius="lg">
             <HStack justify="center" h="100%" paddingRight={2} paddingLeft={2}>
@@ -260,15 +261,18 @@ type GridCellProps = {
 
 type NameCellProps = {
     name: string,
-    bg: string
+    bg: string,
+    nameValidationResult: ValidationResult | null
 } & GridCellProps
 
 type DragItem = {
     dragIndex: number
 }
 
-const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange, bg}) => {
+const NameCell: React.FC<NameCellProps> = ({name,
+handleInputRegistrationChange, bg, nameValidationResult}) => {
 
+    const anyErrors = hasErrors(nameValidationResult)
     const props: InputProps = {
         value: name,
         onChange: handleInputRegistrationChange((r, s) => {return {...r, name: s}})
@@ -277,7 +281,9 @@ const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange,
         props.placeholder="Add name"
     }
     return <GridItem bg="inherit">
+        <FormControl isInvalid={anyErrors}>
             <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
+        </FormControl>
     </GridItem>
 }
 
