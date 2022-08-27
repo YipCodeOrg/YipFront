@@ -210,11 +210,11 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <NameCell {...{name, handleInputRegistrationChange}} bg={inputBg}/>
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
         <GridItem bg={inputBg} borderRadius="lg">
-            <HStack justify="center" h="100%" p={2}>
+            <HStack justify="center" h="100%" paddingRight={2} paddingLeft={2}>
                 <label>{registration.addressLastUpdated.toDateString()}</label>
                 <HStack flexGrow={1}/>
                 <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
-                    <IconButton aria-label={updateButtonlLabel}
+                    <IconButton aria-label={updateButtonlLabel} bg="inherit"
                         icon={<Icon as={MdUpdate}/>} onClick={updateRegistrationDate}/>
                 </Tooltip>
                 <RegistrationUpdateStatusIcon {...{addressLastUpdated, registration}}/>
@@ -246,8 +246,8 @@ const NameCell: React.FC<NameCellProps> = ({name, handleInputRegistrationChange,
     if(!name){
         props.placeholder="Add name"
     }
-    return <GridItem bg={bg} borderRadius="lg" opacity="inherit">
-            <Input {...props}/>
+    return <GridItem bg="inherit">
+            <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
     </GridItem>
 }
 
