@@ -14,7 +14,7 @@ import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { isRegistrationUpToDate, Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
-import { RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
+import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 
 export default function DashboardWrapper(){
     
@@ -184,24 +184,6 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
             {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLastUpdated}/>)}
         </VStack>
     </VStack>
-}
-
-const AggregatedRegistrationUpdateStatusIcon: React.FC<RegistrationPanelPrpos> =
-    ({registrations, addressLastUpdated}) => {
-    const allUpToDate = registrations.every(r => isRegistrationUpToDate(r, addressLastUpdated))
-    if(allUpToDate){
-        return <Tooltip label="All registered addresses are up to date.">
-                <Box h="16px">
-                    <Icon as={IoIosCheckmarkCircle} color="green.500"/>
-                </Box>
-            </Tooltip>
-    } else {
-        return <Tooltip label="Some registered addresses are out of date. Consider updating them.">
-            <Box h="16px">
-                <Icon as={HiExclamationCircle} color="red.500"/>
-            </Box>
-        </Tooltip>
-    }
 }
 
 type RegistrationCardProps = {
