@@ -9,22 +9,35 @@ import { useCallback } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
-import { Registration } from "../../../../packages/YipStackLib/types/registrations"
+import { Registration, RegistrationsValidationResult } from "../../../../packages/YipStackLib/types/registrations"
+import { ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
     setRegistrations: (newRegistrations: Registration[]) => void
     addressLabel: string,
-    addressLastUpdated: Date
+    addressLastUpdated: Date,
+    validation: RegistrationsValidationResult | null
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
 
     function addNewRegistration(){
         const addressLastUpdated = new Date()
         setRegistrations([{name: "", addressLastUpdated}, ...registrations])
+    }
+
+    function getRegsitrationValidation(i: number) : ValidationResult | null{
+        if(validation === null){
+            return null
+        }
+        const result = validation.itemValidations[i]
+        if(result === undefined){
+            throw new Error("Unexpected out of bounds acess for validation object");            
+        }
+        return result
     }
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
@@ -56,7 +69,8 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
                 <TitleRow {...{registrations, addressLastUpdated, setRegistrations}}/>
                 {registrations.map((_, i) => <EditRegistrationRow
                     {...{addressLastUpdated, registrations}}
-                    index={i} key={i} setRegistrations={setRegistrations}/>)}
+                    index={i} key={i} setRegistrations={setRegistrations}
+                    validation={getRegsitrationValidation(i)} />)}
             </Grid>
         </VStack>
     </VStack>        
@@ -127,7 +141,8 @@ type EditRegistrationRowProps = {
     registrations: Registration[],
     index: number,
     setRegistrations: (newRegistrations: Registration[]) => void,
-    addressLastUpdated: Date
+    addressLastUpdated: Date,
+    validation: ValidationResult | null
 }
 
 const ItemTypes = {

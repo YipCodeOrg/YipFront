@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
-import { Registration } from "../../../../packages/YipStackLib/types/registrations";
+import { Registration, RegistrationsValidationResult } from "../../../../packages/YipStackLib/types/registrations";
 import { EditRegistrations, EditRegistrationsProps } from "./EditRegistrations";
 
 type StoryType = typeof StoryWrapper
@@ -17,10 +17,12 @@ const arbitraryDate3 = new Date(2022, 12)
 
 type EditRegistrationsStoryProps = {
     initialRegistrations: Registration[],
-    addressLabel: string
+    addressLabel: string,
+    validation: RegistrationsValidationResult | null
 }
 
-const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistrations, addressLabel}) => {
+const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistrations, addressLabel,
+    validation}) => {
     
     const [registrations, setRegistrations] = useState(initialRegistrations)
 
@@ -28,7 +30,8 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
         addressLabel,
         registrations,
         setRegistrations,
-        addressLastUpdated: arbitraryDate2
+        addressLastUpdated: arbitraryDate2,
+        validation
     }
 
     return <EditRegistrations {...childProps}/>
@@ -39,5 +42,6 @@ const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) 
 export const Standard = Template.bind({})
 Standard.args = {
     initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}],
-    addressLabel: "Work"
+    addressLabel: "Work",
+    validation: null
 }
