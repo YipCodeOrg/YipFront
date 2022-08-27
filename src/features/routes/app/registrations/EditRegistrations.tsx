@@ -4,12 +4,12 @@ import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { BiMoveVertical } from "react-icons/bi"
-import { Registration } from "../../../../packages/YipStackLib/types/userAddressData"
 import { useDrag, useDrop } from "react-dnd"
 import { useCallback } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
+import { Registration } from "../../../../packages/YipStackLib/types/registrations"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],

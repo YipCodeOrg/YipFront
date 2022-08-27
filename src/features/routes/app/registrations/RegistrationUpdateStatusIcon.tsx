@@ -1,7 +1,7 @@
 import { Box, Icon, Tooltip } from "@chakra-ui/react"
 import { HiExclamationCircle } from "react-icons/hi"
 import { IoIosCheckmarkCircle } from "react-icons/io"
-import { isRegistrationUpToDate, Registration } from "../../../../packages/YipStackLib/types/userAddressData"
+import { isRegistrationUpToDate, Registration } from "../../../../packages/YipStackLib/types/registrations"
 
 type RegistrationUpdateStatusIconProps = {
     registration: Registration,

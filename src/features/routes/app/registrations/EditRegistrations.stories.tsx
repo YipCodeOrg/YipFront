@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
-import { Registration } from "../../../../packages/YipStackLib/types/userAddressData";
+import { Registration } from "../../../../packages/YipStackLib/types/registrations";
 import { EditRegistrations, EditRegistrationsProps } from "./EditRegistrations";
 
 type StoryType = typeof StoryWrapper

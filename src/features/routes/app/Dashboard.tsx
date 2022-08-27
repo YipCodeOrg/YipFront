@@ -9,10 +9,11 @@ import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
 import { Logo } from "../../../components/core/Logo"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { Registration, UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
+import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
 import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
+import { Registration } from "../../../packages/YipStackLib/types/registrations"
 
 export default function DashboardWrapper(){
     
