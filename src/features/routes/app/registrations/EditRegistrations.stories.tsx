@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
-import { Registration, RegistrationsValidationResult } from "../../../../packages/YipStackLib/types/registrations";
+import { EmptyValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation";
+import { EmptyRegistrationValidationResult, Registration, RegistrationsValidationResult } from "../../../../packages/YipStackLib/types/registrations";
 import { EditRegistrations, EditRegistrationsProps } from "./EditRegistrations";
 
 type StoryType = typeof StoryWrapper
@@ -40,8 +41,27 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
 const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) => <StoryWrapper {...args}/>
 
 export const Standard = Template.bind({})
+
+const standardInitialRegistrations = [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}]
+
+const invalidNameResult = {
+    name: {
+        errors: ["Invalid name"],
+        warnings: []
+    }
+}
+
+function standardItemValidations(){
+    const validations = standardInitialRegistrations.map(_ => EmptyRegistrationValidationResult)
+    validations[3] = invalidNameResult
+    return validations
+}
+
 Standard.args = {
-    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}],
+    initialRegistrations: standardInitialRegistrations,
     addressLabel: "Work",
-    validation: null
+    validation: {
+        itemValidations: standardItemValidations(),
+        arrayValidationResult: EmptyValidationResult
+    }
 }

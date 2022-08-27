@@ -35,7 +35,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
         }
         const result = validation.itemValidations[i]
         if(result === undefined){
-            throw new Error("Unexpected out of bounds acess for validation object");            
+            throw new Error(`Index out of bounds: ${i}`)           
         }
         return result
     }
