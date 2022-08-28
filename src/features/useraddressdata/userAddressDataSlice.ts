@@ -5,9 +5,9 @@ import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStack
 import { createApiGetThunk, createStandardSlice } from "../../util/slices";
 import { useUserDataHubLoad } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
-import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/util/misc";
 import { useMemo } from "react";
 import { UserData } from "../../packages/YipStackLib/types/userData";
+import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/packages/YipAddress/util/arrayUtil";
 
 export const loadUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
     "userAddressData/load", "/addresses", isUserAddressDataArray)
