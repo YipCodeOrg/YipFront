@@ -62,6 +62,6 @@ Standard.args = {
     addressLabel: "Work",
     validation: {
         itemValidations: standardItemValidations(),
-        arrayValidationResult: EmptyValidationResult
+        topValidationResult: EmptyValidationResult
     }
 }
