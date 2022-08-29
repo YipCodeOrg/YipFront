@@ -17,10 +17,12 @@ export type EditRegistrationsProps = {
     setRegistrations: (newRegistrations: Registration[]) => void
     addressLabel: string,
     addressLastUpdated: Date,
-    validation: RegistrationsValidationResult | null
+    validation: RegistrationsValidationResult | null,
+    submitRegistrations: () => void
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
+submitRegistrations}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
 
@@ -56,7 +58,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registratio
             <HStack w="100%" justifyContent="flex-start">
                 <ButtonGroup isAttached variant='outline'
                     bg={useColorModeValue('gray.50', 'gray.900')} borderRadius="lg">                
-                    <Button>Save</Button>
+                    <Button onClick={submitRegistrations}>Save</Button>
                     <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
                         <IconButton aria-label={addNewRegistrationTooltip}
                             icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
