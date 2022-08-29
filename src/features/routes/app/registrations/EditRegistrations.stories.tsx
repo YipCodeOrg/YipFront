@@ -26,9 +26,11 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     const [validation, setValidation] = useState<RegistrationsValidationResult | null>(null)
 
 
-    function validateAndSetRegistrations(newRegistrations: Registration[]){
-        revalidate(newRegistrations)
+    function setAndMaybeValidate(newRegistrations: Registration[]){        
         setRegistrations(newRegistrations)
+        if(validation != null){
+            revalidate(newRegistrations)
+        }
     }
 
     function submitRegistrations(){
@@ -43,7 +45,7 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     const childProps: EditRegistrationsProps = {
         addressLabel,
         registrations,
-        setRegistrations: validateAndSetRegistrations,
+        setRegistrations: setAndMaybeValidate,
         addressLastUpdated: arbitraryDate2,
         validation,
         submitRegistrations
