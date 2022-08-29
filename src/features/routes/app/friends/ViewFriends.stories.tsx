@@ -15,3 +15,8 @@ export const Standard = Template.bind({})
 Standard.args = {
   friends: [{friend: {name: "Alice", yipCode: "QLC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded}]
 }
+
+export const Empty = Template.bind({})
+Empty.args = {
+  friends: []
+}
