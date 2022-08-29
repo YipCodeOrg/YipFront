@@ -14,6 +14,7 @@ import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
+import { MdEditNote } from "react-icons/md"
 
 export default function DashboardWrapper(){
     
@@ -169,11 +170,21 @@ type RegistrationPanelPrpos = {
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
     const {registrations, addressLastUpdated} = props
+
+    const editRegistrationsTooltip = "Edit registrations"
+
     return <VStack id="dashboard-registration" align="left" spacing="5px"
         justify="top">
         <HStack>
             <label>Registrations</label>
             <HStack flexGrow={1}/>
+            <Tooltip label={editRegistrationsTooltip} placement="top" openDelay={500}>
+                <RouterLink to={"/app/registrations/edit"}>
+                    <IconButton aria-label={editRegistrationsTooltip} bg="inherit">
+                        <Icon as={MdEditNote}/>
+                    </IconButton>
+                </RouterLink>
+            </Tooltip>       
             <HStack paddingRight="2">
                 <AggregatedRegistrationUpdateStatusIcon {...props}/>
             </HStack>
