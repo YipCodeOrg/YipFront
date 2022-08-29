@@ -242,8 +242,8 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         </GridItem>
         <NameCell {...{name, handleInputRegistrationChange, nameValidationResult}} bg={inputBg}/>
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
-        <GridItem bg={inputBg} borderRadius="lg">
-            <HStack justify="center" h="100%" paddingRight={2} paddingLeft={2}>
+        <GridItem bg="inherit">
+            <HStack bg={inputBg} borderRadius="lg" justify="center" paddingRight={2} paddingLeft={2}>
                 <label>{registration.addressLastUpdated.toDateString()}</label>
                 <HStack flexGrow={1}/>
                 <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
