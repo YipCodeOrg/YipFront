@@ -25,15 +25,25 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     const [registrations, setRegistrations] = useState(initialRegistrations)
     const [validation, setValidation] = useState<RegistrationsValidationResult | null>(null)
 
+
+    function validateAndSetRegistrations(newRegistrations: Registration[]){
+        revalidate(newRegistrations)
+        setRegistrations(newRegistrations)
+    }
+
     function submitRegistrations(){
-        const newValidation = validateRegistrations(registrations)
-        setValidation(newValidation)
+        revalidate(registrations)
+    }
+
+    function revalidate(rs: Registration[]){
+        const newValidation = validateRegistrations(rs)
+        setValidation(newValidation)        
     }
 
     const childProps: EditRegistrationsProps = {
         addressLabel,
         registrations,
-        setRegistrations,
+        setRegistrations: validateAndSetRegistrations,
         addressLastUpdated: arbitraryDate2,
         validation,
         submitRegistrations
