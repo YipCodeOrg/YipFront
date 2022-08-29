@@ -9,6 +9,26 @@ import { LoadStatus } from './types'
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
+export type FilterResult<T> = {
+    filtered: T[],
+    applyFilter: (f: (t: T) => boolean) => void,
+    clearFilter: () => void
+}
+
+export function useFilter<T>(ts: T[]): FilterResult<T>{
+    const [filtered, setFiltered] = useState(ts)
+
+    function applyFilter(f: (t: T) => boolean){
+        setFiltered(ts.filter(f))
+    }
+
+    function clearFilter(){
+        setFiltered(ts)
+    }
+
+    return {filtered, applyFilter, clearFilter}
+}
+
 export function useAsyncHubLoad<TReturn>(
     thunk: AsyncThunk<TReturn, MessagePort, {}>,
     dataSelector: (state: RootState) => TReturn | undefined,
