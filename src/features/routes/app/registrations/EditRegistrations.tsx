@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl, FormErrorMessage } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -283,8 +283,9 @@ handleInputRegistrationChange, bg, nameValidationResult}) => {
         props.placeholder="Add name"
     }
     return <GridItem bg="inherit">
-        <FormControl isInvalid={anyErrors}>
+        <FormControl isInvalid={anyErrors} isRequired>
             <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
+            <FormErrorMessage>Name is required.</FormErrorMessage>
         </FormControl>
     </GridItem>
 }
