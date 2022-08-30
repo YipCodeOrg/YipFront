@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack, Tooltip, VStack } from "@chakra-ui/react"
+import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack, Tooltip, VStack, useColorModeValue, Text } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { useFilter } from "../../../../app/hooks"
@@ -12,7 +12,7 @@ export type ViewFriendsProps = {
 export const ViewFriends: React.FC<ViewFriendsProps> = (props) => {
     const {friends} = props
     if(friends.length > 0){
-        return <ViewFriendsNonEmpty {...props}/>
+        return <ViewFriendsFilled {...props}/>
     } else {
         return <ViewFriendsEmpty/>
     }
@@ -47,10 +47,11 @@ function ViewFriendsEmpty(){
     </VStack>
 }
 
-const ViewFriendsNonEmpty: React.FC<ViewFriendsProps> = ({friends}) => {
+const ViewFriendsFilled: React.FC<ViewFriendsProps> = ({friends}) => {
 
     const filterFriendsTooltip = "Enter text to filter friends by name"
     const { filtered, applyFilter, clearFilter } = useFilter(friends)
+    const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
@@ -71,11 +72,25 @@ const ViewFriendsNonEmpty: React.FC<ViewFriendsProps> = ({friends}) => {
                     <Input onChange={handleFilterChange}/>
                 </Tooltip>
             </HStack>
-            <Flex w="100%" justifyContent="flex-start">
-                {filtered.map(f => JSON.stringify(f))}
+            <Flex w="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
+                bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap">
+                {filtered.map(f => <FriendCard friend={f}/>)}
             </Flex>
         </VStack>
    </VStack>
+}
+
+export type FriendCardProps = {
+    friend: LoadedFriend
+}
+
+const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
+    return <HStack boxShadow="lg"  maxW="400px"
+    bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">
+        <Text p="4" wordBreak="break-all">
+            {friend.friend.name}
+        </Text>        
+    </HStack>
 }
 
 function ViewFriendsHeading(){
