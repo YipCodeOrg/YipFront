@@ -1,28 +1,25 @@
-import { Box, Spinner, VStack } from "@chakra-ui/react"
+import { Spinner, StackProps, VStack } from "@chakra-ui/react"
 import { FunctionComponent } from "react"
 import { Logo } from "./Logo"
 
-type LoadingLogoProps = {
+interface LoadingLogoProps extends StackProps {
     lightCol:string,
     darkCol:string,
-    logoSize: number,
-    spinnerSize: string
+    logoSize: number
   }
 
-const LoadingLogo: FunctionComponent<LoadingLogoProps> = ({lightCol, darkCol, logoSize, spinnerSize}) =>{
-    return (
-        <Box style={{
-            position: 'fixed',
-            left: '50%',
-            top: '40%'
-        }}>
-            <VStack>
-                <Logo size={logoSize}
+const LoadingLogo: FunctionComponent<LoadingLogoProps> = ({lightCol, darkCol, logoSize, ...rest}) =>{
+    
+    const spinnerSize = logoSize/8
+    
+    return (        
+        <VStack {...rest}>
+            <Logo size={logoSize}
                     lightCol={lightCol}
-                    darkCol={darkCol}/>            
-                <Spinner size={spinnerSize} speed="1.4s"/>
-            </VStack>
-        </Box>
+                    darkCol={darkCol}/>    
+            <Spinner w={spinnerSize} h={spinnerSize} speed="1.4s">        
+            </Spinner>
+        </VStack>        
     )
 }
 

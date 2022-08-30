@@ -1,3 +1,4 @@
+import { StackProps } from "@chakra-ui/react"
 import { FunctionComponent } from "react"
 import { LoadStatus } from "../../app/types"
 import LoadingLogo from "../core/LoadingLogo"
@@ -6,11 +7,6 @@ type LoadStateWrapperProps = {
     status: LoadStatus,
     loadedElement: JSX.Element,
     loadingElement: JSX.Element
-}
-
-type LogoLoadStateWrapperProps = {
-    status: LoadStatus,
-    loadedElement: JSX.Element
 }
 
 const LoadStateWrapper: FunctionComponent<LoadStateWrapperProps> =
@@ -29,9 +25,14 @@ const LoadStateWrapper: FunctionComponent<LoadStateWrapperProps> =
     }
 }
 
+interface LogoLoadStateWrapperProps extends StackProps  {
+    status: LoadStatus,
+    loadedElement: JSX.Element
+}
+
 export const LogoLoadStateWrapper: FunctionComponent<LogoLoadStateWrapperProps> =
-    ({status, loadedElement}) => {
-        const spinner = <LoadingLogo lightCol='#000000' darkCol='#ffffff' logoSize={80} spinnerSize="md"/>
+    ({status, loadedElement, ...rest}) => {
+        const spinner = <LoadingLogo lightCol='#000000' darkCol='#ffffff' logoSize={80} {...rest}/>
         return <LoadStateWrapper status={status}
             loadedElement={loadedElement}
             loadingElement={spinner}

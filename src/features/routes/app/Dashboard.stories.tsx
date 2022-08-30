@@ -129,3 +129,9 @@ Long.args = {
   userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: longAddress.yipCode
 }
+
+export const Loading = Template.bind({})
+Loading.args = {
+  userAddressDataStatus: LoadStatus.Pending,
+  selectedYipCode: null
+}
