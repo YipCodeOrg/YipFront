@@ -13,7 +13,11 @@ const Template: ComponentStory<ViewFriendsType> = (args: ViewFriendsProps) => <V
 
 export const Standard = Template.bind({})
 Standard.args = {
-  friends: [{friend: {name: "Alice", yipCode: "QLC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded}]
+  friends: [{friend: {name: "Alice", yipCode: "QLC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded}]
 }
 
 export const Empty = Template.bind({})
