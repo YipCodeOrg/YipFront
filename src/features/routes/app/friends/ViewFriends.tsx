@@ -1,7 +1,8 @@
-import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack, Tooltip, VStack, useColorModeValue, Text, IconButton } from "@chakra-ui/react"
+import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
+    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
-import { BsThreeDots } from "react-icons/bs"
+import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { useFilter } from "../../../../app/hooks"
 import React from "react"
 import { Link as RouterLink } from "react-router-dom"
@@ -100,16 +101,27 @@ export type FriendCardProps = {
 const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
     
     const expandLabel = "Expand friend to see details"
+    const cardBg = useColorModeValue('gray.300', 'gray.700')
+    const textBg = useColorModeValue('gray.100', 'gray.900')
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     return <VStack boxShadow="lg" maxW="400px"
-    bg={useColorModeValue('gray.300', 'gray.700')} borderRadius="lg">
-        <Text p={3} wordBreak="break-all">
+        bg={cardBg} borderRadius="lg">
+        <Text m={3} p={2} wordBreak="break-all" bg={textBg} borderRadius="lg">
             {friend.friend.name}
         </Text>
-        <IconButton aria-label={expandLabel} w="100%"
-            borderTopLeftRadius="none" borderTopRightRadius="none">
-            <Icon as={BsThreeDots}/>
-        </IconButton>
+        <Box display={isOpen ? "none" : "inherit"} w="100%">
+            <IconButton aria-label={expandLabel} w="100%"
+                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={onOpen}>
+                <Icon as={MdExpandMore}/>
+            </IconButton>
+        </Box>
+        <Box display={isOpen ? "inherit" : "none"} w="100%">
+            <IconButton aria-label={expandLabel} w="100%"
+                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={onClose}>
+                <Icon as={MdExpandLess}/>
+            </IconButton>
+        </Box>
     </VStack>
 }
 
