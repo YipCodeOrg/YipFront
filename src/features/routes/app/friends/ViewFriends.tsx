@@ -1,6 +1,7 @@
-import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack, Tooltip, VStack, useColorModeValue, Text } from "@chakra-ui/react"
+import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack, Tooltip, VStack, useColorModeValue, Text, IconButton } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
+import { BsThreeDots } from "react-icons/bs"
 import { useFilter } from "../../../../app/hooks"
 import React from "react"
 import { Link as RouterLink } from "react-router-dom"
@@ -80,19 +81,6 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = ({friends}) => {
    </VStack>
 }
 
-export type FriendCardProps = {
-    friend: LoadedFriend
-}
-
-const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
-    return <HStack boxShadow="lg"  maxW="400px"
-    bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">
-        <Text p="4" wordBreak="break-all">
-            {friend.friend.name}
-        </Text>        
-    </HStack>
-}
-
 function ViewFriendsHeading(){
     return <Center>
         <Heading
@@ -104,3 +92,24 @@ function ViewFriendsHeading(){
         </Heading>
     </Center>
 }
+
+export type FriendCardProps = {
+    friend: LoadedFriend
+}
+
+const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
+    
+    const expandLabel = "Expand friend to see details"
+
+    return <VStack boxShadow="lg" maxW="400px"
+    bg={useColorModeValue('gray.300', 'gray.700')} borderRadius="lg">
+        <Text p={3} wordBreak="break-all">
+            {friend.friend.name}
+        </Text>
+        <IconButton aria-label={expandLabel} w="100%"
+            borderTopLeftRadius="none" borderTopRightRadius="none">
+            <Icon as={BsThreeDots}/>
+        </IconButton>
+    </VStack>
+}
+
