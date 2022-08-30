@@ -1,9 +1,9 @@
 import { LoadStatus } from "../../../../app/types"
-import { Address } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { Friend } from "../../../../packages/YipStackLib/types/friends"
+import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
 
 export type LoadedFriend = {
     friend: Friend,
-    address: Address | null,
+    address: AddressItem | null,
     addressLoadStatus: LoadStatus
 }
