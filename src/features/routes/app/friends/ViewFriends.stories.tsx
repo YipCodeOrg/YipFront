@@ -27,6 +27,22 @@ Standard.args = {
     {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    //Repeats
+    {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Pending},
+    {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Failed},
+    {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    //Repeats
+    {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Pending},
+    {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Failed},
+    {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
+    {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded}]
 }
 

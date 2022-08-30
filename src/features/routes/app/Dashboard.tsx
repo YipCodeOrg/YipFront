@@ -34,7 +34,7 @@ export const Dashboard: React.FC<DashboardProps> = ({userAddressData, userAddres
     const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode}}/> : <></>    
 
     return <LogoLoadStateWrapper status = {userAddressDataStatus} loadedElement={loadedElement}
-        h="100%" flexGrow={1} justify="center"/>
+        h="100%" flexGrow={1} justify="center" logoSize={80}/>
 }
 
 type LoadedDashboardProps = {

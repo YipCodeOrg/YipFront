@@ -14,35 +14,39 @@ type IsLoggedInProps = {
 const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
 //TODO: Refactor this to a general-purpose HOC
-const LoginWrapper: FunctionComponent<IsLoggedInProps> = ({isSignedUp, setIsSigedUp}) => {
-  
-    const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubLoad()
-    const {pathname} = useLocation()
+const LoginWrapper: FunctionComponent<IsLoggedInProps> = (props) => {
     const [,isHubLoadError] = useContext(HubContext)
-
-    const InnerWrapper = () =>{
-
-        const encodedPathname = encodeURIComponent(pathname)
-        if(isLoggedIn){
-            return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
-        }
-        else{
-            if(isSignedUp){
-                window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodedPathname}`)
-                return <>Navigating to login...</>
-            } else{
-                setIsSigedUp(true)
-                window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodedPathname}`)
-                return <>Navigating to signup...</>
-            }
-        }
-    }
+    const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubLoad()
 
     if(isHubLoadError){
         return <Center>ERROR LOADING PAGE</Center>
     } else{
-        return <EmptyLoadStateWrapper status={isLoggedInLoadStatus} loadedElement = {<InnerWrapper/>}/>
+        return <EmptyLoadStateWrapper status={isLoggedInLoadStatus}
+                loadedElement = {<InnerWrapper {...{isLoggedIn, ...props}}/>}/>
     }        
+}
+
+type InnerWrapperProps = {
+    isLoggedIn: boolean | undefined
+} & IsLoggedInProps
+
+const InnerWrapper: FunctionComponent<InnerWrapperProps> = ({isSignedUp, setIsSigedUp, isLoggedIn}) =>{
+    const {pathname} = useLocation()
+
+    const encodedPathname = encodeURIComponent(pathname)
+    if(isLoggedIn){
+        return <FullAppRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>
+    }
+    else{
+        if(isSignedUp){
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodedPathname}`)
+            return <>Navigating to login...</>
+        } else{
+            setIsSigedUp(true)
+            window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodedPathname}`)
+            return <>Navigating to signup...</>
+        }
+    }
 }
 
 

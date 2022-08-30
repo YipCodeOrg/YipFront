@@ -6,6 +6,9 @@ import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { useFilter } from "../../../../app/hooks"
 import React from "react"
 import { Link as RouterLink } from "react-router-dom"
+import { LoadStatus } from "../../../../app/types"
+import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
+import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
 
 export type ViewFriendsProps = {
     friends: LoadedFriend[]
@@ -74,9 +77,10 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = ({friends}) => {
                     <Input onChange={handleFilterChange}/>
                 </Tooltip>
             </HStack>
-            <Flex w="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
-                bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap">
-                {filtered.map(f => <FriendCard friend={f}/>)}
+            <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
+                bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
+                align="flex-start">
+                {filtered.map(f => <FriendCard loadedFriend={f}/>)}
             </Flex>
         </VStack>
    </VStack>
@@ -95,10 +99,10 @@ function ViewFriendsHeading(){
 }
 
 export type FriendCardProps = {
-    friend: LoadedFriend
+    loadedFriend: LoadedFriend
 }
 
-const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
+const FriendCard: React.FC<FriendCardProps> = ({loadedFriend}) => {
     
     const expandLabel = "Expand friend to see details"
     const cardBg = useColorModeValue('gray.300', 'gray.700')
@@ -108,7 +112,7 @@ const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
     return <VStack boxShadow="lg" maxW="400px"
         bg={cardBg} borderRadius="lg">
         <Text m={3} p={2} wordBreak="break-all" bg={textBg} borderRadius="lg">
-            {friend.friend.name}
+            {loadedFriend.friend.name}
         </Text>
         <Box display={isOpen ? "none" : "inherit"} w="100%">
             <IconButton aria-label={expandLabel} w="100%"
@@ -116,12 +120,33 @@ const FriendCard: React.FC<FriendCardProps> = ({friend}) => {
                 <Icon as={MdExpandMore}/>
             </IconButton>
         </Box>
-        <Box display={isOpen ? "inherit" : "none"} w="100%">
+        <VStack display={isOpen ? "inherit" : "none"} w="100%">
+            <CardContent {...{loadedFriend}}/>
             <IconButton aria-label={expandLabel} w="100%"
                 borderTopLeftRadius="none" borderTopRightRadius="none" onClick={onClose}>
                 <Icon as={MdExpandLess}/>
             </IconButton>
-        </Box>
+        </VStack>
     </VStack>
+}
+
+const CardContent: React.FC<FriendCardProps> = ({loadedFriend}) => {
+
+    const {address, addressLoadStatus} = loadedFriend
+    const loadedContent = addressLoadStatus === LoadStatus.Loaded && address!!?
+        <LoadedCardContent {...{address}}/> :
+        <></>
+    return <LogoLoadStateWrapper loadedElement={loadedContent} status={addressLoadStatus}
+        p={2} logoSize={40}/>
+}
+
+export type LoadedCardContentProps = {
+    address: AddressItem
+}
+
+const LoadedCardContent: React.FC<LoadedCardContentProps> = ({address}) => {    
+    return <Box>
+        {address.address.addressLines.join("\n")}
+    </Box>
 }
 
