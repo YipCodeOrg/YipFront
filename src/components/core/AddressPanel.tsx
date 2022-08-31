@@ -1,40 +1,48 @@
-import { HStack, IconButton, Tooltip, useClipboard, VStack, Text, useColorModeValue, List, ListItem, StackProps } from "@chakra-ui/react"
-import { FaCopy } from "react-icons/fa"
+import { HStack, VStack, Text, useColorModeValue, List, ListItem, StackProps, Spacer } from "@chakra-ui/react"    
+import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/core/address"
 import { UserAddressData } from "../../packages/YipStackLib/types/userAddressData"
+import { CopyTextButton } from "./CopyTextButton"
 
 type AddressPanelProps = {
     selectedYipCode: string,
-    selectedAddress: UserAddressData
+    selectedAddressData: UserAddressData
 } & StackProps
 
-export const AddressPanel: React.FC<AddressPanelProps> = ({selectedYipCode, selectedAddress, ...rest}) =>{
+export const AddressPanel: React.FC<AddressPanelProps> = ({selectedYipCode, selectedAddressData, ...rest}) =>{
     
-    const addressLines = selectedAddress.address.address.addressLines
+    const address = selectedAddressData.address.address
+    const addressLines = address.addressLines
+    const addressString = printAddress(address, "\n")    
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
-    const itemBg = useColorModeValue('gray.200', 'gray.700')
-    
-    const { hasCopied, onCopy } = useClipboard(selectedYipCode)
-    return <VStack  align="left" justify="top" maxW="100%" bg={panelBg} borderRadius="lg" p={4} {...rest}>        
-        <VStack maxW="100%" align="left">      
-            <Text as="u" textUnderlineOffset={3}>
-                YipCode
-            </Text>
-            <HStack borderRadius="lg">
-                <Text bg={itemBg} borderRadius="lg" p={2}>{selectedYipCode}</Text>
-                {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
-                <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
-                    <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
-                        icon={<FaCopy/>} onClick={onCopy} bg="inherit"/>
-                </Tooltip>
-            </HStack>
-        </VStack>
-        <VStack id="dashboard-address" align="left">
-            <Text as="u" textUnderlineOffset={3}>
-                Address
-            </Text>
-            <HStack>
-                <List>{addressLines.map(l => <AddressLine addressLine={l}/>)}</List>
-            </HStack>
+
+    return <VStack>
+        <HStack justify="left" w="100%">
+            <label>Address Details</label>
+            <Spacer/>
+        </HStack>
+        <VStack align="left" justify="top" maxW="100%" bg={panelBg} borderRadius="lg" p={4} {...rest}>        
+            <VStack maxW="100%" align="left">      
+                <Text as="u" textUnderlineOffset={3}>
+                    YipCode
+                </Text>
+                <HStack borderRadius="lg">
+                    <Text boxShadow='outline' borderRadius="lg" p={2}>{selectedYipCode}</Text>
+                    <CopyTextButton text={selectedYipCode} copiedMsg="YipCode copied" copyMsg="Copy YipCode"
+                        placement="top"/>
+                </HStack>
+            </VStack>
+            <VStack id="dashboard-address" align="left">
+                <Text as="u" textUnderlineOffset={3}>
+                    Address
+                </Text>
+                <HStack align="flex-start">
+                    <List boxShadow='outline' borderRadius="lg" p={2}>
+                        {addressLines.map(l => <AddressLine addressLine={l}/>)}
+                    </List>
+                    <CopyTextButton text={addressString} copiedMsg="Address copied" copyMsg="Copy Address"
+                        placement="top"/>
+                </HStack>
+            </VStack>
         </VStack>
     </VStack>
 }

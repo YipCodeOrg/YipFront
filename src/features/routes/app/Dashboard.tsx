@@ -64,7 +64,7 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
         <Sidebar {...sideBarProps}/>
         {!!selectedAddress && !!selectedYipCode ?
-            <DashboardContent {...{selectedYipCode, selectedAddress}}/> :
+            <DashboardContent {...{selectedYipCode, selectedAddressData: selectedAddress}}/> :
             <EmptyDashboardContent/>
         }        
     </HStack>
@@ -97,12 +97,12 @@ const EmptyDashboardContent = () => {
 
 type DashboardContentProps = {
     selectedYipCode: string,
-    selectedAddress: UserAddressData
+    selectedAddressData: UserAddressData
 }
 
 const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
-    const {selectedAddress} = props
+    const {selectedAddressData: selectedAddress} = props
     const addressName = getDisplayLabelForAddress(selectedAddress)
     const addressLastUpdated = selectedAddress.address.addressMetadata.lastUpdated
     
@@ -119,7 +119,7 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
             </Heading>
         </Center>
         {/*Medium-to-large screen*/}
-        <HStack align="top" spacing="15px" display={{ base: 'none', md: 'flex' }}>
+        <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'flex' }}>
             <AddressPanel {...props}/>
             <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
