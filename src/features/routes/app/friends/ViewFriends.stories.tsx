@@ -20,7 +20,9 @@ Standard.args = {
       postCode: 4
     }
   },
-  addressMetadata: {lastUpdated: arbitraryDate}}, addressLoadStatus: LoadStatus.Loaded},
+    addressMetadata: {lastUpdated: arbitraryDate},
+    yipCode: "QLC9229ALDN04"},
+    addressLoadStatus: LoadStatus.Loaded},
     {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Pending},
     {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Failed},

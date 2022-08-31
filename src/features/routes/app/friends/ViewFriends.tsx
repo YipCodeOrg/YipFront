@@ -135,17 +135,19 @@ const CardContent: React.FC<FriendCardProps> = ({loadedFriend}) => {
 
     const {address, addressLoadStatus} = loadedFriend
     const loadedContent = addressLoadStatus === LoadStatus.Loaded && address!!?
-        <LoadedCardContent {...{address}}/> :
+        <LoadedCardContent {...{addressItem: address}}/> :
         <></>
     return <LogoLoadStateWrapper loadedElement={loadedContent} status={addressLoadStatus}
         p={2} logoSize={40}/>
 }
 
 export type LoadedCardContentProps = {
-    address: AddressItem
+    addressItem: AddressItem
 }
 
-const LoadedCardContent: React.FC<LoadedCardContentProps> = ({address}) => {    
-    return <AddressPanel yipCode={address.yipCode} addressData={address.address}/>
+const LoadedCardContent: React.FC<LoadedCardContentProps> = ({addressItem}) => {    
+    return <Box p={2}>
+        <AddressPanel addressItem={addressItem}/>
+    </Box>
 }
 
