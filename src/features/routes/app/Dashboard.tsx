@@ -102,9 +102,9 @@ type DashboardContentProps = {
 
 const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
-    const {selectedAddressData: selectedAddress} = props
-    const addressName = getDisplayLabelForAddress(selectedAddress)
-    const addressLastUpdated = selectedAddress.address.addressMetadata.lastUpdated
+    const {selectedAddressData, selectedYipCode} = props
+    const addressName = getDisplayLabelForAddress(selectedAddressData)
+    const addressLastUpdated = selectedAddressData.address.addressMetadata.lastUpdated
     
     return <VStack maxW="100%" maxH="100%" height="100%"
             id="dashboard-content" style={{flex:1}} align="left" spacing={{ base: '10px', sm: '20px', md: '50px' }}>
@@ -120,13 +120,13 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         </Center>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'flex' }}>
-            <AddressPanel {...props}/>
-            <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
+            <AddressPanel yipCode={selectedYipCode} addressData={selectedAddressData}/>
+            <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
-            <AddressPanel {...props}/>
-            <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
+            <AddressPanel yipCode={selectedYipCode} addressData={selectedAddressData}/>
+            <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </VStack>
     </VStack>
 }

@@ -4,13 +4,13 @@ import { UserAddressData } from "../../packages/YipStackLib/types/userAddressDat
 import { CopyTextButton } from "./CopyTextButton"
 
 type AddressPanelProps = {
-    selectedYipCode: string,
-    selectedAddressData: UserAddressData
+    yipCode: string,
+    addressData: UserAddressData
 } & StackProps
 
-export const AddressPanel: React.FC<AddressPanelProps> = ({selectedYipCode, selectedAddressData, ...rest}) =>{
+export const AddressPanel: React.FC<AddressPanelProps> = ({yipCode: selectedYipCode, addressData, ...rest}) =>{
     
-    const address = selectedAddressData.address.address
+    const address = addressData.address.address
     const addressLines = address.addressLines
     const addressString = printAddress(address, "\n")    
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
