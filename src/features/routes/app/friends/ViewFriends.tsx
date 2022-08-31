@@ -106,12 +106,12 @@ const FriendCard: React.FC<FriendCardProps> = ({loadedFriend}) => {
     
     const expandLabel = "Expand friend to see details"
     const cardBg = useColorModeValue('gray.300', 'gray.700')
-    const textBg = useColorModeValue('gray.100', 'gray.900')
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     return <VStack boxShadow="lg" maxW="400px"
         bg={cardBg} borderRadius="lg">
-        <Text m={3} p={2} wordBreak="break-all" bg={textBg} borderRadius="lg">
+        <Text as="u" m={3} p={2} wordBreak="break-all" bg="inherit" fontWeight={600}
+            textUnderlineOffset={5}>
             {loadedFriend.friend.name}
         </Text>
         <Box display={isOpen ? "none" : "inherit"} w="100%">
