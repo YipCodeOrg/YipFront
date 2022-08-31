@@ -6,7 +6,7 @@ interface LoadingLogoProps extends StackProps {
     lightCol:string,
     darkCol:string,
     logoSize: number
-  }
+}
 
 const LoadingLogo: FunctionComponent<LoadingLogoProps> = ({lightCol, darkCol, logoSize, ...rest}) =>{
     

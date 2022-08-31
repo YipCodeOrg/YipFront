@@ -135,3 +135,9 @@ Loading.args = {
   userAddressDataStatus: LoadStatus.Pending,
   selectedYipCode: null
 }
+
+export const Failed = Template.bind({})
+Failed.args = {
+  userAddressDataStatus: LoadStatus.Failed,
+  selectedYipCode: null
+}
