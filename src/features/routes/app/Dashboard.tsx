@@ -1,20 +1,20 @@
-import { Button, Center, Heading, HStack, Icon, IconButton, Input, Stack,
-    Text, Textarea, Tooltip, useClipboard, VStack, useColorModeValue, Link } from "@chakra-ui/react"
+import { Button, Center, Heading, HStack, Icon, IconButton, Stack,
+    Text, Tooltip, VStack, useColorModeValue, Link } from "@chakra-ui/react"
 import { IconType } from "react-icons"
-import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope, FaCopy } from "react-icons/fa"
+import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../app/types"
 import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
-import { Logo } from "../../../components/core/Logo"
 import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData"
-import { growFlexProps, shrinkToParent } from "../../../util/cssHelpers"
+import { shrinkToParent } from "../../../util/cssHelpers"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
+import { AddressPanel } from "../../../components/core/AddressPanel"
 
 export default function DashboardWrapper(){
     
@@ -120,46 +120,13 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         </Center>
         {/*Medium-to-large screen*/}
         <HStack align="top" spacing="15px" display={{ base: 'none', md: 'flex' }}>
-            <YipCodeAndAddressContent {...props}/>
+            <AddressPanel {...props}/>
             <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
-            <YipCodeAndAddressContent {...props}/>
+            <AddressPanel {...props}/>
             <RegistrationPanel registrations={selectedAddress.registrations} addressLastUpdated={addressLastUpdated}/>
-        </VStack>
-    </VStack>
-}
-
-type YipCodeAndAddressContentProps = {
-    selectedYipCode: string,
-    selectedAddress: UserAddressData
-}
-
-const YipCodeAndAddressContent: React.FC<YipCodeAndAddressContentProps> = ({selectedYipCode, selectedAddress}) =>{
-    
-    const addressLines = selectedAddress.address.address.addressLines
-    
-    const { hasCopied, onCopy } = useClipboard(selectedYipCode)
-    return <VStack  align="left" justify="top" maxW="100%">        
-        <VStack maxW="100%" id="dashboard-yipcode" align="left">
-            <HStack>
-                <Logo lightCol='#000000' darkCol='#ffffff'size={17}/> 
-                <label>YipCode</label>
-            </HStack>
-            <HStack>
-                <Input readOnly={true} value={selectedYipCode}/>
-                {/*Non-MVP: Make tooltip disappear a fraction of a second after it's copied*/}
-                <Tooltip label={hasCopied ? "YipCode Copied" : "Copy YipCode"} closeOnClick={false}>
-                    <IconButton aria-label={"Click on this button to copy the YipCode to your clipboard"}
-                        icon={<FaCopy/>} onClick={onCopy}/>
-                </Tooltip>
-            </HStack>
-        </VStack>
-        <VStack id="dashboard-address" align="left">
-            <label>Address</label>
-            <Textarea style={growFlexProps} rows={addressLines.length} readOnly={true}
-                value={addressLines.join("\n")} resize="both"/>
         </VStack>
     </VStack>
 }
@@ -173,6 +140,7 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
     const {registrations, addressLastUpdated} = props
 
     const editRegistrationsTooltip = "Edit registrations"
+    const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     return <VStack id="dashboard-registration" align="left" spacing="5px"
         justify="top">
@@ -191,7 +159,7 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
             </HStack>
         </HStack>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
-            bg={useColorModeValue('gray.50', 'whiteAlpha.100')}>
+            bg={panelBg}>
             {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLastUpdated}/>)}
         </VStack>
     </VStack>
@@ -206,9 +174,10 @@ const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
     
     const {registration } = props
     const hyperlink = registration.hyperlink
+    const cardBg = useColorModeValue('gray.200', 'gray.700')
 
     const CardWithoutLink = () => <HStack boxShadow="lg"  maxW="400px"
-    bg={useColorModeValue('gray.200', 'gray.700')} borderRadius="lg">            
+    bg={cardBg} borderRadius="lg">            
         <Text p="4" flexGrow={1}>{registration.name}
         </Text>
         <VStack alignSelf="stretch" p="1">

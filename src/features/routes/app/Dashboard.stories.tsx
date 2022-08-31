@@ -49,7 +49,7 @@ const workAddress: UserAddressData = {
   yipCode: StoryYipCode.Work,
   name: "Work",
   address: {address:  {
-    addressLines: ["456 Money Lane", "Profit Road", "Cashville", "Workland", "BORINGPOSTCODE456"],
+    addressLines: ["456 Lots of Money Lane", "Profit Road", "Cashville", "Workland", "BORINGPOSTCODE456"],
     aliasMap: {
       postCode: 4
     }
