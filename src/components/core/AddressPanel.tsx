@@ -1,16 +1,16 @@
 import { HStack, VStack, Text, useColorModeValue, List, ListItem, StackProps, Spacer } from "@chakra-ui/react"    
 import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/core/address"
-import { UserAddressData } from "../../packages/YipStackLib/types/userAddressData"
+import { AddressItem } from "../../packages/YipStackLib/types/userAddressData"
 import { CopyTextButton } from "./CopyTextButton"
 
 type AddressPanelProps = {
-    yipCode: string,
-    addressData: UserAddressData
+    addressItem: AddressItem
 } & StackProps
 
-export const AddressPanel: React.FC<AddressPanelProps> = ({yipCode: selectedYipCode, addressData, ...rest}) =>{
+export const AddressPanel: React.FC<AddressPanelProps> = ({addressItem, ...rest}) =>{
     
-    const address = addressData.address.address
+    const address = addressItem.address
+    const yipCode = addressItem.yipCode
     const addressLines = address.addressLines
     const addressString = printAddress(address, "\n")    
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
@@ -26,8 +26,8 @@ export const AddressPanel: React.FC<AddressPanelProps> = ({yipCode: selectedYipC
                     YipCode
                 </Text>
                 <HStack borderRadius="lg">
-                    <Text boxShadow='outline' borderRadius="lg" p={2}>{selectedYipCode}</Text>
-                    <CopyTextButton text={selectedYipCode} copiedMsg="YipCode copied" copyMsg="Copy YipCode"
+                    <Text boxShadow='outline' borderRadius="lg" p={2}>{yipCode}</Text>
+                    <CopyTextButton text={yipCode} copiedMsg="YipCode copied" copyMsg="Copy YipCode"
                         placement="top"/>
                 </HStack>
             </VStack>
