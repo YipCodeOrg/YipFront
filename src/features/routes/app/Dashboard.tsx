@@ -63,8 +63,8 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
 
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
         <Sidebar {...sideBarProps}/>
-        {!!selectedAddress && !!selectedYipCode ?
-            <DashboardContent {...{selectedYipCode, selectedAddressData: selectedAddress}}/> :
+        {!!selectedAddress ?
+            <DashboardContent {...{selectedAddressData: selectedAddress}}/> :
             <EmptyDashboardContent/>
         }        
     </HStack>
@@ -96,13 +96,12 @@ const EmptyDashboardContent = () => {
 }
 
 type DashboardContentProps = {
-    selectedYipCode: string,
     selectedAddressData: UserAddressData
 }
 
 const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
-    const {selectedAddressData, selectedYipCode} = props
+    const {selectedAddressData} = props
     const addressName = getDisplayLabelForAddress(selectedAddressData)
     const addressLastUpdated = selectedAddressData.address.addressMetadata.lastUpdated
     
@@ -120,12 +119,12 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         </Center>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'flex' }}>
-            <AddressPanel yipCode={selectedYipCode} addressData={selectedAddressData}/>
+            <AddressPanel addressItem={selectedAddressData.address}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
-            <AddressPanel yipCode={selectedYipCode} addressData={selectedAddressData}/>
+            <AddressPanel addressItem={selectedAddressData.address}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </VStack>
     </VStack>
@@ -193,7 +192,7 @@ const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
 }
 
 function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
-    const yipCode = userAddressData.yipCode
+    const yipCode = userAddressData.address.yipCode
     const name = getDisplayLabelForAddress(userAddressData)
     return {
         key: yipCode,
@@ -204,7 +203,7 @@ function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : 
 }
 
 function getDisplayLabelForAddress(userAddressData: UserAddressData){
-    return userAddressData.name ?? userAddressData.yipCode
+    return userAddressData.name ?? userAddressData.address.yipCode
 }
 
 function getIconFromName(name: string): IconType{

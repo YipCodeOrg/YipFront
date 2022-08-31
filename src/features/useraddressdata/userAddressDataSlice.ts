@@ -51,7 +51,7 @@ export function getYipCodeToUserAddressMap(userAddressData: UserAddressData[] | 
     if(!userAddressData){
         return new Map<string, UserAddressData>() 
     } 
-    const map: Map<string, UserAddressData> = inverseDataMap(userAddressData, a => a.yipCode)
+    const map: Map<string, UserAddressData> = inverseDataMap(userAddressData, a => a.address.yipCode)
     return map
 }
 
@@ -59,7 +59,7 @@ function sortUserAddressDataByYipCodes(userAddressData: UserAddressData[] | unde
         userData: UserData | undefined) : UserAddressData[] | undefined{
     if(!!userAddressData && !!userData){
         const yipCodes = userData.data.yipCodes
-        return sortByKeyFunction(yipCodes, userAddressData, (data: UserAddressData) => data.yipCode)
+        return sortByKeyFunction(yipCodes, userAddressData, (data: UserAddressData) => data.address.yipCode)
     }
     return undefined
 }

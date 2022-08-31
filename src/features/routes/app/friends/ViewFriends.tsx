@@ -9,6 +9,7 @@ import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
 import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
+import { AddressPanel } from "../../../../components/core/AddressPanel"
 
 export type ViewFriendsProps = {
     friends: LoadedFriend[]
@@ -145,8 +146,6 @@ export type LoadedCardContentProps = {
 }
 
 const LoadedCardContent: React.FC<LoadedCardContentProps> = ({address}) => {    
-    return <Box>
-        {address.address.addressLines.join("\n")}
-    </Box>
+    return <AddressPanel yipCode={address.yipCode} addressData={address.address}/>
 }
 
