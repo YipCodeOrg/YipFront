@@ -1,5 +1,5 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
-    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box, Spacer } from "@chakra-ui/react"
+    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
