@@ -95,6 +95,12 @@ const emptyAddress: UserAddressData = {
   registrations: []
 }
 
+function anotherLongRegistration(){
+  return {name: "Another registration", addressLastUpdated: arbitraryDate3}
+}
+
+const moreLongRegistrations = [...Array(300).keys()].map(_ => anotherLongRegistration())
+
 const longAddress: UserAddressData = {
   sub: "cognito-sub",
   name: "Work",
@@ -106,7 +112,7 @@ const longAddress: UserAddressData = {
   },
     addressMetadata: {lastUpdated: arbitraryDate2},
     yipCode: StoryYipCode.Work},
-  registrations: [{name: "HateYourBoss.co.uk", addressLastUpdated: arbitraryDate3}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "A longer-than-expected registration description which serves to test what happens the display in this case.", addressLastUpdated: arbitraryDate3}, {name: "Bored.of.myjob", addressLastUpdated: arbitraryDate3}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}, {name: "Another registration", addressLastUpdated: arbitraryDate3}]
+  registrations: [{name: "HateYourBoss.co.uk", addressLastUpdated: arbitraryDate3}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "A longer-than-expected registration description which serves to test what happens the display in this case.", addressLastUpdated: arbitraryDate3}, {name: "Bored.of.myjob", addressLastUpdated: arbitraryDate3}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}, ...moreLongRegistrations]
 }
 
 export const Standard = Template.bind({})
