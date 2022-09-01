@@ -1,15 +1,17 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
-    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box } from "@chakra-ui/react"
+    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box, Spacer } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { useFilter } from "../../../../app/hooks"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
 import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
 import { AddressPanel } from "../../../../components/core/AddressPanel"
+import ReactPaginate from "react-paginate"
+import styled from "@emotion/styled"
 
 export type ViewFriendsProps = {
     friends: LoadedFriend[]
@@ -53,11 +55,108 @@ function ViewFriendsEmpty(){
     </VStack>
 }
 
+type StyledPaginationWrapperProps = {
+    size: "small" | "medium" | "large"
+}
+
+const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
+  ul {
+    display: flex;
+    w:100%;
+    list-style: none;
+    flex-wrap: wrap;
+
+    li {
+      a {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        padding: ${props => props.size === "small" ? "7px 9px" : props.size === "medium" ? "10px 12px" : "12px 15px"};
+        font-size: ${props => props.size};
+        font-weight: 600;
+        line-height: 100%;
+        outline: none;
+        margin: ${props => props.size === "small" ? "0 5px 5px 0" : props.size === "medium" ? "0 8px 8px 0" : "0 13px 13px 0"};;
+        cursor: pointer;
+        outline: none;
+      }
+
+      &:not(.break) a {
+        color: #000;
+        box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000,
+          inset 0 10px 2px -8px #e3e3e3, inset 0 10px 2px -8px #282828, inset 0 -9px 2px -8px #000,
+          0 0 4px 0 #000;
+        background-color: #8e8e8e;
+
+        &:hover,
+        &:focus {
+          color: #000;
+          text-decoration: none;
+          outline: 0;
+          box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000,
+            inset 0 9px 2px -8px #fff, inset 0 8px 4px -8px #000, inset 0 -8px 4px -8px #000,
+            inset 0 -9px 2px -8px #432400, 0 0 4px 0 #000, inset 0 0 4px 2px #f9b44b;
+          background-color: #e39827;
+          filter: drop-shadow(0 0 2px #f9b44b);
+        }
+      }
+
+      &.selected a {
+        position: relative;
+        padding-top: 12px;
+        padding-bottom: 8px;
+        box-shadow: inset 0 10px 2px -8px #000, inset 0 9px 2px -8px #000,
+          inset 8px 0 4px -8px #563a10, inset 8px 0 4px -8px #563a10, inset -8px 0 4px -8px #563a10,
+          inset -8px 0 4px -8px #563a10, inset 0 9px 2px -8px #563a10, inset 0 -9px 2px -8px #563a10,
+          inset 0 -8.5px 0 -8px #563a10, 0 0 4px 0 #000;
+        background-color: #f1be64;
+        filter: none;
+        outline: 0;
+      }
+
+      &.disabled a,
+      &.disabled a:hover {
+        cursor: default;
+        filter: none;
+        background-color: #3d3d3d;
+        color: #818181;
+        box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000, inset 0 8px 4px -8px #000,
+          inset 0 -6px 4px -8px #818181, inset 0 -8px 4px -8px #000, 0 0 4px 0 #000;
+      }
+    }
+  }
+`
+
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const {friends} = props    
     const { filtered, applyFilter, clearFilter } = useFilter(friends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
+
+    /// START PAGINATION STUFF
+
+    const itemsPerPage = 20
+
+    const [currentItems, setCurrentItems] = useState<LoadedFriend[]>([]);
+    const [pageCount, setPageCount] = useState(0);
+    const [itemOffset, setItemOffset] = useState(0);
+
+    useEffect(() => {
+        const endOffset = itemOffset + itemsPerPage;
+        console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+        setCurrentItems(filtered.slice(itemOffset, endOffset));
+        setPageCount(Math.ceil(filtered.length / itemsPerPage));
+      }, [itemOffset, itemsPerPage, filtered]);
+    
+      const handlePageClick = (event: { selected: number }) => {
+        const newOffset = (event.selected * itemsPerPage) % filtered.length;
+        console.log(
+          `User requested page number ${event.selected}, which is offset ${newOffset}`
+        );
+        setItemOffset(newOffset);
+      };
+
+    /// END PAGINATION STUFF
 
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
@@ -72,28 +171,42 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     spacing={{ base: '10px', sm: '20px', md: '50px' }}>
         <ViewFriendsHeading/>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
-            <HStack>
+            <HStack w="100%">
+                <HStack w="50%">
+                    <StyledPaginationWrapper size="small">
+                        <ReactPaginate
+                            breakLabel="..."
+                            nextLabel="next >"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={2}
+                            pageCount={pageCount}
+                            previousLabel="< previous"
+                        />
+                    </StyledPaginationWrapper>
+                    <Spacer/>
+                </HStack>
                 <label>Filter: </label>
                 <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
-                    <Input onChange={handleFilterChange}/>
+                    <Input onChange={handleFilterChange} w="100"/>
                 </Tooltip>
+                <Spacer/>
             </HStack>
-            <ViewFriendsPanel {...{filtered}}/>
+            <ViewFriendsPanel {...{displayFriends: currentItems}}/>
         </VStack>
    </VStack>
 }
 
 type ViewFriendsPanelProps = {
-    filtered: LoadedFriend[]
+    displayFriends: LoadedFriend[]
 }
 
-const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({filtered}) => {
+const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({displayFriends}) => {
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     return <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
         bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
         align="flex-start">
-        {filtered.map(f => <FriendCard loadedFriend={f}/>)}
+        {displayFriends.map(f => <FriendCard loadedFriend={f}/>)}
     </Flex>
 }
 
