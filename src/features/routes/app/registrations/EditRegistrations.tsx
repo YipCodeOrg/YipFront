@@ -233,7 +233,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg" opacity="inherit">
             <ButtonGroup variant="ghost" isAttached>
                 <IconButton aria-label={"Move registration up or down"}
-                    icon={<Icon as={BiMoveVertical}/>} ref={drag}/>
+                    icon={<Icon as={BiMoveVertical}/>} ref={drag} cursor="grab"/>
                 <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
                     <IconButton aria-label={deleteButtonLabel}
                         icon={<Icon as={ImBin}/>} onClick={removeRegistration}/>
