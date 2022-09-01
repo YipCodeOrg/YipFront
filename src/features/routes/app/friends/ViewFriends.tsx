@@ -165,28 +165,24 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     spacing={{ base: '10px', sm: '20px', md: '50px' }}>
         <ViewFriendsHeading/>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
-            <HStack w="100%">
-                <HStack w="50%">
-                    <StyledPaginationWrapper size="small" {...{textColor, buttonColor, selectedButtonColor}}>
-                        <ReactPaginate
-                            breakLabel="..."
-                            nextLabel="next >"
-                            onPageChange={handlePageClick}
-                            pageRangeDisplayed={2}
-                            pageCount={pageCount}
-                            previousLabel="< previous"
-                            forcePage={selectedPage}
-                        />
-                    </StyledPaginationWrapper>
-                    <Spacer/>
-                </HStack>
+            <HStack>
                 <label>Filter: </label>
                 <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
-                    <Input onChange={handleFilterChange} w="100"/>
+                    <Input onChange={handleFilterChange}/>
                 </Tooltip>
-                <Spacer/>
             </HStack>
-            <ViewFriendsPanel {...{displayFriends: currentItems}}/>
+            <ViewFriendsPanel {...{displayFriends: currentItems}}/>            
+            <StyledPaginationWrapper size="small" {...{textColor, buttonColor, selectedButtonColor}}>
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="next >"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={2}
+                    pageCount={pageCount}
+                    previousLabel="< previous"
+                    forcePage={selectedPage}
+                />
+            </StyledPaginationWrapper>                        
         </VStack>
    </VStack>
 }
