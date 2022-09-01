@@ -137,24 +137,29 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const itemsPerPage = 20
 
-    const [currentItems, setCurrentItems] = useState<LoadedFriend[]>([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [itemOffset, setItemOffset] = useState(0);
+    const [currentItems, setCurrentItems] = useState<LoadedFriend[]>([])
+    const [pageCount, setPageCount] = useState(0)
+    const [itemOffset, setItemOffset] = useState(0)
+    const [selectedPage, setSelectedPage] = useState(0)
 
     useEffect(() => {
-        const endOffset = itemOffset + itemsPerPage;
-        console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-        setCurrentItems(filtered.slice(itemOffset, endOffset));
-        setPageCount(Math.ceil(filtered.length / itemsPerPage));
-      }, [itemOffset, itemsPerPage, filtered]);
-    
-      const handlePageClick = (event: { selected: number }) => {
-        const newOffset = (event.selected * itemsPerPage) % filtered.length;
-        console.log(
-          `User requested page number ${event.selected}, which is offset ${newOffset}`
-        );
-        setItemOffset(newOffset);
-      };
+        const effectiveOffset = itemOffset 
+        const endOffset = effectiveOffset + itemsPerPage
+        setCurrentItems(filtered.slice(effectiveOffset, endOffset))
+        setPageCount(Math.ceil(filtered.length / itemsPerPage))
+      }, [itemOffset, itemsPerPage, filtered])
+
+      useEffect(() => {
+        setSelectedPage(0)
+        setItemOffset(0)
+      }, [filtered, setSelectedPage, setItemOffset])
+
+    const handlePageClick = (event: { selected: number }) => {
+        const newPage = event.selected 
+        const newOffset = newPage * itemsPerPage % filtered.length        
+        setItemOffset(newOffset)
+        setSelectedPage(newPage)
+    }
 
     /// END PAGINATION STUFF
 
@@ -181,6 +186,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                             pageRangeDisplayed={2}
                             pageCount={pageCount}
                             previousLabel="< previous"
+                            forcePage={selectedPage}
                         />
                     </StyledPaginationWrapper>
                     <Spacer/>
