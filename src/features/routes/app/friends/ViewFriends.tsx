@@ -53,11 +53,11 @@ function ViewFriendsEmpty(){
     </VStack>
 }
 
-const ViewFriendsFilled: React.FC<ViewFriendsProps> = ({friends}) => {
+const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
-    const filterFriendsTooltip = "Enter text to filter friends by name"
+    const {friends} = props    
     const { filtered, applyFilter, clearFilter } = useFilter(friends)
-    const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
+    const filterFriendsTooltip = "Enter text to filter friends by name"
 
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
@@ -78,13 +78,23 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = ({friends}) => {
                     <Input onChange={handleFilterChange}/>
                 </Tooltip>
             </HStack>
-            <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
-                bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
-                align="flex-start">
-                {filtered.map(f => <FriendCard loadedFriend={f}/>)}
-            </Flex>
+            <ViewFriendsPanel {...{filtered}}/>
         </VStack>
    </VStack>
+}
+
+type ViewFriendsPanelProps = {
+    filtered: LoadedFriend[]
+}
+
+const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({filtered}) => {
+    const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
+
+    return <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
+        bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
+        align="flex-start">
+        {filtered.map(f => <FriendCard loadedFriend={f}/>)}
+    </Flex>
 }
 
 function ViewFriendsHeading(){
