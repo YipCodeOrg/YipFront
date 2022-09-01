@@ -95,6 +95,7 @@ const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
 
       &.selected a {
         outline: solid;
+        outline-color: #63b3ed;
         background-color: ${props => props.selectedButtonColor};
       }
 
