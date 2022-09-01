@@ -18,6 +18,10 @@ export type FilterResult<T> = {
 export function useFilter<T>(ts: T[]): FilterResult<T>{
     const [filtered, setFiltered] = useState(ts)
 
+    useEffect(() => {
+        setFiltered(ts)
+    }, [ts])
+
     function applyFilter(f: (t: T) => boolean){
         setFiltered(ts.filter(f))
     }
