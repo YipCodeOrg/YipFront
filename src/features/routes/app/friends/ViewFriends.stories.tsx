@@ -62,7 +62,7 @@ function longRepeatedFriend(i: number){
     },
     addressMetadata: {lastUpdated: arbitraryDate},
     yipCode: "QLC9229ALDN04"},
-    addressLoadStatus: i % 2 === 0 ? LoadStatus.Pending : LoadStatus.Loaded}
+    addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
 }
 
 const longFriends = [...Array(300).keys()].map((_, i) => longRepeatedFriend(i))
