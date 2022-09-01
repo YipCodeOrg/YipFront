@@ -52,3 +52,22 @@ export const Empty = Template.bind({})
 Empty.args = {
   friends: []
 }
+
+function longRepeatedFriend(i: number){
+  return {friend: {name: `BOB-${i}`, yipCode: "QLC9229ALDN04"}, address: {address: {
+      addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
+      aliasMap: {
+        postCode: 4
+      }
+    },
+    addressMetadata: {lastUpdated: arbitraryDate},
+    yipCode: "QLC9229ALDN04"},
+    addressLoadStatus: i % 2 === 0 ? LoadStatus.Pending : LoadStatus.Loaded}
+}
+
+const longFriends = [...Array(300).keys()].map((_, i) => longRepeatedFriend(i))
+
+export const Long = Template.bind({})
+Long.args={
+  friends: longFriends
+}
