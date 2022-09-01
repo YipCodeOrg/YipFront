@@ -56,7 +56,10 @@ function ViewFriendsEmpty(){
 }
 
 type StyledPaginationWrapperProps = {
-    size: "small" | "medium" | "large"
+    size: "small" | "medium" | "large",
+    textColor: string,
+    buttonColor: string,
+    selectedButtonColor: string
 }
 
 const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
@@ -67,6 +70,7 @@ const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
     flex-wrap: wrap;
 
     li {
+
       a {
         display: flex;
         justify-content: center;
@@ -78,50 +82,27 @@ const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
         outline: none;
         margin: ${props => props.size === "small" ? "0 5px 5px 0" : props.size === "medium" ? "0 8px 8px 0" : "0 13px 13px 0"};;
         cursor: pointer;
-        outline: none;
       }
 
       &:not(.break) a {
-        color: #000;
-        box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000,
-          inset 0 10px 2px -8px #e3e3e3, inset 0 10px 2px -8px #282828, inset 0 -9px 2px -8px #000,
-          0 0 4px 0 #000;
-        background-color: #8e8e8e;
-
-        &:hover,
-        &:focus {
-          color: #000;
-          text-decoration: none;
-          outline: 0;
-          box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000,
-            inset 0 9px 2px -8px #fff, inset 0 8px 4px -8px #000, inset 0 -8px 4px -8px #000,
-            inset 0 -9px 2px -8px #432400, 0 0 4px 0 #000, inset 0 0 4px 2px #f9b44b;
-          background-color: #e39827;
-          filter: drop-shadow(0 0 2px #f9b44b);
+        color: ${props => props.textColor};
+        background-color: ${props => props.buttonColor};
+        border-radius: ${props => props.size === "small" ? "3px" : props.size === "medium" ? "5px" : "8px"};
+        &:hover {
+          background-color: #00B5D8;
         }
       }
 
       &.selected a {
-        position: relative;
-        padding-top: 12px;
-        padding-bottom: 8px;
-        box-shadow: inset 0 10px 2px -8px #000, inset 0 9px 2px -8px #000,
-          inset 8px 0 4px -8px #563a10, inset 8px 0 4px -8px #563a10, inset -8px 0 4px -8px #563a10,
-          inset -8px 0 4px -8px #563a10, inset 0 9px 2px -8px #563a10, inset 0 -9px 2px -8px #563a10,
-          inset 0 -8.5px 0 -8px #563a10, 0 0 4px 0 #000;
-        background-color: #f1be64;
-        filter: none;
-        outline: 0;
+        outline: solid;
+        background-color: ${props => props.selectedButtonColor};
       }
 
       &.disabled a,
       &.disabled a:hover {
         cursor: default;
-        filter: none;
         background-color: #3d3d3d;
         color: #818181;
-        box-shadow: inset 8px 0 4px -8px #000, inset -8px 0 4px -8px #000, inset 0 8px 4px -8px #000,
-          inset 0 -6px 4px -8px #818181, inset 0 -8px 4px -8px #000, 0 0 4px 0 #000;
       }
     }
   }
@@ -163,6 +144,14 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     /// END PAGINATION STUFF
 
+    /// START PAGINATION COMPONENT STUFF
+
+    const textColor = useColorModeValue('#000000', '#ffffff')
+    const buttonColor = useColorModeValue('#CBD5E0', '#4A5568')
+    const selectedButtonColor = useColorModeValue('#EDF2F7', '#171923')
+
+    /// END PAGINATION COMPONENT STUFF
+
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
         if(v){
@@ -178,7 +167,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%">
                 <HStack w="50%">
-                    <StyledPaginationWrapper size="small">
+                    <StyledPaginationWrapper size="small" {...{textColor, buttonColor, selectedButtonColor}}>
                         <ReactPaginate
                             breakLabel="..."
                             nextLabel="next >"
