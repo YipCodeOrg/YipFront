@@ -212,7 +212,7 @@ const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({displayFriends}) => 
     return <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
         bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
         align="flex-start">
-        {displayFriends.map(f => <FriendCard loadedFriend={f}/>)}
+        {displayFriends.map(f => <FriendCard loadedFriend={f} key={f.friend.yipCode}/>)}
     </Flex>
 }
 

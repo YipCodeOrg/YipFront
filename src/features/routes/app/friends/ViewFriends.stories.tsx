@@ -29,22 +29,6 @@ Standard.args = {
     {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    //Repeats
-    {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Pending},
-    {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Failed},
-    {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    //Repeats
-    {friend: {name: "BOB", yipCode: "XEC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Pending},
-    {friend: {name: "Gauss", yipCode: "FFC9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "Euler", yipCode: "EY9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.Failed},
-    {friend: {name: "Einstein", yipCode: "NN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
-    {friend: {name: "David Rogers", yipCode: "EN9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded},
     {friend: {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}, address: null, addressLoadStatus: LoadStatus.NotLoaded}]
 }
 
@@ -52,22 +36,26 @@ export const Empty = Template.bind({})
 Empty.args = {
   friends: []
 }
+const longFriends = [...Array(300).keys()].map((_, i) => longRepeatedFriend(i))
+
+export const Long = Template.bind({})
+Long.args={
+  friends: longFriends
+}
+
+// Helpers
 
 function longRepeatedFriend(i: number){
-  return {friend: {name: `BOB-${i}`, yipCode: "QLC9229ALDN04"}, address: {address: {
+  
+  const yipCode = `QLC9229ALD${i}`
+  
+  return {friend: {name: `BOB-${i}`, yipCode}, address: {address: {
       addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
       aliasMap: {
         postCode: 4
       }
     },
     addressMetadata: {lastUpdated: arbitraryDate},
-    yipCode: "QLC9229ALDN04"},
+    yipCode},
     addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
-}
-
-const longFriends = [...Array(300).keys()].map((_, i) => longRepeatedFriend(i))
-
-export const Long = Template.bind({})
-Long.args={
-  friends: longFriends
 }
