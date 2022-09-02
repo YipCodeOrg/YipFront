@@ -1,10 +1,10 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
-    Tooltip, VStack, useColorModeValue, Text, IconButton, useDisclosure, Box } from "@chakra-ui/react"
+    Tooltip, VStack, useColorModeValue, Text, IconButton, Box } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { useFilter } from "../../../../app/hooks"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
 import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
@@ -109,17 +109,53 @@ const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
   }
 `
 
+/// START MISC STUFF
+
+type Indexed<T> = {
+    obj: T,
+    index: number
+}
+
+type DisclosureResult = {
+    isOpen: boolean,
+    setOpen: () => void,
+    setClosed: () => void
+}
+
+/// END MISC STUFF
+
+type FriendCardProps = {
+    loadedFriend: LoadedFriend
+    disclosure: DisclosureResult
+}
+
+/// START HOOKS STUFF
+
+function useMapped<T, TRet>(t: T, f: (u: T) => TRet){
+    const [ret, setRet] = useState<TRet>(() => f(t))
+
+    useEffect(() => {
+        setRet(f(t))
+    }, [setRet, t])
+
+    return ret
+}
+
+/// END HOOKS STUFF
+
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
-    const {friends} = props    
-    const { filtered, applyFilter, clearFilter } = useFilter(friends)
+    const {friends} = props
+    const indexedFriends: Indexed<LoadedFriend>[] = useMapped(friends, (f) =>
+        f.map((f, i) => {return {obj: f, index: i}}))
+    const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
 
     /// START PAGINATION STUFF
 
     const itemsPerPage = 20
 
-    const [currentItems, setCurrentItems] = useState<LoadedFriend[]>([])
+    const [currentItems, setCurrentItems] = useState<Indexed<LoadedFriend>[]>([])
     const [pageCount, setPageCount] = useState(0)
     const [itemOffset, setItemOffset] = useState(0)
     const [selectedPage, setSelectedPage] = useState(0)
@@ -153,10 +189,58 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     /// END PAGINATION COMPONENT STUFF
 
+    /// START USE DISCLOSURES STUFF
+
+    const [isOpenArr, setIsOpenArr] = useState<boolean[]>(() => indexedFriends.map(_ => false))
+
+    const setOpen = useCallback(function(i: number){
+        if(i < isOpenArr.length){
+            const newIsOpenArr = [...isOpenArr]
+            newIsOpenArr[i] = true
+            setIsOpenArr(newIsOpenArr)
+        }
+    }, isOpenArr)
+    
+    const setClosed = useCallback(function(i: number){
+        if(i < isOpenArr.length){
+            const newIsOpenArr = [...isOpenArr]
+            newIsOpenArr[i] = false
+            setIsOpenArr(newIsOpenArr)
+        }
+    }, isOpenArr)
+
+    const disclosures: DisclosureResult[] = useMapped(isOpenArr, (arr) => {
+        return arr.map((b, i) => {
+            return {
+                isOpen: b,
+                setOpen: () => setOpen(i),
+                setClosed: () => setClosed(i)
+            }
+        })
+    })
+    
+    /// END USE DISCLOSURE STUFF
+
+    const fuse = useCallback(function(f: Indexed<LoadedFriend>) : FriendCardProps{
+        
+        const disclosure = disclosures[f.index]
+
+        if(disclosure === undefined){
+            throw new Error("Unexpected undefined disclosure when indexing")
+        }
+
+        return {
+            loadedFriend: f.obj,
+            disclosure
+        }
+    }, [disclosures])
+
+    const fusedItems = useMemo(() => currentItems.map(fuse), [currentItems, fuse])
+
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
         if(v){
-            applyFilter(t => t.friend.name.toLocaleLowerCase().includes(v.toLocaleLowerCase()))
+            applyFilter(t => t.obj.friend.name.toLocaleLowerCase().includes(v.toLocaleLowerCase()))
         } else{
             clearFilter()
         }
@@ -172,7 +256,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                     <Input onChange={handleFilterChange}/>
                 </Tooltip>
             </HStack>
-            <ViewFriendsPanel {...{displayFriends: currentItems}}/>            
+            <ViewFriendsPanel {...{cardProps: fusedItems}}/>            
             <StyledPaginationWrapper size="small" {...{textColor, buttonColor, selectedButtonColor}}>
                 <ReactPaginate
                     breakLabel="..."
@@ -189,16 +273,16 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 }
 
 type ViewFriendsPanelProps = {
-    displayFriends: LoadedFriend[]
+    cardProps: FriendCardProps[]
 }
 
-const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({displayFriends}) => {
+const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps}) => {
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     return <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
         bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
         align="flex-start">
-        {displayFriends.map(f => <FriendCard loadedFriend={f} key={f.friend.yipCode}/>)}
+        {cardProps.map(p => <FriendCard {...p} key={p.loadedFriend.friend.yipCode}/>)}
     </Flex>
 }
 
@@ -214,15 +298,12 @@ function ViewFriendsHeading(){
     </Center>
 }
 
-export type FriendCardProps = {
-    loadedFriend: LoadedFriend
-}
-
-const FriendCard: React.FC<FriendCardProps> = ({loadedFriend}) => {
+const FriendCard: React.FC<FriendCardProps> = (props) => {
     
     const expandLabel = "Expand friend to see details"
     const cardBg = useColorModeValue('gray.300', 'gray.700')
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, setOpen, setClosed } = props.disclosure
+    const {loadedFriend} = props
 
     return <VStack boxShadow="lg" maxW="400px"
         bg={cardBg} borderRadius="lg">
@@ -232,14 +313,14 @@ const FriendCard: React.FC<FriendCardProps> = ({loadedFriend}) => {
         </Text>
         <Box display={isOpen ? "none" : "inherit"} w="100%">
             <IconButton aria-label={expandLabel} w="100%"
-                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={onOpen}>
+                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={setOpen}>
                 <Icon as={MdExpandMore}/>
             </IconButton>
         </Box>
         <VStack display={isOpen ? "inherit" : "none"} w="100%">
-            <CardContent {...{loadedFriend}}/>
+            <CardContent {...props}/>
             <IconButton aria-label={expandLabel} w="100%"
-                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={onClose}>
+                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={setClosed}>
                 <Icon as={MdExpandLess}/>
             </IconButton>
         </VStack>
