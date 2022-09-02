@@ -3,7 +3,7 @@ import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
-import { useFilter } from "../../../../app/hooks"
+import { DisclosureResult, useDisclosures, useFilter, useMapped } from "../../../../app/hooks"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
@@ -116,32 +116,12 @@ type Indexed<T> = {
     index: number
 }
 
-type DisclosureResult = {
-    isOpen: boolean,
-    setOpen: () => void,
-    setClosed: () => void
-}
-
 /// END MISC STUFF
 
 type FriendCardProps = {
     loadedFriend: LoadedFriend
     disclosure: DisclosureResult
 }
-
-/// START HOOKS STUFF
-
-function useMapped<T, TRet>(t: T, f: (u: T) => TRet){
-    const [ret, setRet] = useState<TRet>(() => f(t))
-
-    useEffect(() => {
-        setRet(f(t))
-    }, [setRet, t])
-
-    return ret
-}
-
-/// END HOOKS STUFF
 
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
@@ -189,37 +169,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     /// END PAGINATION COMPONENT STUFF
 
-    /// START USE DISCLOSURES STUFF
-
-    const [isOpenArr, setIsOpenArr] = useState<boolean[]>(() => indexedFriends.map(_ => false))
-
-    const setOpen = useCallback(function(i: number){
-        if(i < isOpenArr.length){
-            const newIsOpenArr = [...isOpenArr]
-            newIsOpenArr[i] = true
-            setIsOpenArr(newIsOpenArr)
-        }
-    }, isOpenArr)
-    
-    const setClosed = useCallback(function(i: number){
-        if(i < isOpenArr.length){
-            const newIsOpenArr = [...isOpenArr]
-            newIsOpenArr[i] = false
-            setIsOpenArr(newIsOpenArr)
-        }
-    }, isOpenArr)
-
-    const disclosures: DisclosureResult[] = useMapped(isOpenArr, (arr) => {
-        return arr.map((b, i) => {
-            return {
-                isOpen: b,
-                setOpen: () => setOpen(i),
-                setClosed: () => setClosed(i)
-            }
-        })
-    })
-    
-    /// END USE DISCLOSURE STUFF
+    const disclosures = useDisclosures(indexedFriends)
 
     const fuse = useCallback(function(f: Indexed<LoadedFriend>) : FriendCardProps{
         

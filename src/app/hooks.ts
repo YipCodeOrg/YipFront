@@ -1,5 +1,5 @@
 import { AsyncThunk } from '@reduxjs/toolkit'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
@@ -8,6 +8,62 @@ import { LoadStatus } from './types'
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+
+export type DisclosureResult = {
+    isOpen: boolean,
+    setOpen: () => void,
+    setClosed: () => void
+}
+
+export function useDisclosures<T>(t: T[]){
+    const [isOpenArr, setIsOpenArr] = useMutableMapped<T[], boolean[]>(
+        t, u => u.map(_ => false))
+
+    const setOpen = useCallback(function(i: number){
+        if(i < isOpenArr.length){
+            const newIsOpenArr = [...isOpenArr]
+            newIsOpenArr[i] = true
+            setIsOpenArr(newIsOpenArr)
+        }
+    }, isOpenArr)
+    
+    const setClosed = useCallback(function(i: number){
+        if(i < isOpenArr.length){
+            const newIsOpenArr = [...isOpenArr]
+            newIsOpenArr[i] = false
+            setIsOpenArr(newIsOpenArr)
+        }
+    }, isOpenArr)
+
+    const disclosures: DisclosureResult[] = useMapped(isOpenArr, (arr) => {
+        return arr.map((b, i) => {
+            return {
+                isOpen: b,
+                setOpen: () => setOpen(i),
+                setClosed: () => setClosed(i)
+            }
+        })
+    })
+
+    return disclosures
+}
+
+export function useMutableMapped<T, TRet>(t: T, f: (u: T) => TRet)
+: [TRet, (t: TRet) => void]{
+    const [ret, setRet] = useState<TRet>(() => f(t))
+
+    useEffect(() => {
+        setRet(f(t))
+    }, [setRet, t])
+
+    return [ret, setRet]
+}
+
+export function useMapped<T, TRet>(t: T, f: (u: T) => TRet){
+    const [ret, _] = useMutableMapped(t, f)
+    return ret
+}
 
 export type FilterResult<T> = {
     filtered: T[],
