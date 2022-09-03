@@ -1,5 +1,5 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
-    Tooltip, VStack, useColorModeValue, Text, IconButton, Box } from "@chakra-ui/react"
+    Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
@@ -13,6 +13,7 @@ import { AddressPanel, YipCodeAndCopyButton } from "../../../../components/core/
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { Friend } from "../../../../packages/YipStackLib/types/friends"
+import { BsChevronContract } from "react-icons/bs"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -69,12 +70,14 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         f.map((f, i) => {return {obj: f, index: i}}))
     const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
+    const collapseAllTooltip = "Collapse all card details"
     const itemsPerPage = 20
 
     const {currentItems, pageCount, selectedPage, handlePageClick} = 
         usePagination(itemsPerPage, filtered)
 
-    const disclosures = useDisclosures(indexedFriends)
+    const { disclosures, setAllClosed } = useDisclosures(indexedFriends)
+
 
     const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardProps{
         
@@ -120,16 +123,23 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
             return (nameLower.includes(filterValueLower) || yipCodeLower.includes(filterValueLower))
         }
     }
-
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
     spacing={{ base: '10px', sm: '20px', md: '50px' }}>
         <ViewFriendsHeading/>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
-            <HStack>
+            <HStack w="100%">
+                <Box pl={4}>
+                    <Tooltip label={collapseAllTooltip} placement="top" openDelay={1500}>
+                        <IconButton icon={<BsChevronContract/>} aria-label="collapseAllTooltip"
+                            onClick={setAllClosed}/>
+                    </Tooltip>
+                </Box>
+                <Spacer/>
                 <label>Filter: </label>
                 <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
-                    <Input onChange={handleFilterChange}/>
+                    <Input onChange={handleFilterChange} maxW="500px"/>
                 </Tooltip>
+                <Spacer/>
             </HStack>
             <ViewFriendsPanel {...{cardProps: fusedItems}}/>            
             <StyledPagination size="small"

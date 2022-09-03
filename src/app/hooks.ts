@@ -55,7 +55,13 @@ export type DisclosureResult = {
     setClosed: () => void
 }
 
-export function useDisclosures<T>(t: T[]){
+export type DisclosuresResult = {
+    disclosures: DisclosureResult[],
+    setAllOpen: () => void,
+    setAllClosed: () => void
+}
+
+export function useDisclosures<T>(t: T[]): DisclosuresResult{
     const [isOpenArr, setIsOpenArr] = useMutableMapped<T[], boolean[]>(
         t, u => u.map(_ => false))
 
@@ -65,7 +71,7 @@ export function useDisclosures<T>(t: T[]){
             newIsOpenArr[i] = true
             setIsOpenArr(newIsOpenArr)
         }
-    }, isOpenArr)
+    }, [isOpenArr, setIsOpenArr])
     
     const setClosed = useCallback(function(i: number){
         if(i < isOpenArr.length){
@@ -73,7 +79,15 @@ export function useDisclosures<T>(t: T[]){
             newIsOpenArr[i] = false
             setIsOpenArr(newIsOpenArr)
         }
-    }, isOpenArr)
+    }, [isOpenArr, setIsOpenArr])
+    
+    const setAllOpen = useCallback(function(){
+        setIsOpenArr(isOpenArr.map(_ => true))
+    }, [isOpenArr, setIsOpenArr])
+    
+    const setAllClosed = useCallback(function(){
+        setIsOpenArr(isOpenArr.map(_ => false))    
+    }, [isOpenArr, setIsOpenArr])
 
     const disclosures: DisclosureResult[] = useMapped(isOpenArr, (arr) => {
         return arr.map((b, i) => {
@@ -85,7 +99,11 @@ export function useDisclosures<T>(t: T[]){
         })
     })
 
-    return disclosures
+    return {
+        disclosures,
+        setAllOpen,
+        setAllClosed
+    }
 }
 
 export function useMutableMapped<T, TRet>(t: T, f: (u: T) => TRet)
