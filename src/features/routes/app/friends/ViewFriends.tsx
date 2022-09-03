@@ -3,8 +3,8 @@ import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
-import { DisclosureResult, useDisclosures, useFilter, useMapped } from "../../../../app/hooks"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { DisclosureResult, useDisclosures, useFilter, useMapped, usePagination } from "../../../../app/hooks"
+import React, { useCallback, useMemo } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
 import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
@@ -122,36 +122,10 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         f.map((f, i) => {return {obj: f, index: i}}))
     const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
-
-    /// START PAGINATION STUFF
-
     const itemsPerPage = 20
 
-    const [currentItems, setCurrentItems] = useState<Indexed<LoadedFriend>[]>([])
-    const [pageCount, setPageCount] = useState(0)
-    const [itemOffset, setItemOffset] = useState(0)
-    const [selectedPage, setSelectedPage] = useState(0)
-
-    useEffect(() => {
-        const effectiveOffset = itemOffset 
-        const endOffset = effectiveOffset + itemsPerPage
-        setCurrentItems(filtered.slice(effectiveOffset, endOffset))
-        setPageCount(Math.ceil(filtered.length / itemsPerPage))
-      }, [itemOffset, itemsPerPage, filtered])
-
-      useEffect(() => {
-        setSelectedPage(0)
-        setItemOffset(0)
-      }, [filtered, setSelectedPage, setItemOffset])
-
-    const handlePageClick = (event: { selected: number }) => {
-        const newPage = event.selected 
-        const newOffset = newPage * itemsPerPage % filtered.length        
-        setItemOffset(newOffset)
-        setSelectedPage(newPage)
-    }
-
-    /// END PAGINATION STUFF
+    const {currentItems, pageCount, selectedPage, handlePageClick} = 
+        usePagination(itemsPerPage, filtered)
 
     /// START PAGINATION COMPONENT STUFF
 

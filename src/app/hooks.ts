@@ -9,6 +9,45 @@ import { LoadStatus } from './types'
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
+export type PaginationResult<T> = {
+    currentItems: T[],
+    pageCount: number,
+    selectedPage: number,
+    handlePageClick: (event: { selected: number }) => void
+}
+
+export function usePagination<T>(itemsPerPage: number, data: T[]) : PaginationResult<T>{
+
+    const [currentItems, setCurrentItems] = useState<T[]>([])
+    const [pageCount, setPageCount] = useState(0)
+    const [itemOffset, setItemOffset] = useState(0)
+    const [selectedPage, setSelectedPage] = useState(0)
+
+    useEffect(() => { 
+        const endOffset = itemOffset + itemsPerPage
+        setCurrentItems(data.slice(itemOffset, endOffset))
+        setPageCount(Math.ceil(data.length / itemsPerPage))
+      }, [itemOffset, itemsPerPage, data])
+
+      useEffect(() => {
+        setSelectedPage(0)
+        setItemOffset(0)
+      }, [data, setSelectedPage, setItemOffset])
+
+    const handlePageClick = (event: { selected: number }) => {
+        const newPage = event.selected 
+        const newOffset = newPage * itemsPerPage % data.length        
+        setItemOffset(newOffset)
+        setSelectedPage(newPage)
+    }
+
+    return {
+        currentItems,
+        pageCount,
+        selectedPage,
+        handlePageClick
+    }
+}
 
 export type DisclosureResult = {
     isOpen: boolean,
