@@ -2,6 +2,7 @@ import { HStack, VStack, Text, useColorModeValue, List, ListItem, StackProps, Sp
 import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/core/address"
 import { AddressItem } from "../../packages/YipStackLib/types/userAddressData"
 import { CopyTextButton } from "./CopyTextButton"
+import { InfoButton } from "./InfoButton"
 
 type AddressPanelProps = {
     addressItem: AddressItem,
@@ -33,7 +34,11 @@ export const AddressPanel: React.FC<AddressPanelProps> = ({addressItem, displayY
                     <CopyTextButton text={addressString} copiedMsg="Address copied" copyMsg="Copy Address"
                         placement="top"/>
                 </HStack>
-                <LabelText text="Address Last Updated"/>
+                <HStack>
+                    <LabelText text="Address Last Updated"/>
+                    <InfoButton infoMessage="Address Last Updated is the date when this address was last updated on yipcode.com."
+                        placement="top"/>
+                </HStack>
                 <HStack align="flex-start">
                     <Text boxShadow='outline' borderRadius="lg" p={2}>
                         {addressLastUpdatedString}
