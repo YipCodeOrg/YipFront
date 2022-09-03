@@ -12,6 +12,7 @@ import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrappe
 import { AddressPanel } from "../../../../components/core/AddressPanel"
 import ReactPaginate from "react-paginate"
 import styled from "@emotion/styled"
+import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 
 export type ViewFriendsProps = {
     friends: LoadedFriend[]
@@ -108,15 +109,6 @@ const StyledPaginationWrapper = styled(HStack)<StyledPaginationWrapperProps>`
     }
   }
 `
-
-/// START MISC STUFF
-
-type Indexed<T> = {
-    obj: T,
-    index: number
-}
-
-/// END MISC STUFF
 
 type FriendCardProps = {
     loadedFriend: LoadedFriend
