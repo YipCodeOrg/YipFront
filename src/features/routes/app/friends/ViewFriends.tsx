@@ -106,9 +106,18 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
         if(v){
-            applyFilter(t => t.obj.name.toLocaleLowerCase().includes(v.toLocaleLowerCase()))
+            applyFilter(filterFunction(v))
         } else{
             clearFilter()
+        }
+    }
+
+    function filterFunction(filterValue: string): (f: Indexed<Friend>) =>  boolean{
+        return (f) => {
+            const nameLower = f.obj.name.toLocaleLowerCase()
+            const yipCodeLower = f.obj.yipCode.toLocaleLowerCase()
+            const filterValueLower = filterValue.toLocaleLowerCase()
+            return (nameLower.includes(filterValueLower) || yipCodeLower.includes(filterValueLower))
         }
     }
 
