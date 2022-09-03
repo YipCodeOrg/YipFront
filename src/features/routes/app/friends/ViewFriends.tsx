@@ -12,9 +12,11 @@ import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrappe
 import { AddressPanel } from "../../../../components/core/AddressPanel"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
+import { Friend } from "../../../../packages/YipStackLib/types/friends"
 
 export type ViewFriendsProps = {
-    friends: LoadedFriend[]
+    friends: Friend[],
+    loadedFriends: LoadedFriend[]
 }
 
 export const ViewFriends: React.FC<ViewFriendsProps> = (props) => {
@@ -62,8 +64,8 @@ type FriendCardProps = {
 
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
-    const {friends} = props
-    const indexedFriends: Indexed<LoadedFriend>[] = useMapped(friends, (f) =>
+    const {friends, loadedFriends} = props
+    const indexedFriends: Indexed<Friend>[] = useMapped(friends, (f) =>
         f.map((f, i) => {return {obj: f, index: i}}))
     const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
@@ -74,16 +76,27 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const disclosures = useDisclosures(indexedFriends)
 
-    const fuse = useCallback(function(f: Indexed<LoadedFriend>) : FriendCardProps{
+    const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardProps{
         
-        const disclosure = disclosures[f.index]
+        const index = f.index
+        const disclosure = disclosures[index]
+        let loadedFriend = loadedFriends[index]
 
         if(disclosure === undefined){
-            throw new Error("Unexpected undefined disclosure when indexing")
+            throw new Error("Unexpected undefined data when indexing")
+        }
+
+        if(loadedFriend === undefined){
+            console.warn("Unexpected undefined loaded friend data encountered - returning load failure")
+            loadedFriend = {
+                friend: f.obj,
+                address: null,
+                addressLoadStatus: LoadStatus.Failed
+            }
         }
 
         return {
-            loadedFriend: f.obj,
+            loadedFriend,
             disclosure
         }
     }, [disclosures])
@@ -93,7 +106,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
         const v = e.target.value
         if(v){
-            applyFilter(t => t.obj.friend.name.toLocaleLowerCase().includes(v.toLocaleLowerCase()))
+            applyFilter(t => t.obj.name.toLocaleLowerCase().includes(v.toLocaleLowerCase()))
         } else{
             clearFilter()
         }
