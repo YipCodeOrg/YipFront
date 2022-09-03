@@ -9,7 +9,7 @@ import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
 import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
-import { AddressPanel } from "../../../../components/core/AddressPanel"
+import { AddressPanel, YipCodeAndCopyButton } from "../../../../components/core/AddressPanel"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { Friend } from "../../../../packages/YipStackLib/types/friends"
@@ -175,13 +175,19 @@ const FriendCard: React.FC<FriendCardProps> = (props) => {
     const cardBg = useColorModeValue('gray.300', 'gray.700')
     const { isOpen, setOpen, setClosed } = props.disclosure
     const {loadedFriend} = props
+    const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
+    const friend = loadedFriend.friend
     return <VStack boxShadow="lg" maxW="400px"
         bg={cardBg} borderRadius="lg">
         <Text as="u" m={3} p={2} wordBreak="break-all" bg="inherit" fontWeight={600}
             textUnderlineOffset={5}>
-            {loadedFriend.friend.name}
+            {friend.name}
         </Text>
+        <VStack w="100%" pl={2} pr={2} align="left" justify="top" maxW="100%">
+            <label>YipCode</label>
+            <YipCodeAndCopyButton yipCode={friend.yipCode} w="100%" bg={panelBg} p={2}/>
+        </VStack>
         <Box display={isOpen ? "none" : "inherit"} w="100%">
             <IconButton aria-label={expandLabel} w="100%"
                 borderTopLeftRadius="none" borderTopRightRadius="none" onClick={setOpen}>
@@ -189,7 +195,7 @@ const FriendCard: React.FC<FriendCardProps> = (props) => {
             </IconButton>
         </Box>
         <VStack display={isOpen ? "inherit" : "none"} w="100%">
-            <CardContent {...props}/>
+            <ExpandedCardContent {...props}/>
             <IconButton aria-label={expandLabel} w="100%"
                 borderTopLeftRadius="none" borderTopRightRadius="none" onClick={setClosed}>
                 <Icon as={MdExpandLess}/>
@@ -198,7 +204,7 @@ const FriendCard: React.FC<FriendCardProps> = (props) => {
     </VStack>
 }
 
-const CardContent: React.FC<FriendCardProps> = ({loadedFriend}) => {
+const ExpandedCardContent: React.FC<FriendCardProps> = ({loadedFriend}) => {
 
     const {address, addressLoadStatus} = loadedFriend
     const loadedContent = addressLoadStatus === LoadStatus.Loaded && address!!?
@@ -214,7 +220,7 @@ export type LoadedCardContentProps = {
 
 const LoadedCardContent: React.FC<LoadedCardContentProps> = ({addressItem}) => {    
     return <Box p={2}>
-        <AddressPanel addressItem={addressItem}/>
+        <AddressPanel addressItem={addressItem} displayYipCode={false}/>
     </Box>
 }
 

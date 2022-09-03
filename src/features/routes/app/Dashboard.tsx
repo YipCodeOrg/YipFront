@@ -119,12 +119,12 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         </Center>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'flex' }}>
-            <AddressPanel addressItem={selectedAddressData.address}/>
+            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
-            <AddressPanel addressItem={selectedAddressData.address}/>
+            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </VStack>
     </VStack>
