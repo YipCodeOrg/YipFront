@@ -1,9 +1,9 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
-    Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer } from "@chakra-ui/react"
+    Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer, ButtonGroup } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
-import { DisclosureResult, useDisclosures, useFilter, useMapped, usePagination } from "../../../../app/hooks"
+import { DisclosureResult, useDisclosures, useFilter, useMutableMapped, usePagination } from "../../../../app/hooks"
 import React, { useCallback, useMemo } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
@@ -14,6 +14,7 @@ import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/ut
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { Friend } from "../../../../packages/YipStackLib/types/friends"
 import { BsChevronContract } from "react-icons/bs"
+import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -66,8 +67,8 @@ export type FriendCardWrapperProps = {
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const { friends, renderCard } = props
-    const indexedFriends: Indexed<Friend>[] = useMapped(friends, (f) =>
-        f.map((f, i) => {return {obj: f, index: i}}))
+    const [indexedFriends, setIndexedFriends] = useMutableMapped<Friend[], Indexed<Friend>[]>(
+        friends, (f) => f.map((f, i) => {return {obj: f, index: i}}))
     const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
     const filterFriendsTooltip = "Enter text to filter friends by name"
     const collapseAllTooltip = "Collapse all card details"
@@ -77,7 +78,6 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         usePagination(itemsPerPage, filtered)
 
     const { disclosures, setAllClosed } = useDisclosures(indexedFriends)
-
 
     const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardWrapperProps{
         
@@ -105,6 +105,8 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         }
     }
 
+    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+
     function filterFunction(filterValue: string): (f: Indexed<Friend>) =>  boolean{
         return (f) => {
             const nameLower = f.obj.name.toLocaleLowerCase()
@@ -118,12 +120,14 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         <ViewFriendsHeading/>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%">
-                <Box pl={4}>
+                <ButtonGroup isAttached variant='outline' bg={buttonGroupBg} borderRadius="lg">        
                     <Tooltip label={collapseAllTooltip} placement="top" openDelay={1500}>
                         <IconButton icon={<BsChevronContract/>} aria-label="collapseAllTooltip"
                             onClick={setAllClosed}/>
                     </Tooltip>
-                </Box>
+                    <AlphaSortButtonsContent setter={setIndexedFriends} arr={indexedFriends} sortField={f=>f.obj.name}
+                        sortFieldDesc="name"/>
+                </ButtonGroup>
                 <Spacer/>
                 <label>Filter: </label>
                 <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
