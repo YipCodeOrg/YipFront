@@ -83,7 +83,6 @@ const noNameAddress : UserAddressData = {
   registrations: []
 }
 
-// Tests that the YipCode Input still displays the full YipCode even when there is no address
 const emptyAddress: UserAddressData = {
   sub: "cognito-sub",
   address: {address:  {
@@ -94,6 +93,20 @@ const emptyAddress: UserAddressData = {
     yipCode: StoryYipCode.EmptyAddress},
   registrations: []
 }
+
+const emptyRegistraiontsAddress: UserAddressData = {
+  sub: "cognito-sub",
+  address: {address:  {
+    addressLines: ["890 Memory Lane", "Childhood Road", "Co. Youth", "Youngland", "NOSTALGICPOSTCODE890"],
+    aliasMap: {
+      postCode: 4
+    }
+  },
+    addressMetadata: {lastUpdated: arbitraryDate2},
+    yipCode: StoryYipCode.EmptyAddress},
+  registrations: []
+}
+
 
 function anotherLongRegistration(){
   return {name: "Another registration", addressLastUpdated: arbitraryDate3}
@@ -122,8 +135,15 @@ Standard.args = {
     selectedYipCode: workAddress.address.yipCode
 }
 
-export const Empty = Template.bind({})
-Empty.args = {
+export const EmptyRegistrations = Template.bind({})
+EmptyRegistrations.args = {
+  userAddressData: [emptyRegistraiontsAddress],
+  userAddressDataStatus: LoadStatus.Loaded,
+  selectedYipCode: emptyRegistraiontsAddress.address.yipCode
+}
+
+export const NoAddresses = Template.bind({})
+NoAddresses.args = {
   userAddressData: [],
   userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: null
