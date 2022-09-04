@@ -12,6 +12,6 @@ export const InfoButton: React.FC<InfoButtonProps> = ({infoMessage, ...rest}) =>
     
     return <Tooltip label={infoMessage} {...{isOpen, ...rest}}>
             <IconButton icon={<AiFillQuestionCircle/>} aria-label={infoMessage}
-                onClick={() => setIsOpen(v => !v)} bg="inherit"/>
+                onClick={() => setIsOpen(v => !v)} bg="inherit" onBlur={() => {setIsOpen(false)}}/>
         </Tooltip>
 }

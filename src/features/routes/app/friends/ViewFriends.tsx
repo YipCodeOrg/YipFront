@@ -230,4 +230,3 @@ const LoadedCardContent: React.FC<LoadedCardContentProps> = ({addressItem}) => {
         <AddressPanel addressItem={addressItem} displayYipCode={false}/>
     </Box>
 }
-
