@@ -25,14 +25,16 @@ Long.args={
 
 export const Standard = Template.bind({})
 Standard.args = {
-    friends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
+    friends: [
     {name: "BOB", yipCode: "XEC9229ALDN04"},
-    {name: "Gauss", yipCode: "FFC9229ALDN04"},
-    {name: "Euler", yipCode: "EY9229ALDN04"},
-    {name: "Einstein", yipCode: "NN9229ALDN04"},
+    {name: "Alice", yipCode: "QLC9229ALDN04"},
     {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
+    {name: "Gauss", yipCode: "FFC9229ALDN04"},
     {name: "David Rogers", yipCode: "EN9229ALDN04"},
-    {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"}],
+    {name: "The Great Sean Sheritan", yipCode: "YP9229ALDN04"},
+    {name: "Zoro", yipCode: "ZO9229ALDN04"},
+    {name: "Euler", yipCode: "EY9229ALDN04"},
+    {name: "Einstein", yipCode: "NN9229ALDN04"}],
     renderCard: MockFriendCardWrapper
 }
 
@@ -48,7 +50,7 @@ function longRepeatedFriend(i: number): LoadedFriend{
   
   const yipCode = `QLC9229ALD${i}`
   
-  return {friend: {name: `BOB-${i}`, yipCode}, address: {address: {
+  return {friend: {name: `${numberToAlpha(i, 3)}-${i}`, yipCode}, address: {address: {
     addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
     aliasMap: {
       postCode: 4
@@ -58,6 +60,23 @@ function longRepeatedFriend(i: number): LoadedFriend{
   yipCode},
   addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
   
+}
+
+// Convert numbers to an alphabetic representation that preserves order (and suffix the number for good measure)
+function numberToAlpha(i: number, padZeroes: number){
+  const strNumber = String(i)
+    .padStart(padZeroes, '0')
+    .replaceAll("0", "A")
+    .replaceAll("1", "B")
+    .replaceAll("2", "C")
+    .replaceAll("3", "D")
+    .replaceAll("4", "E")
+    .replaceAll("5", "F")
+    .replaceAll("6", "G")
+    .replaceAll("7", "H")
+    .replaceAll("8", "I")
+    .replaceAll("9", "J")
+  return strNumber
 }
 
 function MockLongFriendCardWrapper(props: FriendCardWrapperProps){
