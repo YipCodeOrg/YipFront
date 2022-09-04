@@ -17,7 +17,7 @@ import { BsChevronContract } from "react-icons/bs"
 
 export type ViewFriendsProps = {
     friends: Friend[],
-    loadedFriends: LoadedFriend[]
+    renderCard: (props: FriendCardWrapperProps) => JSX.Element
 }
 
 export const ViewFriends: React.FC<ViewFriendsProps> = (props) => {
@@ -58,14 +58,14 @@ function ViewFriendsEmpty(){
     </VStack>
 }
 
-type FriendCardProps = {
-    loadedFriend: LoadedFriend
+export type FriendCardWrapperProps = {
+    friend: Friend,
     disclosure: DisclosureResult
 }
 
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
-    const {friends, loadedFriends} = props
+    const { friends, renderCard } = props
     const indexedFriends: Indexed<Friend>[] = useMapped(friends, (f) =>
         f.map((f, i) => {return {obj: f, index: i}}))
     const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
@@ -79,27 +79,17 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     const { disclosures, setAllClosed } = useDisclosures(indexedFriends)
 
 
-    const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardProps{
+    const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardWrapperProps{
         
         const index = f.index
         const disclosure = disclosures[index]
-        let loadedFriend = loadedFriends[index]
 
         if(disclosure === undefined){
             throw new Error("Unexpected undefined data when indexing")
         }
 
-        if(loadedFriend === undefined){
-            console.warn("Unexpected undefined loaded friend data encountered - returning load failure")
-            loadedFriend = {
-                friend: f.obj,
-                address: null,
-                addressLoadStatus: LoadStatus.Failed
-            }
-        }
-
         return {
-            loadedFriend,
+            friend: f.obj,
             disclosure
         }
     }, [disclosures])
@@ -141,7 +131,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                 </Tooltip>
                 <Spacer/>
             </HStack>
-            <ViewFriendsPanel {...{cardProps: fusedItems}}/>            
+            <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>            
             <StyledPagination size="small"
                 {...{
                     handlePageClick,
@@ -154,16 +144,17 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 }
 
 type ViewFriendsPanelProps = {
-    cardProps: FriendCardProps[]
+    cardProps: FriendCardWrapperProps[],
+    renderCard: (props: FriendCardWrapperProps) => JSX.Element
 }
 
-const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps}) => {
+const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps, renderCard}) => {
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     return <Flex w="100%" h="100%" justifyContent="flex-start" gap={{ base: 1, sm: 2, md: 3 }}
         bg={panelBg} p={{ base: 1, sm: 3, md: 5 }} borderRadius="lg" wrap="wrap"
         align="flex-start">
-        {cardProps.map(p => <FriendCard {...p} key={p.loadedFriend.friend.yipCode}/>)}
+        {cardProps.map(renderCard)}
     </Flex>
 }
 
@@ -179,17 +170,23 @@ function ViewFriendsHeading(){
     </Center>
 }
 
-const FriendCard: React.FC<FriendCardProps> = (props) => {
+export type FriendCardProps = {
+    loadedFriend: LoadedFriend
+    disclosure: DisclosureResult
+}
+
+export const FriendCard: React.FC<FriendCardProps> = (props) => {
     
     const expandLabel = "Expand friend to see details"
     const cardBg = useColorModeValue('gray.300', 'gray.700')
     const { isOpen, setOpen, setClosed } = props.disclosure
-    const {loadedFriend} = props
+    const { loadedFriend } = props
+    const { yipCode } = loadedFriend.friend
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
     const friend = loadedFriend.friend
     return <VStack boxShadow="lg" maxW="400px"
-        bg={cardBg} borderRadius="lg">
+        bg={cardBg} borderRadius="lg" key={yipCode}>
         <Text as="u" m={3} p={2} wordBreak="break-all" bg="inherit" fontWeight={600}
             textUnderlineOffset={5}>
             {friend.name}
