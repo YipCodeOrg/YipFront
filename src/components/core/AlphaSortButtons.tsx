@@ -4,15 +4,22 @@ import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa"
 export type FieldSortButtonsProps<T> = {
     arr: T[],
     setter: (newArr: T[]) => void,
-    sortField: (r: T) => string
+    sortField: (r: T) => string,
+    sortFieldDesc: string
 }
 
-export default function AlphaSortButtons<T>(props: React.PropsWithChildren<FieldSortButtonsProps<T>>){
+export default function AlphaSortButtons<T>(props: FieldSortButtonsProps<T>){
     
-    const {arr, setter, sortField} = props
+    return <ButtonGroup variant="ghost" isAttached>
+        <AlphaSortButtonsContent {...props}/>
+    </ButtonGroup>
+}
 
-    const sortAtoZ = "Sort A to Z"
-    const sortZtoA = "Sort Z to A"
+export function AlphaSortButtonsContent<T>(props: FieldSortButtonsProps<T>){
+    const {arr, setter, sortField, sortFieldDesc} = props
+
+    const sortAtoZ = `Sort by ${sortFieldDesc} A to Z`
+    const sortZtoA = `Sort by ${sortFieldDesc} Z to A`
 
     function compareForward(v1: T, v2: T) : number{
         const f1 = sortField(v1)
@@ -32,7 +39,7 @@ export default function AlphaSortButtons<T>(props: React.PropsWithChildren<Field
         setter([...arr.sort(compareBackward)])
     }
 
-    return <ButtonGroup variant="ghost" isAttached>
+    return <>
         <Tooltip label={sortAtoZ} placement="top" openDelay={1500}>
             <IconButton aria-label={sortAtoZ}
                 icon={<Icon as={FaSortAlphaDown}/>} onClick={sortForward}/>
@@ -41,5 +48,5 @@ export default function AlphaSortButtons<T>(props: React.PropsWithChildren<Field
             <IconButton aria-label={sortZtoA}
                 icon={<Icon as={FaSortAlphaUp}/>} onClick={sortBackward}/>
         </Tooltip>
-    </ButtonGroup>
+    </>
 }
