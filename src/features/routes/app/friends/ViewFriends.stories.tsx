@@ -1,5 +1,7 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { LoadStatus } from "../../../../app/types"
+import { inverseIndexMap } from "../../../../packages/YipStackLib/packages/YipAddress/util/arrayUtil"
+import { LoadedFriend } from "./friends"
 import { FriendCard, FriendCardProps, FriendCardWrapperProps, ViewFriends, ViewFriendsProps } from "./ViewFriends"
 
 type ViewFriendsType = typeof ViewFriends
@@ -13,11 +15,12 @@ export default {
 const Template: ComponentStory<ViewFriendsType> = (args: ViewFriendsProps) => <ViewFriends {...args}/>
 
 const longFriends = [...Array(300).keys()].map((_, i) => longRepeatedFriend(i))
+const indexedLongFriends = inverseIndexMap(longFriends, f => f.friend.yipCode)
 
 export const Long = Template.bind({})
 Long.args={
   friends: longFriends.map(f => f.friend),
-  renderCard: MockFriendCardWrapper
+  renderCard: MockLongFriendCardWrapper
 }
 
 export const Standard = Template.bind({})
@@ -41,7 +44,7 @@ Empty.args = {
 
 // Helpers
 
-function longRepeatedFriend(i: number){
+function longRepeatedFriend(i: number): LoadedFriend{
   
   const yipCode = `QLC9229ALD${i}`
   
@@ -55,6 +58,32 @@ function longRepeatedFriend(i: number){
   yipCode},
   addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
   
+}
+
+function MockLongFriendCardWrapper(props: FriendCardWrapperProps){
+  
+  const { friend, disclosure } = props
+
+  const friendCardProps: FriendCardProps = {
+    loadedFriend: {
+      friend,
+      address: null,
+      addressLoadStatus: LoadStatus.Failed,      
+    },
+    disclosure
+  }
+
+  const index = indexedLongFriends.get(friend.yipCode)
+  
+  if(index !== undefined){
+    const longFriend = longFriends[index]
+    if(longFriend !== undefined){
+      friendCardProps.loadedFriend.address = longFriend.address
+      friendCardProps.loadedFriend = longFriend
+    }
+  }
+
+  return <FriendCard {...friendCardProps} />
 }
 
 function MockFriendCardWrapper(props: FriendCardWrapperProps){
