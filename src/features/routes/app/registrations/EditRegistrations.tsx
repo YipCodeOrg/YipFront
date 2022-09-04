@@ -42,6 +42,8 @@ submitRegistrations}) => {
         return result
     }
 
+    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
          spacing={{ base: '10px', sm: '20px', md: '50px' }}>
@@ -57,7 +59,7 @@ submitRegistrations}) => {
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%" justifyContent="flex-start">
                 <ButtonGroup isAttached variant='outline'
-                    bg={useColorModeValue('gray.50', 'gray.900')} borderRadius="lg">                
+                    bg={buttonGroupBg} borderRadius="lg">                
                     <Button onClick={submitRegistrations}>Save</Button>
                     <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
                         <IconButton aria-label={addNewRegistrationTooltip}
@@ -100,14 +102,14 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, addressLastUpdated, s
             <HStack h="100%">
                 <TitleHeading heading="Name"/>
                 <AlphaSortButtons arr={registrations} setter={setRegistrations}
-                    sortField={r => r.name} />
+                    sortField={r => r.name} sortFieldDesc="name"/>
             </HStack>
         </GridItem>
         <GridItem>
             <HStack h="100%">
                 <TitleHeading heading="Link"/>
                 <AlphaSortButtons arr={registrations} setter={setRegistrations}
-                    sortField={r => r.hyperlink ?? ""} />
+                    sortField={r => r.hyperlink ?? ""} sortFieldDesc="hyperlink"/>
             </HStack>
         </GridItem>
         <GridItem>
