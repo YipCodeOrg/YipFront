@@ -128,19 +128,26 @@ export type FilterResult<T> = {
     clearFilter: () => void
 }
 
+type FilterFunction<T> = {
+    func: (t: T) => boolean
+}
+
 export function useFilter<T>(ts: T[]): FilterResult<T>{
     const [filtered, setFiltered] = useState(ts)
+    const [filter, setFilter] = useState<FilterFunction<T>>({func: (_: T) => true})
 
     useEffect(() => {
-        setFiltered(ts)
+        setFiltered(ts.filter(filter.func))
     }, [ts])
 
     function applyFilter(f: (t: T) => boolean){
         setFiltered(ts.filter(f))
+        setFilter({func: f})
     }
 
     function clearFilter(){
         setFiltered(ts)
+        setFilter({func: (_: T) => true})
     }
 
     return {filtered, applyFilter, clearFilter}
