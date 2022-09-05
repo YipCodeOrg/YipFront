@@ -57,8 +57,13 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
 const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) => <StoryWrapper {...args}/>
 
 export const Standard = Template.bind({})
-
 Standard.args = {
     initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}],
     addressLabel: "Work"
+}
+
+export const DupeName = Template.bind({})
+DupeName.args = {
+    initialRegistrations: [{name: "Dupey McDuperson", addressLastUpdated: arbitraryDate1}, {name: "Dupey McDuperson", addressLastUpdated: arbitraryDate2}, {name: "", addressLastUpdated: arbitraryDate3}, {name: "", addressLastUpdated: arbitraryDate1}],
+    addressLabel: "Father Ted's House"
 }
