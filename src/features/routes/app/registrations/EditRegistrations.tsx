@@ -71,9 +71,9 @@ submitRegistrations}) => {
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow {...{registrations, addressLastUpdated, setRegistrations}}/>
-                {registrations.map((_, i) => <EditRegistrationRow
+                {registrations.map((r, i) => <EditRegistrationRow
                     {...{addressLastUpdated, registrations}}
-                    index={i} key={i} setRegistrations={setRegistrations}
+                    index={i} key={`${r.name}${i}`} setRegistrations={setRegistrations}
                     validation={getRegsitrationValidation(i)} />)}
             </Grid>
         </VStack>

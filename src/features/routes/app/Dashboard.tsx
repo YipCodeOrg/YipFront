@@ -159,7 +159,7 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
         </HStack>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
             bg={panelBg}>
-            {registrations.map((v, i) => <RegistrationCard registration={v} key = {i} addressLastUpdated={addressLastUpdated}/>)}
+            {registrations.map((r, i) => <RegistrationCard registration={r} key={`${r.name}${i}`} addressLastUpdated={addressLastUpdated}/>)}
         </VStack>
     </VStack>
 }
