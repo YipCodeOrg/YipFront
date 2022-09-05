@@ -10,7 +10,8 @@ import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
 import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
-import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -287,12 +288,7 @@ handleInputRegistrationChange, bg, nameValidationResult}) => {
     return <GridItem bg="inherit">
         <FormControl isInvalid={anyErrors} isRequired>
             <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
-            {
-                nameValidationResult !== null ?
-                    <FormErrorMessage>{ printMessages(nameValidationResult, ValidationSeverity.ERROR)}</FormErrorMessage>
-                    :
-                    <></>
-            }            
+            <FormValidationErrorMessage validation={nameValidationResult}/>
         </FormControl>
     </GridItem>
 }

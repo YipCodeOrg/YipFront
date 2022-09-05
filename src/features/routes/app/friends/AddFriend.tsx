@@ -1,40 +1,58 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
-import { useState } from "react"
+import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
+import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
+import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend, FriendsValidationResult } from "../../../../packages/YipStackLib/types/friends"
+
+export type IndexedFriendsValidationResult = Indexed<FriendsValidationResult>
 
 export type AddFriendProps = {
     friends: Friend[],
-    validation: FriendsValidationResult | null,    
-    saveFriends: () => void,
-    setFriends: (newFriends: Friend[]) => void
+    newFriend: Friend,
+    setNewFriend: (newFriend: Friend) => void,
+    friendsValidation: IndexedFriendsValidationResult | null,
+    saveFriends: () => void
 }
 
 export default function AddFriend(props: AddFriendProps){
 
-    const { saveFriends } = props
-
-    const [newName, setNewName] = useState<string>("")
-    const [newYipCode, setNewYipCode] = useState<string>("")
+    const { saveFriends, friendsValidation, newFriend, setNewFriend } = props
+    const { name: newName, yipCode: newYipCode } = newFriend    
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
-    function handleNameChange(e : React.ChangeEvent<HTMLInputElement>){
-        setNewName(e.target.value)
+    const handleInputRegistrationChange =
+    (updater: (f: Friend, s: string) => Friend) =>
+    (e : React.ChangeEvent<HTMLInputElement>) => {
+        setNewFriend(updater(newFriend, e.target.value))
     }
 
-    function handleYipCodeChange(e : React.ChangeEvent<HTMLInputElement>){
-        setNewYipCode(e.target.value)
+    const handleNameInputChange = handleInputRegistrationChange((f, s) => {return {...f, name: s}})
+    const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
+
+    let nameValidationResult: ValidationResult | null = null
+
+    if(friendsValidation !== null){
+        const index = friendsValidation.index
+        const validation = friendsValidation.obj
+        const itemValidation = validation.itemValidations[index]
+        if(itemValidation !== undefined){
+            nameValidationResult = itemValidation.name            
+        }
     }
+
+    const isNameInvalid = hasErrors(nameValidationResult)
 
     return <VStack>
         <HStack>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={isNameInvalid}>
                 <FormLabel>Name</FormLabel>
-                <Input value={newName} onChange={handleNameChange}/>
+                <Input value={newName} onChange={handleNameInputChange}/>
+                <FormValidationErrorMessage validation={nameValidationResult}/>
             </FormControl>
         </HStack>
         <ButtonGroup isAttached variant='outline'
-            bg={buttonGroupBg} borderRadius="lg">                
+            bg={buttonGroupBg} borderRadius="lg">
             <Button onClick={saveFriends}>Save</Button>
         </ButtonGroup>
     </VStack>

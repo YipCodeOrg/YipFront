@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Registration, RegistrationsValidationResult, validateRegistrations } from "../../../../packages/YipStackLib/types/registrations";
-import { ValidateAndSaveProps, ValidateOnSaveAndUpdateWrapper } from "../../../../util/storybook/ValidateAndSaveWrapper";
+import { ListUpdateValidateRenderProps, ListUpdateValidateWrapper } from "../../../../util/storybook/ValidateWrapper";
 import { EditRegistrations, EditRegistrationsProps } from "./EditRegistrations";
 
 type StoryType = typeof StoryWrapper
@@ -23,7 +23,7 @@ type EditRegistrationsStoryProps = {
 const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistrations, addressLabel}) => {
     
     
-    function render(props: ValidateAndSaveProps<Registration, RegistrationsValidationResult>){
+    function render(props: ListUpdateValidateRenderProps<Registration, RegistrationsValidationResult>){
 
         const { arr: registrations, setArr: setRegistrations, validation, save: saveRegistrations } = props
 
@@ -39,7 +39,7 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
         return <EditRegistrations {...childProps}/>
     }
 
-    return <ValidateOnSaveAndUpdateWrapper render={render} initialArr={initialRegistrations} validate={validateRegistrations}/>
+    return <ListUpdateValidateWrapper render={render} initialArr={initialRegistrations} validate={validateRegistrations}/>
 }
 
 const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) => <StoryWrapper {...args}/>
