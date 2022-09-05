@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { Friend, FriendsValidationResult, validateFriends } from "../../../../packages/YipStackLib/types/friends"
-import { ValidateAndSaveProps, ValidateOnSaveAndUpdateWrapper } from "../../../../util/storybook/ValidateAndSaveWrapper"
+import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../util/storybook/ValidateWrapper"
 import AddFriend, { AddFriendProps } from "./AddFriend"
 
 type StoryType = typeof StoryWrapper
@@ -18,21 +18,23 @@ type AddFriendStoryProps = {
 
 function StoryWrapper({initialFriends}: AddFriendStoryProps){
         
-    function render(props: ValidateAndSaveProps<Friend, FriendsValidationResult>){
+    function render(props: AppendSingletonValidateRenderProps<Friend, FriendsValidationResult>){
 
-        const { arr: friends, setArr: setFriends, validation, save: saveFriends } = props
+        const { valToAppend: newFriend, setValToAppend: setFriend, validation: friendsValidation,
+            save: saveFriends } = props
 
         const childProps: AddFriendProps = {
-            friends,
-            setFriends,
-            validation,
+            friends: initialFriends,
+            setNewFriend: setFriend,
+            newFriend: newFriend ?? {name: "", yipCode: ""},
+            friendsValidation,
             saveFriends
         }    
 
         return <AddFriend {...childProps}/>
     }
 
-    return <ValidateOnSaveAndUpdateWrapper render={render} initialArr={initialFriends} validate={validateFriends}/>
+    return <AppendSingletonValidateWrapper render={render} initialArr={initialFriends} validate={validateFriends}/>
 }
 
 export const Standard = Template.bind({})

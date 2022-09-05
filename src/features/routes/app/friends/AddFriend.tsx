@@ -1,36 +1,37 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
-import { useState } from "react"
 import { Friend, FriendsValidationResult } from "../../../../packages/YipStackLib/types/friends"
 
 export type AddFriendProps = {
     friends: Friend[],
-    validation: FriendsValidationResult | null,    
-    saveFriends: () => void,
-    setFriends: (newFriends: Friend[]) => void
+    newFriend: Friend,
+    setNewFriend: (newFriend: Friend) => void,
+    friendsValidation: FriendsValidationResult | null,
+    saveFriends: () => void
 }
 
 export default function AddFriend(props: AddFriendProps){
 
-    const { saveFriends } = props
-
-    const [newName, setNewName] = useState<string>("")
-    const [newYipCode, setNewYipCode] = useState<string>("")
+    const { saveFriends, friendsValidation: validation, newFriend, setNewFriend } = props
+    const { name: newName, yipCode: newYipCode } = newFriend    
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
-    function handleNameChange(e : React.ChangeEvent<HTMLInputElement>){
-        setNewName(e.target.value)
+    const handleInputRegistrationChange =
+    (updater: (f: Friend, s: string) => Friend) =>
+    (e : React.ChangeEvent<HTMLInputElement>) => {
+        setNewFriend(updater(newFriend, e.target.value))
     }
 
-    function handleYipCodeChange(e : React.ChangeEvent<HTMLInputElement>){
-        setNewYipCode(e.target.value)
-    }
+    const handleNameInputChange = handleInputRegistrationChange((f, s) => {return {...f, name: s}})
+    const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
+
+    let isNameInvalid = false
 
     return <VStack>
         <HStack>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={isNameInvalid}>
                 <FormLabel>Name</FormLabel>
-                <Input value={newName} onChange={handleNameChange}/>
+                <Input value={newName} onChange={handleNameInputChange}/>
             </FormControl>
         </HStack>
         <ButtonGroup isAttached variant='outline'
