@@ -34,7 +34,8 @@ function StoryWrapper({initialFriends}: AddFriendStoryProps){
         return <AddFriend {...childProps}/>
     }
 
-    return <AppendSingletonValidateWrapper render={render} initialArr={initialFriends} validate={validateFriends}/>
+    return <AppendSingletonValidateWrapper render={render} initialArr={initialFriends} validate={validateFriends}
+        initialValToAppend={{name: "", yipCode: ""}} />
 }
 
 export const Standard = Template.bind({})

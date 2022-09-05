@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Indexed } from "../../packages/YipStackLib/packages/YipAddress/util/types"
 
 export type ListUpdateValidateRenderProps<T, TValid> = {
     arr: T[],
@@ -49,7 +50,7 @@ export type AppendValidateRenderProps<T, TValid> = {
     valsToAppend: T[],
     bufferNewVals: (bufferVals: T[]) => void,
     setValsToAppend: (newValsToAppend: T[]) => void,
-    validation: TValid | null,
+    validation: Indexed<TValid> | null,
     save: () => void
 }
 
@@ -94,7 +95,7 @@ export function AppendValidateWrapper<T, TValid>(props: AppendValidateWrapperPro
         valsToAppend,
         bufferNewVals: bufferAndMaybeValidate,
         setValsToAppend: setValsToAppendAndMaybeValidate,
-        validation,
+        validation: validation === null ? null : {obj: validation, index: initialArr.length},
         save
     }
 
@@ -104,21 +105,22 @@ export function AppendValidateWrapper<T, TValid>(props: AppendValidateWrapperPro
 export type AppendSingletonValidateRenderProps<T, TValid> = {
     valToAppend: T | null,
     setValToAppend: (newValToAppend: T) => void,
-    validation: TValid | null,
+    validation: Indexed<TValid> | null,
     save: () => void
 }
 
 export type AppendSingletonValidateWrapperProps<T, TValid> = {
     initialArr: T[],
+    initialValToAppend: T,
     validate: (ts: T[]) => TValid
     render: (props: AppendSingletonValidateRenderProps<T, TValid>) => JSX.Element
 }
 
 export function AppendSingletonValidateWrapper<T, TValid>(props: AppendSingletonValidateWrapperProps<T, TValid>){
     
-    const { render, initialArr, validate } = props
+    const { render, initialArr, validate, initialValToAppend } = props
 
-    const [valToAppend, setValToAppend] = useState<T | null>(null)
+    const [valToAppend, setValToAppend] = useState<T>(initialValToAppend)
     const [validation, setValidation] = useState<TValid | null>(null)
     
     function newFullArray(newValToAppend: T | null){
@@ -147,7 +149,7 @@ export function AppendSingletonValidateWrapper<T, TValid>(props: AppendSingleton
     const childProps: AppendSingletonValidateRenderProps<T, TValid> = {
         valToAppend,
         setValToAppend: setAndMaybeValidate,
-        validation,
+        validation: validation === null ? null : {obj: validation, index: initialArr.length},
         save
     }
 
