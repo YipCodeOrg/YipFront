@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { useState } from "react";
 import { Registration, RegistrationsValidationResult, validateRegistrations } from "../../../../packages/YipStackLib/types/registrations";
+import { ValidateAndSaveProps, ValidateOnSaveAndUpdateWrapper } from "../../../../util/storybook/ValidateAndSaveWrapper";
 import { EditRegistrations, EditRegistrationsProps } from "./EditRegistrations";
 
 type StoryType = typeof StoryWrapper
@@ -22,36 +22,24 @@ type EditRegistrationsStoryProps = {
 
 const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistrations, addressLabel}) => {
     
-    const [registrations, setRegistrations] = useState(initialRegistrations)
-    const [validation, setValidation] = useState<RegistrationsValidationResult | null>(null)
+    
+    function render(props: ValidateAndSaveProps<Registration, RegistrationsValidationResult>){
 
+        const { arr: registrations, setArr: setRegistrations, validation, save: saveRegistrations } = props
 
-    function setAndMaybeValidate(newRegistrations: Registration[]){        
-        setRegistrations(newRegistrations)
-        if(validation != null){
-            revalidate(newRegistrations)
-        }
+        const childProps: EditRegistrationsProps = {
+            addressLabel,
+            registrations,
+            setRegistrations,
+            addressLastUpdated: arbitraryDate2,
+            validation,
+            saveRegistrations
+        }    
+
+        return <EditRegistrations {...childProps}/>
     }
 
-    function submitRegistrations(){
-        revalidate(registrations)
-    }
-
-    function revalidate(rs: Registration[]){
-        const newValidation = validateRegistrations(rs)
-        setValidation(newValidation)        
-    }
-
-    const childProps: EditRegistrationsProps = {
-        addressLabel,
-        registrations,
-        setRegistrations: setAndMaybeValidate,
-        addressLastUpdated: arbitraryDate2,
-        validation,
-        submitRegistrations
-    }
-
-    return <EditRegistrations {...childProps}/>
+    return <ValidateOnSaveAndUpdateWrapper render={render} initialArr={initialRegistrations} validate={validateRegistrations}/>
 }
 
 const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) => <StoryWrapper {...args}/>

@@ -14,15 +14,15 @@ import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from "
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
+    validation: RegistrationsValidationResult | null,
+    saveRegistrations: () => void
     setRegistrations: (newRegistrations: Registration[]) => void
     addressLabel: string,
     addressLastUpdated: Date,
-    validation: RegistrationsValidationResult | null,
-    submitRegistrations: () => void
 }
 
 export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
-submitRegistrations}) => {
+saveRegistrations}) => {
     
     const addNewRegistrationTooltip = "Add new registration"
 
@@ -60,7 +60,7 @@ submitRegistrations}) => {
             <HStack w="100%" justifyContent="flex-start">
                 <ButtonGroup isAttached variant='outline'
                     bg={buttonGroupBg} borderRadius="lg">                
-                    <Button onClick={submitRegistrations}>Save</Button>
+                    <Button onClick={saveRegistrations}>Save</Button>
                     <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
                         <IconButton aria-label={addNewRegistrationTooltip}
                             icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
