@@ -31,24 +31,32 @@ export default function AddFriend(props: AddFriendProps){
     const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
 
     let nameValidationResult: ValidationResult | null = null
+    let yipCodeValidationResult: ValidationResult | null = null
 
     if(friendsValidation !== null){
         const index = friendsValidation.index
         const validation = friendsValidation.obj
         const itemValidation = validation.itemValidations[index]
         if(itemValidation !== undefined){
-            nameValidationResult = itemValidation.name            
+            nameValidationResult = itemValidation.name
+            yipCodeValidationResult = itemValidation.yipCode
         }
     }
 
     const isNameInvalid = hasErrors(nameValidationResult)
+    const isYipCodeInvalid = hasErrors(yipCodeValidationResult)
 
     return <VStack>
-        <HStack>
+        <HStack align="flex-start">
             <FormControl isRequired isInvalid={isNameInvalid}>
                 <FormLabel>Name</FormLabel>
                 <Input value={newName} onChange={handleNameInputChange}/>
                 <FormValidationErrorMessage validation={nameValidationResult}/>
+            </FormControl>
+            <FormControl isRequired isInvalid={isYipCodeInvalid}>
+                <FormLabel>YipCode</FormLabel>
+                <Input value={newYipCode} onChange={handleYipCodeInputChange}/>
+                <FormValidationErrorMessage validation={yipCodeValidationResult}/>
             </FormControl>
         </HStack>
         <ButtonGroup isAttached variant='outline'
