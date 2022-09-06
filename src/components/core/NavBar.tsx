@@ -61,7 +61,7 @@ export type NavbarProps = UseDisclosureReturn & NavBarWrapperProps
 export const NavBar: React.FC<NavbarProps> = ({isLoggedIn, isSignedUp, setIsSigedUp, isOpen, onOpen, onClose}) => {
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box bg={useColorModeValue('gray.50', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
