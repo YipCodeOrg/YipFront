@@ -17,21 +17,17 @@ export type AddFriendProps = {
 export default function AddFriend(props: AddFriendProps){
 
     const { saveFriends, friendsValidation, newFriend, setNewFriend } = props
-    const { name: newName, yipCode: newYipCode } = newFriend    
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+
+    let nameValidationResult: ValidationResult | null = null
+    let yipCodeValidationResult: ValidationResult | null = null
 
     const handleInputRegistrationChange =
     (updater: (f: Friend, s: string) => Friend) =>
     (e : React.ChangeEvent<HTMLInputElement>) => {
         setNewFriend(updater(newFriend, e.target.value))
     }
-
-    const handleNameInputChange = handleInputRegistrationChange((f, s) => {return {...f, name: s}})
-    const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
-
-    let nameValidationResult: ValidationResult | null = null
-    let yipCodeValidationResult: ValidationResult | null = null
 
     if(friendsValidation !== null){
         const index = friendsValidation.index
@@ -41,13 +37,42 @@ export default function AddFriend(props: AddFriendProps){
             nameValidationResult = itemValidation.name
             yipCodeValidationResult = itemValidation.yipCode
         }
-    }
+    }    
+
+    return <VStack>
+        <HStack align="flex-start" display={{base: "none", md: "inherit"}}>
+            <FormContent {...{nameValidationResult, yipCodeValidationResult, newFriend, handleInputRegistrationChange}} />
+        </HStack>
+        <VStack align="flex-start" display={{base: "inherit", md: "none"}}>
+            <FormContent {...{nameValidationResult, yipCodeValidationResult, newFriend, handleInputRegistrationChange}} />
+        </VStack>
+        <ButtonGroup isAttached variant='outline'
+            bg={buttonGroupBg} borderRadius="lg">
+            <Button onClick={saveFriends}>Save</Button>
+        </ButtonGroup>
+    </VStack>
+
+}
+
+type FormContentProps = {
+    nameValidationResult: ValidationResult | null,
+    yipCodeValidationResult: ValidationResult | null,
+    newFriend: Friend,
+    handleInputRegistrationChange: (updater: (f: Friend, s: string) => Friend) =>
+        (e : React.ChangeEvent<HTMLInputElement>) => void
+}
+
+function FormContent({nameValidationResult, yipCodeValidationResult,
+    newFriend, handleInputRegistrationChange}: FormContentProps){
 
     const isNameInvalid = hasErrors(nameValidationResult)
     const isYipCodeInvalid = hasErrors(yipCodeValidationResult)
+    const { name: newName, yipCode: newYipCode } = newFriend
 
-    return <VStack>
-        <HStack align="flex-start">
+    const handleNameInputChange = handleInputRegistrationChange((f, s) => {return {...f, name: s}})
+    const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
+
+    return <>
             <FormControl isRequired isInvalid={isNameInvalid}>
                 <FormLabel>Name</FormLabel>
                 <Input value={newName} onChange={handleNameInputChange}/>
@@ -58,11 +83,5 @@ export default function AddFriend(props: AddFriendProps){
                 <Input value={newYipCode} onChange={handleYipCodeInputChange}/>
                 <FormValidationErrorMessage validation={yipCodeValidationResult}/>
             </FormControl>
-        </HStack>
-        <ButtonGroup isAttached variant='outline'
-            bg={buttonGroupBg} borderRadius="lg">
-            <Button onClick={saveFriends}>Save</Button>
-        </ButtonGroup>
-    </VStack>
-
+    </>
 }
