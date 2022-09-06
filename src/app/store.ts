@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import profileReducer from "../features/profile/profileSlice"
 import userDataReducer from "../features/userdata/userDataSlice"
 import userAddressDataReducer from "../features/useraddressdata/userAddressDataSlice"
-import createAddressState from "../features/routes/app/createAddressSlice"
+import createAddressState from "../features/routes/app/address/createAddressSlice"
 
 const store = configureStore({
     reducer: {

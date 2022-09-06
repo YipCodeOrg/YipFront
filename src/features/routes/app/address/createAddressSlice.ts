@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useCallback } from "react"
-import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { RootState } from "../../../app/store"
-import { Address, emptyAddress, shallowCopyUpdateLine } from "../../../packages/YipStackLib/packages/YipAddress/core/address"
-import { ParseOptions, parseStrToAddress } from "../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress"
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks"
+import { RootState } from "../../../../app/store"
+import { Address, emptyAddress, shallowCopyUpdateLine } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
+import { ParseOptions, parseStrToAddress } from "../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress"
 
 type CreateAddressState = {
     rawInput: string,

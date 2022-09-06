@@ -10,7 +10,7 @@ import {
     Input,
   } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
-import { Address } from '../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress } from './createAddressSlice';
   
 export default function CreateAddressWrapper() {
