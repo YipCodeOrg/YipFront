@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl, Flex } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -13,6 +13,7 @@ import { Registration, RegistrationsValidationResult, RegistrationValidationResu
 import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
+import { InfoButton } from "../../../../components/core/InfoButton"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -26,7 +27,6 @@ export type EditRegistrationsProps = {
 export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
 saveRegistrations}) => {
     
-    const addNewRegistrationTooltip = "Add new registration"
 
     function addNewRegistration(){
         const addressLastUpdated = new Date()
@@ -44,20 +44,16 @@ saveRegistrations}) => {
         return result
     }
 
-    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+    function renderButtonGroup({isInvalid}: ValidationComponentProps){
+        return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration}} />
+    }
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <PageWithHeading heading={`Edit Registrations (${addressLabel})  `} icon={MdEditNote}>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%" justifyContent="flex-start">
-                <ButtonGroup isAttached variant='outline'
-                    bg={buttonGroupBg} borderRadius="lg">                
-                    <Button onClick={saveRegistrations}>Save</Button>
-                    <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
-                        <IconButton aria-label={addNewRegistrationTooltip}
-                            icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
-                    </Tooltip>
-                </ButtonGroup>
+            <ValidationControl isInvalid={true} render={renderButtonGroup}
+                message="Validation errors must be fixed before saving"/>
             </HStack>
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
@@ -70,6 +66,57 @@ saveRegistrations}) => {
             </Grid>
         </VStack>
     </PageWithHeading>        
+}
+
+type EditRegistrationsButtonGroupProps = {
+    saveRegistrations: () => void,
+    addNewRegistration: () => void,
+    isInvalid: boolean
+}
+
+function EditRegistrationsButtonGroup(props: EditRegistrationsButtonGroupProps){
+    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+    const addNewRegistrationTooltip = "Add new registration"
+
+    const { saveRegistrations, addNewRegistration, isInvalid } = props
+
+    return <ButtonGroup isAttached variant='outline'
+        bg={buttonGroupBg} borderRadius="lg">                
+        <Button onClick={saveRegistrations} isDisabled={isInvalid}>Save</Button>
+        <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
+            <IconButton aria-label={addNewRegistrationTooltip}
+                icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
+        </Tooltip>
+    </ButtonGroup>
+}
+
+type ValidationComponentProps = {
+    isInvalid: boolean,
+}
+
+type ValidationControlProps = {
+    message?: string,
+    render: (p: ValidationComponentProps) => JSX.Element
+} & ValidationComponentProps
+
+function ValidationControl(props: ValidationControlProps){
+
+    const { isInvalid, render, message } = props
+
+    if(!isInvalid){
+        return render({isInvalid})
+    } else{
+
+        const infoMessage = message?? "There were validation errors"
+        const errorColor = useColorModeValue("red.400", "red.300")
+
+        return <Flex>
+                <InfoButton {...{infoMessage}} iconColor={errorColor}/>        
+                <Flex borderColor={errorColor} borderStyle="solid" borderWidth="initial" borderRadius="lg">                
+                    {render({isInvalid})}
+                </Flex>        
+            </Flex>
+    }    
 }
 
 type TitleRowProps = {
