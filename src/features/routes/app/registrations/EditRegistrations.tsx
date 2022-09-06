@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl, FormErrorMessage } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -126,8 +126,6 @@ const TitleRow: React.FC<TitleRowProps> = ({registrations, addressLastUpdated, s
         </GridItem>
     </div>
 }
-
-
 
 type TitleHeadingProps = {
     heading: string
