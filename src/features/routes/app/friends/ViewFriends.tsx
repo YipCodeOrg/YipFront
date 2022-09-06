@@ -15,6 +15,7 @@ import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { Friend } from "../../../../packages/YipStackLib/types/friends"
 import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
+import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -31,32 +32,30 @@ export const ViewFriends: React.FC<ViewFriendsProps> = (props) => {
 }
 
 function ViewFriendsEmpty(){
-    return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
-    spacing={{ base: '10px', sm: '20px', md: '50px' }}>
-        <ViewFriendsHeading/>
-        <Center style={{flex:1}} maxW="100%">        
-        <Stack spacing={6}>
-            <Heading
-                fontWeight={600}
-                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
-                lineHeight={'110%'}>
-                    You have not added any friends yet.{' '}
-            </Heading>
-            <Center>
-                <RouterLink to="/app/friends/edit">
-                    <Button
-                    rounded={'full'}
-                    px={6}
-                    colorScheme={'blue'}
-                    bg={'blue.400'}
-                    _hover={{ bg: 'blue.500' }}>                  
-                        Add Friends
-                    </Button>
-                </RouterLink>
-            </Center>
-        </Stack>
-    </Center>       
-    </VStack>
+    return <PageWithHeading heading="Friends " icon={FaUserFriends}>        
+            <Center style={{flex:1}} maxW="100%">        
+            <Stack spacing={6}>
+                <Heading
+                    fontWeight={600}
+                    fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
+                    lineHeight={'110%'}>
+                        You have not added any friends yet.{' '}
+                </Heading>
+                <Center>
+                    <RouterLink to="/app/friends/edit">
+                        <Button
+                        rounded={'full'}
+                        px={6}
+                        colorScheme={'blue'}
+                        bg={'blue.400'}
+                        _hover={{ bg: 'blue.500' }}>                  
+                            Add Friends
+                        </Button>
+                    </RouterLink>
+                </Center>
+            </Stack>
+        </Center>       
+    </PageWithHeading>
 }
 
 export type FriendCardWrapperProps = {
@@ -115,9 +114,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
             return (nameLower.includes(filterValueLower) || yipCodeLower.includes(filterValueLower))
         }
     }
-    return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
-    spacing={{ base: '10px', sm: '20px', md: '50px' }}>
-        <ViewFriendsHeading/>
+    return <PageWithHeading heading="Friends " icon={FaUserFriends}> 
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%">
                 <ButtonGroup isAttached variant='outline' bg={buttonGroupBg} borderRadius="lg">        
@@ -144,7 +141,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                 }}                    
             />       
         </VStack>
-   </VStack>
+   </PageWithHeading>
 }
 
 type ViewFriendsPanelProps = {
@@ -160,18 +157,6 @@ const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps, renderCar
         align="flex-start">
         {cardProps.map(renderCard)}
     </Flex>
-}
-
-function ViewFriendsHeading(){
-    return <Center>
-        <Heading
-            fontWeight={600}
-            fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
-            lineHeight={'110%'}>
-            {`Friends `}
-            <Icon as={FaUserFriends}/>
-        </Heading>
-    </Center>
 }
 
 export type FriendCardProps = {

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Center, Grid, GridItem, Heading, HStack,
+import { Button, ButtonGroup, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
@@ -12,6 +12,7 @@ import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } 
 import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
 import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
+import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -46,17 +47,7 @@ saveRegistrations}) => {
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
-    return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
-         spacing={{ base: '10px', sm: '20px', md: '50px' }}>
-        <Center>
-            <Heading
-                fontWeight={600}
-                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
-                lineHeight={'110%'}>
-                {`Edit Registrations (${addressLabel})  `}
-                <Icon as={MdEditNote}/>
-            </Heading>
-        </Center>
+    return <PageWithHeading heading={`Edit Registrations (${addressLabel})  `} icon={MdEditNote}>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%" justifyContent="flex-start">
                 <ButtonGroup isAttached variant='outline'
@@ -78,7 +69,7 @@ saveRegistrations}) => {
                     validation={getRegsitrationValidation(i)} />)}
             </Grid>
         </VStack>
-    </VStack>        
+    </PageWithHeading>        
 }
 
 type TitleRowProps = {

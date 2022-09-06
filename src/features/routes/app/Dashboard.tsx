@@ -15,6 +15,7 @@ import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } 
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
 import { AddressPanel } from "../../../components/core/AddressPanel"
+import { PageWithHeading } from "../../../components/hoc/PageWithHeading"
 
 export default function DashboardWrapper(){
     
@@ -103,31 +104,19 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
     const {selectedAddressData} = props
     const addressName = getDisplayLabelForAddress(selectedAddressData)
-    const addressLastUpdated = selectedAddressData.address.addressMetadata.lastUpdated
-    
-    return <VStack maxW="100%" maxH="100%" height="100%"
-            id="dashboard-content" style={{flex:1}} align="left" spacing={{ base: '10px', sm: '20px', md: '50px' }}>
-        <Center>
-            {/*TODO: Delete button. Maybe use ButtonGroup & add an edit button there too?*/}
-            <Heading
-                fontWeight={600}
-                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
-                lineHeight={'110%'}>
-                {`${addressName}    `}
-                <Icon as={getIconFromName(addressName)}/>
-            </Heading>
-        </Center>
+    const addressLastUpdated = selectedAddressData.address.addressMetadata.lastUpdated    
+    return <PageWithHeading heading={`${addressName}    `} icon={getIconFromName(addressName)}>
         {/*Medium-to-large screen*/}
-        <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'flex' }}>
-            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
+        <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>
+            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true} maxW="500px"/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </HStack>
         {/*Mobile*/}
-        <VStack align="top" spacing="15px" display={{ base: 'flex', md: 'none' }}>
+        <VStack align="top" spacing="15px" display={{ base: 'inherit', md: 'none' }} p={2}>
             <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
         </VStack>
-    </VStack>
+    </PageWithHeading>
 }
 
 type RegistrationPanelPrpos = {
