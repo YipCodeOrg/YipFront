@@ -9,9 +9,11 @@ import {
     Textarea,
     Input,
   } from '@chakra-ui/react';
+import { ChangeEvent } from 'react';
+import { Address } from '../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress } from './createAddressSlice';
   
-export default function CreateAddress() {
+export default function CreateAddressWrapper() {
   
   const rawCreateAddress = useRawCreateAddress()
   const currentCreateAddress = useCurrentCreateAddress()
@@ -19,13 +21,42 @@ export default function CreateAddress() {
   const isRawInputLocked = useIsRawCreateAddresInputLocked()
   const setCreateAddressLine = useSetCreateAddressLine()
 
-  const handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+  function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>){
     const inputValue = e.target.value
     setRawAddress(inputValue)
   }
+  
+  return <CreateAddress {...{
+    rawCreateAddress,
+    setRawAddress,
+    currentCreateAddress,
+    isRawInputLocked,
+    setCreateAddressLine,
+    handleInputChange
+  }}/>
+}
 
-  return (
-    <Container maxW="full" mt={0} centerContent overflow="hidden">
+type CreateAddressProps = {
+  rawCreateAddress: string,
+  setRawAddress: (newAddress: string) => void,
+  currentCreateAddress: Address,
+  isRawInputLocked: boolean,
+  setCreateAddressLine: (index: number, content: string) => void,
+  handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>
+}
+
+export function CreateAddress(props: CreateAddressProps){
+
+  const {
+    rawCreateAddress,
+    setRawAddress,
+    currentCreateAddress,
+    isRawInputLocked,
+    setCreateAddressLine,
+    handleInputChange
+  } = props
+
+  return <Container maxW="full" mt={0} centerContent overflow="hidden">
       <Flex>
           <Box m={8}>
               <VStack spacing={5}>
@@ -60,7 +91,6 @@ export default function CreateAddress() {
           </Box>
       </Flex>
     </Container>
-  );
 }
 
 type AddressLineProps = {line: string, index: number,
