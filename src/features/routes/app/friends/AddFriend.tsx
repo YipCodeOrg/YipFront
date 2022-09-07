@@ -36,8 +36,8 @@ export default function AddFriend(props: AddFriendProps){
         const validation = friendsValidation.obj
         const itemValidation = validation.itemValidations[index]
         if(itemValidation !== undefined){
-            nameValidationResult = itemValidation.name
-            yipCodeValidationResult = itemValidation.yipCode
+            nameValidationResult = itemValidation.fieldValidations.name
+            yipCodeValidationResult = itemValidation.fieldValidations.yipCode
         }
     }    
 
