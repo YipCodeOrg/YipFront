@@ -1,4 +1,5 @@
 import { Flex, useColorModeValue } from "@chakra-ui/react"
+import { ArrayValidationResult, hasErrors, printMessages, ValidationResult, ValidationSeverity } from "../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { InfoButton } from "../core/InfoButton"
 
 export type ValidationComponentProps = {
@@ -6,13 +7,13 @@ export type ValidationComponentProps = {
 }
 
 export type ValidationControlProps = {
-    message?: string,
+    validationErrorMessage?: string,
     render: (p: ValidationComponentProps) => JSX.Element
 } & ValidationComponentProps
 
 export function ValidationControl(props: ValidationControlProps){
 
-    const { isInvalid, render, message } = props
+    const { isInvalid, render, validationErrorMessage: message } = props
 
     if(!isInvalid){
         return render({isInvalid})
@@ -28,4 +29,25 @@ export function ValidationControl(props: ValidationControlProps){
                 </Flex>        
             </Flex>
     }    
+}
+
+export type ValidationControlData = {
+    validationErrorMessage: string,
+    isInvalid: boolean,
+}
+
+export function standardValidationControlDataFromArray<TItemValid>(validation: ArrayValidationResult<TItemValid> | null): ValidationControlData{
+    return(standardValidationControlData(validation?.topValidationResult ?? null))
+}
+
+export function standardValidationControlData(validation: ValidationResult | null){
+    let validationErrorMessage = ""
+    let isInvalid = false 
+    
+    if(validation !== null && hasErrors(validation)){
+        validationErrorMessage = `Validation errors must be fixed before saving. Errors found: ${printMessages(validation, ValidationSeverity.ERROR)}`
+        isInvalid = hasErrors(validation)
+    }
+
+    return { validationErrorMessage, isInvalid }
 }

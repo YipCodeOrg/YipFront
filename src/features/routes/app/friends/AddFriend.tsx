@@ -2,6 +2,7 @@ import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorMod
 import { BsPersonPlusFill } from "react-icons/bs"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
+import { standardValidationControlDataFromArray, ValidationControl } from "../../../../components/hoc/ValidationControl"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend, FriendsValidationResult } from "../../../../packages/YipStackLib/types/friends"
@@ -20,8 +21,6 @@ export default function AddFriend(props: AddFriendProps){
 
     const { saveFriends, friendsValidation, newFriend, setNewFriend } = props
 
-    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
-
     let nameValidationResult: ValidationResult | null = null
     let yipCodeValidationResult: ValidationResult | null = null
 
@@ -39,7 +38,13 @@ export default function AddFriend(props: AddFriendProps){
             nameValidationResult = itemValidation.fieldValidations.name
             yipCodeValidationResult = itemValidation.fieldValidations.yipCode
         }
-    }    
+    }
+
+    const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(friendsValidation?.obj ?? null)
+
+    function renderButtonGroup(){
+        return <AddFriendButtonGroup {...{saveFriends, isInvalid}}/>
+    }
 
     return <PageWithHeading heading="Add Friend " icon={BsPersonPlusFill}>        
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
@@ -49,13 +54,25 @@ export default function AddFriend(props: AddFriendProps){
             <VStack align="flex-start" display={{base: "inherit", md: "none"}}>
                 <FormContent {...{nameValidationResult, yipCodeValidationResult, newFriend, handleInputRegistrationChange}} />
             </VStack>
-            <ButtonGroup isAttached variant='outline'
-                bg={buttonGroupBg} borderRadius="lg">
-                <Button onClick={saveFriends}>Save</Button>
-            </ButtonGroup>
+            <ValidationControl render={renderButtonGroup} {...{isInvalid, validationErrorMessage}}/>
         </VStack>
     </PageWithHeading>
 
+}
+
+export type AddFriendButtonGroupProps = {
+    saveFriends: () => void,
+    isInvalid: boolean
+}
+
+function AddFriendButtonGroup({saveFriends, isInvalid}: AddFriendButtonGroupProps){
+
+    const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+
+    return <ButtonGroup isAttached variant='outline'
+        bg={buttonGroupBg} borderRadius="lg">
+        <Button onClick={saveFriends} isDisabled={isInvalid}>Save</Button>
+    </ButtonGroup>
 }
 
 type FormContentProps = {

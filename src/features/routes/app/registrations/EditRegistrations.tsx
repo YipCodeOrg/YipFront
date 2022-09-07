@@ -10,10 +10,10 @@ import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
 import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
-import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
-import { ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
+import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -46,22 +46,16 @@ saveRegistrations}) => {
 
     function renderButtonGroup({isInvalid}: ValidationComponentProps){
         return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration}} />
-    }    
-
-    let validationErrorMessage = ""
-    let isInvalid = false 
-    
-    if(validation !== null && hasErrors(validation.topValidationResult)){
-        validationErrorMessage = `Validation errors must be fixed before saving. Errors found: ${printMessages(validation.topValidationResult, ValidationSeverity.ERROR)}`
-        isInvalid = hasErrors(validation.topValidationResult)
     }
+
+    const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <PageWithHeading heading={`Edit Registrations (${addressLabel})  `} icon={MdEditNote}>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%" justifyContent="flex-start">
             <ValidationControl isInvalid={isInvalid} render={renderButtonGroup}
-                message={validationErrorMessage}/>
+                validationErrorMessage={validationErrorMessage}/>
             </HStack>
             <Grid width="100%" gap={{ base: 1, sm: 2, md: 3 }} templateColumns='repeat(1, min-content) repeat(2, auto) max-content'
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
