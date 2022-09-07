@@ -9,7 +9,7 @@ import { useCallback, useMemo } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
-import { flatRegistrationsValidationResult, Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
+import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
 import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
@@ -48,13 +48,13 @@ saveRegistrations}) => {
         return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration}} />
     }    
 
-    let validationErrorMessage = "Validation errors must be fixed before saving."
+    let validationErrorMessage = ""
+    let isInvalid = false 
     
     if(validation !== null && hasErrors(validation.topValidationResult)){
-        validationErrorMessage += ` Top level errors found: ${printMessages(validation.topValidationResult, ValidationSeverity.ERROR)}`
+        validationErrorMessage = `Validation errors must be fixed before saving. Errors found: ${printMessages(validation.topValidationResult, ValidationSeverity.ERROR)}`
+        isInvalid = hasErrors(validation.topValidationResult)
     }
-
-    const isInvalid = useMemo(() => hasErrors(flatRegistrationsValidationResult(validation)), [validation])
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
     return <PageWithHeading heading={`Edit Registrations (${addressLabel})  `} icon={MdEditNote}>
@@ -274,7 +274,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     const standardInputBg = useColorModeValue('gray.100', 'gray.900')
     const inputBg = isOver! ? 'cyan.400' : standardInputBg
 
-    const nameValidationResult = validation?.name ?? null
+    const nameValidationResult = validation?.fieldValidations?.name ?? null
 
     return <div style={{display: "contents", opacity: isDragging ? 0.5 : 1}} ref={drop}>
         <GridItem bg={isOver! ? 'cyan.400' : 'inherit'} borderRadius="lg" opacity="inherit">
