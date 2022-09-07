@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Grid, GridItem, Heading, HStack,
-    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl, Flex } from "@chakra-ui/react"
+    Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
@@ -13,7 +13,7 @@ import { Registration, RegistrationsValidationResult, RegistrationValidationResu
 import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
-import { InfoButton } from "../../../../components/core/InfoButton"
+import { ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -96,35 +96,6 @@ function EditRegistrationsButtonGroup(props: EditRegistrationsButtonGroupProps){
                 icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
         </Tooltip>
     </ButtonGroup>
-}
-
-type ValidationComponentProps = {
-    isInvalid: boolean,
-}
-
-type ValidationControlProps = {
-    message?: string,
-    render: (p: ValidationComponentProps) => JSX.Element
-} & ValidationComponentProps
-
-function ValidationControl(props: ValidationControlProps){
-
-    const { isInvalid, render, message } = props
-
-    if(!isInvalid){
-        return render({isInvalid})
-    } else{
-
-        const infoMessage = message?? "There were validation errors"
-        const errorColor = useColorModeValue("red.400", "red.300")
-
-        return <Flex>
-                <InfoButton {...{infoMessage}} iconColor={errorColor}/>        
-                <Flex borderColor={errorColor} borderStyle="solid" borderWidth="initial" borderRadius="lg">                
-                    {render({isInvalid})}
-                </Flex>        
-            </Flex>
-    }    
 }
 
 type TitleRowProps = {
