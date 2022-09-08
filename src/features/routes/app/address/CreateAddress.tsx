@@ -61,7 +61,7 @@ export function CreateAddress(props: CreateAddressProps){
     <VStack spacing={5} display={{base: "inherit", md: "none"}}>
       <CreateAddressContent {...props} displayType="vertical"/>
     </VStack>
-    <HStack w="90%" spacing={5} display={{base: "none", md: "inherit"}}>
+    <HStack spacing={5} display={{base: "none", md: "inherit"}} w="100%" justify="center" p={20}>
       <CreateAddressContent {...props} displayType="horizontal"/>
     </HStack>
   </PageWithHeading>
@@ -85,21 +85,21 @@ function CreateAddressContent(props: CreateAddressContentProps){
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
 
   return <>
-    <VStack id="address">
-        <FormLabel>Freeform Address</FormLabel>
-        <FormControl isRequired={true} isDisabled={isRawInputLocked}>          
-          <Textarea                  
-          borderColor="gray.300"
-          _hover={{
-              borderRadius: 'gray.300',
-          }}
-          placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
-          resize="both"
-          rows={5}
-          cols={rawAddressCols}
-          value={rawCreateAddress}
-          onChange={handleInputChange}          
-          />
+    <VStack>
+      <FormControl isRequired={true} isDisabled={isRawInputLocked}>   
+        <FormLabel>Freeform Address</FormLabel>       
+        <Textarea                  
+        borderColor="gray.300"
+        _hover={{
+            borderRadius: 'gray.300',
+        }}
+        placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
+        resize="both"
+        rows={5}
+        cols={rawAddressCols}
+        value={rawCreateAddress}
+        onChange={handleInputChange}          
+        />
       </FormControl>
       <Button
       display={isRawInputLocked ? 'none' : 'initial'}
@@ -109,7 +109,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       Clear
       </Button>
     </VStack>
-    <VStack>
+    <VStack flexBasis="400px">
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
           setCreateAddressLine={setCreateAddressLine}/>))}
