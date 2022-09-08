@@ -59,16 +59,16 @@ export function CreateAddress(props: CreateAddressProps){
 
   return <PageWithHeading heading="Create Address " icon={FaPlusCircle}>
     <VStack spacing={5} display={{base: "inherit", md: "none"}}>
-      <CreateAddressContent {...props} rawAddressCols={25}/>
+      <CreateAddressContent {...props} displayType="vertical"/>
     </VStack>
     <HStack w="90%" spacing={5} display={{base: "none", md: "inherit"}}>
-      <CreateAddressContent {...props} rawAddressCols={35}/>
+      <CreateAddressContent {...props} displayType="horizontal"/>
     </HStack>
   </PageWithHeading>
 }
 
 type CreateAddressContentProps = {
-  rawAddressCols: number
+  displayType: "horizontal" | "vertical"
 } & CreateAddressProps
 
 function CreateAddressContent(props: CreateAddressContentProps){
@@ -79,8 +79,11 @@ function CreateAddressContent(props: CreateAddressContentProps){
     isRawInputLocked,
     setCreateAddressLine,
     handleInputChange,
-    rawAddressCols
+    displayType
   } = props
+
+  const rawAddressCols = displayType === "horizontal" ? 35 : 25
+
   return <>
     <VStack id="address">
         <FormLabel>Freeform Address</FormLabel>
@@ -124,7 +127,7 @@ const AddressLine: React.FC<AddressLineProps> = ({line, index, setCreateAddressL
     setCreateAddressLine(index, inputValue)
   }
   
-  return <FormControl float="right">
+  return <FormControl>
       <Input
       _hover={{}}
       value={line}
