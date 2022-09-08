@@ -106,7 +106,8 @@ export type AppendSingletonValidateRenderProps<T, TValid> = {
     valToAppend: T | null,
     setValToAppend: (newValToAppend: T) => void,
     validation: Indexed<TValid> | null,
-    save: () => void
+    save: () => void,
+    cancel: () => void
 }
 
 export type AppendSingletonValidateWrapperProps<T, TValid> = {
@@ -150,7 +151,8 @@ export function AppendSingletonValidateWrapper<T, TValid>(props: AppendSingleton
         valToAppend,
         setValToAppend: setAndMaybeValidate,
         validation: validation === null ? null : {obj: validation, index: initialArr.length},
-        save
+        save,
+        cancel: () => {}
     }
 
     return render(childProps)

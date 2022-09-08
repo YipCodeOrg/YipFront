@@ -21,14 +21,15 @@ function StoryWrapper({initialFriends}: AddFriendStoryProps){
     function render(props: AppendSingletonValidateRenderProps<Friend, FriendsValidationResult>){
 
         const { valToAppend: newFriend, setValToAppend: setFriend, validation: friendsValidation,
-            save: saveFriends } = props
+            save: saveFriends, cancel: cancelAddFriend } = props
 
         const childProps: AddFriendProps = {
             friends: initialFriends,
             setNewFriend: setFriend,
             newFriend: newFriend ?? {name: "", yipCode: ""},
             friendsValidation,
-            saveFriends
+            saveFriends,
+            cancelAddFriend 
         }    
 
         return <AddFriend {...childProps}/>

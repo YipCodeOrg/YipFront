@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
 import { BsPersonPlusFill } from "react-icons/bs"
+import { CancelButton } from "../../../../components/core/CancelButton"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationControl } from "../../../../components/hoc/ValidationControl"
@@ -14,12 +15,13 @@ export type AddFriendProps = {
     newFriend: Friend,
     setNewFriend: (newFriend: Friend) => void,
     friendsValidation: IndexedFriendsValidationResult | null,
-    saveFriends: () => void
+    saveFriends: () => void,
+    cancelAddFriend: () => void
 }
 
 export default function AddFriend(props: AddFriendProps){
 
-    const { saveFriends, friendsValidation, newFriend, setNewFriend } = props
+    const { saveFriends, friendsValidation, newFriend, setNewFriend, cancelAddFriend } = props
 
     let nameValidationResult: ValidationResult | null = null
     let yipCodeValidationResult: ValidationResult | null = null
@@ -43,7 +45,7 @@ export default function AddFriend(props: AddFriendProps){
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(friendsValidation?.obj ?? null)
 
     function renderButtonGroup(){
-        return <AddFriendButtonGroup {...{saveFriends, isInvalid}}/>
+        return <AddFriendButtonGroup {...{saveFriends, isInvalid, cancelAddFriend}}/>
     }
 
     return <PageWithHeading heading="Add Friend " icon={BsPersonPlusFill}>        
@@ -62,16 +64,18 @@ export default function AddFriend(props: AddFriendProps){
 
 export type AddFriendButtonGroupProps = {
     saveFriends: () => void,
+    cancelAddFriend: () => void,
     isInvalid: boolean
 }
 
-function AddFriendButtonGroup({saveFriends, isInvalid}: AddFriendButtonGroupProps){
+function AddFriendButtonGroup({saveFriends, isInvalid, cancelAddFriend}: AddFriendButtonGroupProps){
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
     return <ButtonGroup isAttached variant='outline'
         bg={buttonGroupBg} borderRadius="lg">
         <Button onClick={saveFriends} isDisabled={isInvalid}>Save</Button>
+        <CancelButton cancelAction={cancelAddFriend} shouldWarn warningMessage="You may have unsaved changes. Are you sure you want to cancel?"/>
     </ButtonGroup>
 }
 
