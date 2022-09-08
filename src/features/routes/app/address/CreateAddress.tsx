@@ -7,6 +7,9 @@ import {
     Input,
     HStack,
     Heading,
+    BoxProps,
+    Box,
+    Spacer
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -90,7 +93,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   return <>
     <VStack>
-      <HeadingWithInfo text="Freeform Address Entry" infoMessage={freeFormInfo}/>
+      <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
       <FormControl isRequired={true} isDisabled={isRawInputLocked}>   
         <FormLabel>Address</FormLabel>       
         <Textarea                  
@@ -122,19 +125,34 @@ function CreateAddressContent(props: CreateAddressContentProps){
   </>
 }
 
-type HeadingWithInfoProps = {
+type SequenceHeadingProps = {
   text: string,
-  infoMessage: string
+  infoMessage: string,
+  sequenceNumber: number
 }
 
-function HeadingWithInfo(props: HeadingWithInfoProps){
+function SequenceHeading(props: SequenceHeadingProps){
 
-  const { text, infoMessage } = props
+  const { text, infoMessage, sequenceNumber } = props
 
-  return <HStack>
+  return <HStack pl={2}>
+    <CircledDigit num={sequenceNumber}/>
+    <Spacer/>
     <Heading size="md">{text}</Heading>
     <InfoButton {...{infoMessage}}/>
   </HStack>
+}
+
+type CircledDigitProps = {
+  num: number
+} & BoxProps
+
+function CircledDigit(props: CircledDigitProps){
+  const { num, ...rest } = props
+  return <Box {...rest} borderColor="initial" pl={2} pr={2}
+     borderRadius="50%" borderStyle="solid" borderWidth="initial">
+    {num}
+  </Box>
 }
 
 type AddressLineProps = {line: string, index: number,
