@@ -76,26 +76,27 @@ export function CreateAddress(props: CreateAddressProps){
                   <FormControl id="address" isRequired={true} 
                       isDisabled={isRawInputLocked}>
                       <FormLabel>Address</FormLabel>
-                      <Textarea                  
-                      borderColor="gray.300"
-                      _hover={{
-                          borderRadius: 'gray.300',
-                      }}
-                      placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
-                      resize="both"
-                      rows={5}
-                      cols={25}
-                      value={rawCreateAddress}
-                      onChange={handleInputChange}
-                      />
-                      <Button
-                      display={isRawInputLocked ? 'none' : 'initial'}
-                      variant="solid"
-                      _hover={{}}
-                      onClick={() => setRawAddress("")}
-                      marginTop={"5px"}>
-                      Clear
-                      </Button>
+                      <VStack>
+                        <Textarea                  
+                        borderColor="gray.300"
+                        _hover={{
+                            borderRadius: 'gray.300',
+                        }}
+                        placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
+                        resize="both"
+                        rows={5}
+                        cols={25}
+                        value={rawCreateAddress}
+                        onChange={handleInputChange}
+                        />
+                        <Button
+                        display={isRawInputLocked ? 'none' : 'initial'}
+                        variant="solid"
+                        _hover={{}}
+                        onClick={() => setRawAddress("")}>
+                        Clear
+                        </Button>
+                      </VStack>
                   </FormControl>
                   {currentCreateAddress.addressLines.map((line, index) =>
                     (<AddressLine key={index} index={index} line={line}
