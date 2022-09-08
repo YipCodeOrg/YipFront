@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Indexed } from "../../packages/YipStackLib/packages/YipAddress/util/types"
+import { action } from '@storybook/addon-actions'
 
 export type ListUpdateValidateRenderProps<T, TValid> = {
     arr: T[],
@@ -152,7 +153,7 @@ export function AppendSingletonValidateWrapper<T, TValid>(props: AppendSingleton
         setValToAppend: setAndMaybeValidate,
         validation: validation === null ? null : {obj: validation, index: initialArr.length},
         save,
-        cancel: () => {}
+        cancel: () => action("Cancel operation called")()
     }
 
     return render(childProps)
