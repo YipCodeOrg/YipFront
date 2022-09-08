@@ -4,11 +4,6 @@ import CreateAddressWrapper, { CreateAddress, CreateAddressWrapperProps } from "
 import createAddressState from "../../../routes/app/address/createAddressSlice"
 import { Provider } from "react-redux"
 
-const mockStore = configureStore({
-    reducer: {
-        createAddress: createAddressState
-    }
-})
 
 type StoryType = typeof StoryWrapper
 
@@ -19,8 +14,14 @@ export default {
 
 const Template: ComponentStory<StoryType> = (args: CreateAddressWrapperProps) => <StoryWrapper {...args}/>
 
-function StoryWrapper(props: CreateAddressWrapperProps){            
-
+function StoryWrapper(props: CreateAddressWrapperProps){      
+    
+    const mockStore = configureStore({
+        reducer: {
+            createAddress: createAddressState
+        }
+    })
+    
     return <Provider store={mockStore}>
         <CreateAddressWrapper {...props}/>
     </Provider>
