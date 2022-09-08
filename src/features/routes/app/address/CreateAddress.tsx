@@ -6,9 +6,11 @@ import {
     Textarea,
     Input,
     HStack,
+    Heading,
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
+import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress } from './createAddressSlice';
@@ -84,10 +86,13 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
 
+  const freeFormInfo = "Enter a freeform address first. Each address line should be on a new line. As you type, the address will be broken out into lines which you will see on the right hand side. When you are finished with the freeform address entry, you can start editing those lines further."
+
   return <>
     <VStack>
+      <HeadingWithInfo text="Freeform Address Entry" infoMessage={freeFormInfo}/>
       <FormControl isRequired={true} isDisabled={isRawInputLocked}>   
-        <FormLabel>Freeform Address</FormLabel>       
+        <FormLabel>Address</FormLabel>       
         <Textarea                  
         borderColor="gray.300"
         _hover={{
@@ -115,6 +120,21 @@ function CreateAddressContent(props: CreateAddressContentProps){
           setCreateAddressLine={setCreateAddressLine}/>))}
     </VStack>
   </>
+}
+
+type HeadingWithInfoProps = {
+  text: string,
+  infoMessage: string
+}
+
+function HeadingWithInfo(props: HeadingWithInfoProps){
+
+  const { text, infoMessage } = props
+
+  return <HStack>
+    <Heading size="md">{text}</Heading>
+    <InfoButton {...{infoMessage}}/>
+  </HStack>
 }
 
 type AddressLineProps = {line: string, index: number,
