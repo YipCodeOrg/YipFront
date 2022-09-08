@@ -1,13 +1,11 @@
 import {
-    Container,
-    Flex,
-    Box,
     Button,
     VStack,
     FormControl,
     FormLabel,
     Textarea,
     Input,
+    HStack,
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -59,53 +57,61 @@ type CreateAddressProps = {
 
 export function CreateAddress(props: CreateAddressProps){
 
+  return <PageWithHeading heading="Create Address " icon={FaPlusCircle}>
+    <VStack spacing={5} display={{base: "inherit", md: "none"}}>
+      <CreateAddressContent {...props} rawAddressCols={25}/>
+    </VStack>
+    <HStack w="90%" spacing={5} display={{base: "none", md: "inherit"}}>
+      <CreateAddressContent {...props} rawAddressCols={35}/>
+    </HStack>
+  </PageWithHeading>
+}
+
+type CreateAddressContentProps = {
+  rawAddressCols: number
+} & CreateAddressProps
+
+function CreateAddressContent(props: CreateAddressContentProps){
   const {
     rawCreateAddress,
     setRawAddress,
     currentCreateAddress,
     isRawInputLocked,
     setCreateAddressLine,
-    handleInputChange
+    handleInputChange,
+    rawAddressCols
   } = props
-
-  return <PageWithHeading heading="Create Address " icon={FaPlusCircle}>
-    <Container maxW="full" mt={0} centerContent overflow="hidden">
-        <Flex>
-            <Box m={8}>
-                <VStack spacing={5}>
-                  <FormControl id="address" isRequired={true} 
-                      isDisabled={isRawInputLocked}>
-                      <FormLabel>Address</FormLabel>
-                      <VStack>
-                        <Textarea                  
-                        borderColor="gray.300"
-                        _hover={{
-                            borderRadius: 'gray.300',
-                        }}
-                        placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
-                        resize="both"
-                        rows={5}
-                        cols={25}
-                        value={rawCreateAddress}
-                        onChange={handleInputChange}
-                        />
-                        <Button
-                        display={isRawInputLocked ? 'none' : 'initial'}
-                        variant="solid"
-                        _hover={{}}
-                        onClick={() => setRawAddress("")}>
-                        Clear
-                        </Button>
-                      </VStack>
-                  </FormControl>
-                  {currentCreateAddress.addressLines.map((line, index) =>
-                    (<AddressLine key={index} index={index} line={line}
-                      setCreateAddressLine={setCreateAddressLine}/>))}
-                </VStack>
-            </Box>
-        </Flex>
-      </Container>
-    </PageWithHeading>
+  return <>
+    <VStack id="address">
+        <FormLabel>Freeform Address</FormLabel>
+        <FormControl isRequired={true} isDisabled={isRawInputLocked}>          
+          <Textarea                  
+          borderColor="gray.300"
+          _hover={{
+              borderRadius: 'gray.300',
+          }}
+          placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
+          resize="both"
+          rows={5}
+          cols={rawAddressCols}
+          value={rawCreateAddress}
+          onChange={handleInputChange}          
+          />
+      </FormControl>
+      <Button
+      display={isRawInputLocked ? 'none' : 'initial'}
+      variant="solid"
+      _hover={{}}
+      onClick={() => setRawAddress("")}>
+      Clear
+      </Button>
+    </VStack>
+    <VStack>
+      {currentCreateAddress.addressLines.map((line, index) =>
+        (<AddressLine key={index} index={index} line={line}
+          setCreateAddressLine={setCreateAddressLine}/>))}
+    </VStack>
+  </>
 }
 
 type AddressLineProps = {line: string, index: number,
