@@ -75,7 +75,7 @@ function AddFriendButtonGroup({saveFriends, isInvalid, cancelAddFriend}: AddFrie
     return <ButtonGroup isAttached variant='outline'
         bg={buttonGroupBg} borderRadius="lg">
         <Button onClick={saveFriends} isDisabled={isInvalid}>Save</Button>
-        <CancelButton cancelAction={cancelAddFriend} shouldWarn warningMessage="You may have unsaved changes. Are you sure you want to cancel?"/>
+        <CancelButton cancelAction={cancelAddFriend} shouldWarn/>
     </ButtonGroup>
 }
 

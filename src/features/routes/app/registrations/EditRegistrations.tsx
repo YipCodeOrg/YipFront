@@ -14,18 +14,20 @@ import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/pa
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
+import { CancelButton } from "../../../../components/core/CancelButton"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
     validation: RegistrationsValidationResult | null,
-    saveRegistrations: () => void
-    setRegistrations: (newRegistrations: Registration[]) => void
+    saveRegistrations: () => void,
+    cancel: () => void,
+    setRegistrations: (newRegistrations: Registration[]) => void,
     addressLabel: string,
     addressLastUpdated: Date,
 }
 
 export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
-saveRegistrations}) => {
+saveRegistrations, cancel}) => {
     
 
     function addNewRegistration(){
@@ -45,7 +47,7 @@ saveRegistrations}) => {
     }
 
     function renderButtonGroup({isInvalid}: ValidationComponentProps){
-        return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration}} />
+        return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration, cancel}} />
     }
 
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
@@ -73,6 +75,7 @@ saveRegistrations}) => {
 type EditRegistrationsButtonGroupProps = {
     saveRegistrations: () => void,
     addNewRegistration: () => void,
+    cancel: () => void,
     isInvalid: boolean
 }
 
@@ -80,11 +83,12 @@ function EditRegistrationsButtonGroup(props: EditRegistrationsButtonGroupProps){
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
     const addNewRegistrationTooltip = "Add new registration"
 
-    const { saveRegistrations, addNewRegistration, isInvalid } = props
+    const { saveRegistrations, addNewRegistration, isInvalid, cancel } = props
 
     return <ButtonGroup isAttached variant='outline'
         bg={buttonGroupBg} borderRadius="lg">                
         <Button onClick={saveRegistrations} isDisabled={isInvalid}>Save</Button>
+        <CancelButton cancelAction={cancel} shouldWarn/>
         <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
             <IconButton aria-label={addNewRegistrationTooltip}
                 icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>

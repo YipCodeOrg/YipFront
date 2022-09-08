@@ -25,7 +25,7 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
     
     function render(props: ListUpdateValidateRenderProps<Registration, RegistrationsValidationResult>){
 
-        const { arr: registrations, setArr: setRegistrations, validation, save: saveRegistrations } = props
+        const { arr: registrations, setArr: setRegistrations, validation, save: saveRegistrations, cancel } = props
 
         const childProps: EditRegistrationsProps = {
             addressLabel,
@@ -33,7 +33,8 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
             setRegistrations,
             addressLastUpdated: arbitraryDate2,
             validation,
-            saveRegistrations
+            saveRegistrations,
+            cancel
         }    
 
         return <EditRegistrations {...childProps}/>

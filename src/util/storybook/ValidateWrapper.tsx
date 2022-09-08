@@ -6,7 +6,8 @@ export type ListUpdateValidateRenderProps<T, TValid> = {
     arr: T[],
     setArr: (newArr: T[]) => void,
     validation: TValid | null,
-    save: () => void
+    save: () => void,
+    cancel: () => void
 }
 
 export type ListUpdateValidateWrapperProps<T, TValid> = {
@@ -41,7 +42,8 @@ export function ListUpdateValidateWrapper<T, TValid>(props: ListUpdateValidateWr
         arr,
         setArr: setAndMaybeValidate,
         validation,
-        save
+        save,
+        cancel: () => action("Cancel operation called")()
     }
 
     return render(childProps)

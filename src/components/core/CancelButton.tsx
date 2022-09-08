@@ -24,7 +24,7 @@ type CancelButtonWithWarnProps = {
 
 function CancelButtonWithWarn({warningMessage, cancelAction}: CancelButtonWithWarnProps){
     
-    const popoverBodyMessage = warningMessage ?? "Are you sure you want to cancel?"
+    const popoverBodyMessage = warningMessage ?? "You may have unsaved changes. Are you sure you want to cancel?"
     const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
 
     return <Popover>
