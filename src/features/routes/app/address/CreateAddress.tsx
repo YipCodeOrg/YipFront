@@ -9,13 +9,17 @@ import {
     Textarea,
     Input,
   } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress } from './createAddressSlice';
-  
-export default function CreateAddressWrapper() {
+
+export type CreateAddressWrapperProps = {
+  initialRawAddress?: string | undefined
+}
+
+export default function CreateAddressWrapper({initialRawAddress}: CreateAddressWrapperProps) {
   
   const rawCreateAddress = useRawCreateAddress()
   const currentCreateAddress = useCurrentCreateAddress()
@@ -27,6 +31,12 @@ export default function CreateAddressWrapper() {
     const inputValue = e.target.value
     setRawAddress(inputValue)
   }
+
+  useEffect(() => {
+    if(initialRawAddress !== undefined){
+      setRawAddress(initialRawAddress)
+    }    
+  }, [initialRawAddress, setRawAddress])
   
   return <CreateAddress {...{
     rawCreateAddress,

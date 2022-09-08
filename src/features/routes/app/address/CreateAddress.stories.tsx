@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
+import CreateAddressWrapper, { CreateAddress, CreateAddressWrapperProps } from "./CreateAddress"
 import createAddressState from "../../../routes/app/address/createAddressSlice"
 import { Provider } from "react-redux"
 
@@ -17,18 +17,21 @@ export default {
     title: 'app/address/create'
   } as ComponentMeta<StoryType>
 
-const Template: ComponentStory<StoryType> = (args: CreateAddressStoryProps) => <StoryWrapper {...args}/>
+const Template: ComponentStory<StoryType> = (args: CreateAddressWrapperProps) => <StoryWrapper {...args}/>
 
-
-type CreateAddressStoryProps = {
-    
-}
-
-function StoryWrapper(_: CreateAddressStoryProps){            
+function StoryWrapper(props: CreateAddressWrapperProps){            
 
     return <Provider store={mockStore}>
-        <CreateAddressWrapper/>
+        <CreateAddressWrapper {...props}/>
     </Provider>
 }
 
 export const Standard = Template.bind({})
+
+export const RawFilled = Template.bind({})
+RawFilled.args = {
+    initialRawAddress: `952 Soupdale Kitchens
+Viking City
+Illinois
+60651`
+}
