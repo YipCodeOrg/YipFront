@@ -21,7 +21,7 @@ import { ImBin } from 'react-icons/im';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
-import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress, useUndoCreateAddressChange } from './createAddressSlice';
+import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -33,7 +33,7 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const currentCreateAddress = useCurrentCreateAddress()
   const setRawAddress = useSetRawCreateAddress()
   const areThereChanges = useAreThereCreateAddressChanges()
-  const setCreateAddressLine = useSetCreateAddressLine()
+  const updateCreateAddressLines = useUpdateCreateAddressLines()
   const undoChange = useUndoCreateAddressChange()
   const changeCount = useCreateAddressChangeCount()
 
@@ -53,7 +53,7 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     setRawAddress,
     currentCreateAddress,
     areThereChanges,
-    setCreateAddressLine,
+    updateCreateAddressLines,
     handleInputChange,
     undoChange,
     changeCount
@@ -65,7 +65,7 @@ type CreateAddressProps = {
   setRawAddress: (newAddress: string) => void,
   currentCreateAddress: Address,
   areThereChanges: boolean,
-  setCreateAddressLine: (index: number, content: string) => void,
+  updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
   handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>,
   undoChange: (count: number) => void
   changeCount: number
@@ -94,7 +94,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
     setRawAddress,
     currentCreateAddress,
     areThereChanges,
-    setCreateAddressLine,
+    updateCreateAddressLines,
     handleInputChange,
     displayType,
     undoChange,
@@ -107,9 +107,11 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to undo all changes to the structured data."
 
-  function addBlankLine(){
-    const numLines = currentCreateAddress.addressLines.length
-    setCreateAddressLine(numLines, "")
+  function addBlankLine(){    
+    updateCreateAddressLines(function(lines: string[]){      
+      const numLines = lines.length
+      lines[numLines] = ""
+    })
   }
 
   return <>
@@ -145,7 +147,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
-          setCreateAddressLine={setCreateAddressLine}/>))}
+          updateCreateAddressLines={updateCreateAddressLines}/>))}
       <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
     </VStack>
   </>
@@ -228,20 +230,32 @@ function CircledDigit(props: CircledDigitProps){
 }
 
 type AddressLineProps = {line: string, index: number,
-  setCreateAddressLine: (index: number, content: string) => void}
+  updateCreateAddressLines: (updater: (lines: string[]) => void) => void}
 
-const AddressLine: React.FC<AddressLineProps> = ({line, index, setCreateAddressLine}) => {    
+const AddressLine: React.FC<AddressLineProps> = ({line, index, updateCreateAddressLines}) => {
+
+  function setThisAddressLine(newVal: string){    
+    updateCreateAddressLines(function(lines: string[]){
+      lines[index] = newVal
+    })
+  }
+
+  function deleteThisAddressLine(){
+    updateCreateAddressLines(function(lines: string[]){      
+      lines.splice(index, 1)
+    })
+  }
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const inputValue = e.target.value
-    setCreateAddressLine(index, inputValue)
+    const inputValue = e.target.value    
+    setThisAddressLine(inputValue)
   }
   const deleteButtonLabel = "Delete this address line"
   
   return <HStack w="100%">
     <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
         <IconButton aria-label={deleteButtonLabel} variant="ghost"
-            icon={<Icon as={ImBin}/>} onClick={() => alert("TODO")}/>
+            icon={<Icon as={ImBin}/>} onClick={deleteThisAddressLine}/>
     </Tooltip>
     <FormControl>
         <Input

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useCallback } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks"
 import { RootState } from "../../../../app/store"
-import { Address, emptyAddress, shallowCopyUpdateLine } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
+import { Address, emptyAddress } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { ParseOptions, parseStrToAddress } from "../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress"
 
 type CreateAddressState = {
@@ -10,6 +10,8 @@ type CreateAddressState = {
     parseOptions: ParseOptions,
     changeBuffer: Address[]
 }
+
+type AddressUpdateFunction = (address: Address) => Address
 
 const initialState: CreateAddressState = {
     rawInput: "",
@@ -31,12 +33,14 @@ export const createAddressSlice = createSlice({
                 state.changeBuffer = [newAddress]
             }            
         },
-        updateLine(state: CreateAddressState, action: PayloadAction<{index: number, content: string}>){
-            const {index, content} = action.payload
-            const currentAddress = getCurrentAddress(state)
-            const newAddress = shallowCopyUpdateLine(currentAddress, index, content)
-            state.changeBuffer.push(newAddress)
-        },
+        setAddressLines(state: CreateAddressState, action: PayloadAction<string[]>){
+            updateAddress(state, function(address){
+                return {
+                    ...address,
+                    addressLines: action.payload
+                }
+            })
+        },        
         undo(state: CreateAddressState, action: PayloadAction<{count: number}>){
             const { count } = action.payload
             const changeBuffer = state.changeBuffer
@@ -46,23 +50,7 @@ export const createAddressSlice = createSlice({
     }
 })
 
-function areThereCreateAddressChanges(state: CreateAddressState){
-    return getChangeCount(state) > 0
-}
-
-function getCurrentAddress(state: CreateAddressState): Address{
-    const current = state.changeBuffer.slice(-1).pop()
-    if(!!current){
-        return current
-    }
-    throw new Error("Current state not found");    
-}
-
-function getChangeCount(state: CreateAddressState): number{
-    return state.changeBuffer.length - 1
-}
-
-export const { setRawAddress, updateLine, undo } = createAddressSlice.actions
+export const { setRawAddress, setAddressLines, undo } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -96,9 +84,17 @@ export const useSetRawCreateAddress = () : (rawAddress: string) => void => {
     return callback
 }
 
-export const useSetCreateAddressLine = () : (index: number, content: string) => void => {
+export const useUpdateCreateAddressLines = () : (updater: (lines: string[]) => void) => void => {
     const dispatch = useAppDispatch()
-    const callback = useCallback((index: number, content: string) => dispatch(updateLine({index, content})), [dispatch])
+    const currentAddressState = useCurrentCreateAddress()
+
+    function callBackFunction(updater: (lines: string[]) => void){
+        const newLines = [...currentAddressState.addressLines]        
+        updater(newLines)
+        return dispatch(setAddressLines(newLines))
+    }
+
+    const callback = useCallback(callBackFunction, [dispatch, currentAddressState])
     return callback
 }
 
@@ -109,3 +105,25 @@ export const useUndoCreateAddressChange = () : (count: number) => void => {
 }
 
 export default createAddressSlice.reducer
+
+function updateAddress(state: CreateAddressState, update: AddressUpdateFunction){                        
+    const currentAddress = getCurrentAddress(state)
+    const newAddress = update(currentAddress)
+    state.changeBuffer.push(newAddress)
+}
+
+function areThereCreateAddressChanges(state: CreateAddressState){
+    return getChangeCount(state) > 0
+}
+
+function getCurrentAddress(state: CreateAddressState): Address{
+    const current = state.changeBuffer.slice(-1).pop()
+    if(!!current){
+        return current
+    }
+    throw new Error("Current state not found");    
+}
+
+function getChangeCount(state: CreateAddressState): number{
+    return state.changeBuffer.length - 1
+}
