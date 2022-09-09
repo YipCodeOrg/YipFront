@@ -107,21 +107,23 @@ function CreateAddressContent(props: CreateAddressContentProps){
   return <>
     <VStack>
       <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
-      <FormControl isRequired={true} isDisabled={areThereChanges}>   
-        <FormLabel>Address</FormLabel>       
-        <Textarea                  
-        borderColor="gray.300"
-        _hover={{
-            borderRadius: 'gray.300',
-        }}
-        placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
-        resize="both"
-        rows={5}
-        cols={rawAddressCols}
-        value={rawCreateAddress}
-        onChange={handleInputChange}          
-        />
-      </FormControl>
+      <Tooltip label="You can't modify the freeform address while there are further changes made to the structured address. At this point, you can either edit the structured address or, if you'd like to scratch those changes, then click Undo All and you can then return to editing the freeform address." isDisabled={!areThereChanges}>
+        <FormControl isRequired={true} isDisabled={areThereChanges}>   
+          <FormLabel>Address</FormLabel>       
+          <Textarea                  
+          borderColor="gray.300"
+          _hover={{
+              borderRadius: 'gray.300',
+          }}
+          placeholder={'Address line 1\nAddress line 2\nAddress line 3\n...'}
+          resize="both"
+          rows={5}
+          cols={rawAddressCols}
+          value={rawCreateAddress}
+          onChange={handleInputChange}          
+          />
+        </FormControl>
+      </Tooltip>
       <Button
       display={areThereChanges ? 'none' : 'initial'}
       isDisabled={areThereChanges}
@@ -132,20 +134,35 @@ function CreateAddressContent(props: CreateAddressContentProps){
       </Button>
     </VStack>
     <VStack flexBasis="400px">
-      <SequenceHeading text="Structured Address Entry" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
+      <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
           setCreateAddressLine={setCreateAddressLine}/>))}
-      <ButtonGroup isDisabled={!areThereChanges} display={areThereChanges ? 'initial' : 'none'}>
-        <Tooltip placement='bottom' label="Undo the last change to the structured address">
-          <Button onClick={() => undoChange(1)}>Undo</Button>
-        </Tooltip>
-        <Tooltip placement='bottom' label="Undo all changes to the structured address">
-          <Button onClick={() => undoChange(changeCount)}>Undo all</Button>
-        </Tooltip>
-      </ButtonGroup>
+      {areThereChanges ? 
+        <StructuredAddressButtons {...{areThereChanges, undoChange, changeCount}}/>
+        : <></>}
     </VStack>
   </>
+}
+
+type StructuredAddressButtonsProps = {
+  areThereChanges: boolean,
+  undoChange: (count: number) => void,
+  changeCount: number
+}
+
+function StructuredAddressButtons(props: StructuredAddressButtonsProps){
+
+  const { areThereChanges, undoChange, changeCount } = props
+
+  return <ButtonGroup isDisabled={!areThereChanges} display={areThereChanges ? 'initial' : 'none'}>
+    <Tooltip placement='bottom' label="Undo the last change to the structured address" openDelay={1500}>
+      <Button onClick={() => undoChange(1)}>Undo</Button>
+    </Tooltip>
+    <Tooltip placement='bottom' label="Undo all changes to the structured address" openDelay={1500}>
+      <Button onClick={() => undoChange(changeCount)}>Undo all</Button>
+    </Tooltip>
+  </ButtonGroup>  
 }
 
 type SequenceHeadingProps = {
