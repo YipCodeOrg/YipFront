@@ -9,11 +9,11 @@ export type PageWithHeadingProps = {
 
 export function PageWithHeading({children, heading, icon, ...rest}: PageWithHeadingProps){
     return <VStack maxW="100%" maxH="100%" h="100%" w="100%"
-        spacing={{ base: '10px', sm: '20px', md: '50px' }} {...rest}>
+        spacing={{ base: '10px', sm: '15px', md: '20px', lg: '40px' }} {...rest}>
         <Center>
             <Heading
                 fontWeight={600}
-                fontSize={{ base: 'l', sm: '2xl', md: '3xl' }}
+                fontSize={{ base: 'l', sm: '2xl', md: '3xl', lg: '4xl' }}
                 lineHeight={'110%'}>
                 {heading}
                 {icon !== undefined ? <Icon as={icon}/> : <></>}
