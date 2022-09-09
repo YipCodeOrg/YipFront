@@ -11,7 +11,9 @@ import {
     Box,
     Spacer,
     ButtonGroup,
-    Tooltip
+    Tooltip,
+    IconButton,
+    Icon
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -104,6 +106,11 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to undo all changes to the structured data."
 
+  function addBlankLine(){
+    const numLines = currentCreateAddress.addressLines.length
+    setCreateAddressLine(numLines, "")
+  }
+
   return <>
     <VStack>
       <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
@@ -138,9 +145,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
           setCreateAddressLine={setCreateAddressLine}/>))}
-      {areThereChanges ? 
-        <StructuredAddressButtons {...{areThereChanges, undoChange, changeCount}}/>
-        : <></>}
+      <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
     </VStack>
   </>
 }
@@ -148,21 +153,47 @@ function CreateAddressContent(props: CreateAddressContentProps){
 type StructuredAddressButtonsProps = {
   areThereChanges: boolean,
   undoChange: (count: number) => void,
-  changeCount: number
+  changeCount: number,
+  addBlankLine: () => void
 }
 
 function StructuredAddressButtons(props: StructuredAddressButtonsProps){
 
-  const { areThereChanges, undoChange, changeCount } = props
+  const { areThereChanges, undoChange, changeCount, addBlankLine } = props
 
-  return <ButtonGroup isDisabled={!areThereChanges} display={areThereChanges ? 'initial' : 'none'}>
+  const addNewAddressLineTooltip = "Add a new address line"
+
+  return <HStack w="100%" pr={2}>
+    <Spacer/>
+    {areThereChanges ? 
+      <StructuredAddressUndoButtons {...{undoChange, changeCount}}/>
+      : <></>}
+    <Spacer/>
+    <Tooltip label={addNewAddressLineTooltip} openDelay={1500}>
+      <IconButton aria-label={addNewAddressLineTooltip} variant="ghost"
+          icon={<Icon as={FaPlusCircle}/>} onClick={addBlankLine}/>
+    </Tooltip>
+  </HStack>
+}
+
+type StructuredAddressUndoButtonsProps = {
+  undoChange: (count: number) => void,
+  changeCount: number
+}
+
+
+function StructuredAddressUndoButtons(props: StructuredAddressUndoButtonsProps){
+
+  const { undoChange, changeCount } = props
+  
+  return <ButtonGroup>
     <Tooltip placement='bottom' label="Undo the last change to the structured address" openDelay={1500}>
       <Button onClick={() => undoChange(1)}>Undo</Button>
     </Tooltip>
     <Tooltip placement='bottom' label="Undo all changes to the structured address" openDelay={1500}>
       <Button onClick={() => undoChange(changeCount)}>Undo all</Button>
     </Tooltip>
-  </ButtonGroup>  
+  </ButtonGroup>
 }
 
 type SequenceHeadingProps = {
