@@ -17,6 +17,7 @@ import {
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
+import { ImBin } from 'react-icons/im';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
@@ -140,7 +141,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       Clear
       </Button>
     </VStack>
-    <VStack flexBasis="400px">
+    <VStack flexBasis="420px">
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
@@ -235,12 +236,19 @@ const AddressLine: React.FC<AddressLineProps> = ({line, index, setCreateAddressL
     const inputValue = e.target.value
     setCreateAddressLine(index, inputValue)
   }
+  const deleteButtonLabel = "Delete this address line"
   
-  return <FormControl>
-      <Input
-      _hover={{}}
-      value={line}
-      onChange={handleInputChange}
-      />      
-  </FormControl>
+  return <HStack w="100%">
+    <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
+        <IconButton aria-label={deleteButtonLabel} variant="ghost"
+            icon={<Icon as={ImBin}/>} onClick={() => alert("TODO")}/>
+    </Tooltip>
+    <FormControl>
+        <Input
+        _hover={{}}
+        value={line}
+        onChange={handleInputChange}
+        />      
+    </FormControl>
+  </HStack>
 }
