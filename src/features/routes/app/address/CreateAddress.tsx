@@ -9,14 +9,16 @@ import {
     Heading,
     BoxProps,
     Box,
-    Spacer
+    Spacer,
+    ButtonGroup,
+    Tooltip
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
-import { useCurrentCreateAddress, useIsRawCreateAddresInputLocked, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress } from './createAddressSlice';
+import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useSetCreateAddressLine, useSetRawCreateAddress, useUndoCreateAddressChange } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -27,8 +29,10 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const rawCreateAddress = useRawCreateAddress()
   const currentCreateAddress = useCurrentCreateAddress()
   const setRawAddress = useSetRawCreateAddress()
-  const isRawInputLocked = useIsRawCreateAddresInputLocked()
+  const areThereChanges = useAreThereCreateAddressChanges()
   const setCreateAddressLine = useSetCreateAddressLine()
+  const undoChange = useUndoCreateAddressChange()
+  const changeCount = useCreateAddressChangeCount()
 
   function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>){
     const inputValue = e.target.value
@@ -45,9 +49,11 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     rawCreateAddress,
     setRawAddress,
     currentCreateAddress,
-    isRawInputLocked,
+    areThereChanges,
     setCreateAddressLine,
-    handleInputChange
+    handleInputChange,
+    undoChange,
+    changeCount
   }}/>
 }
 
@@ -55,9 +61,11 @@ type CreateAddressProps = {
   rawCreateAddress: string,
   setRawAddress: (newAddress: string) => void,
   currentCreateAddress: Address,
-  isRawInputLocked: boolean,
+  areThereChanges: boolean,
   setCreateAddressLine: (index: number, content: string) => void,
-  handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>
+  handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>,
+  undoChange: (count: number) => void
+  changeCount: number
 }
 
 export function CreateAddress(props: CreateAddressProps){
@@ -82,10 +90,12 @@ function CreateAddressContent(props: CreateAddressContentProps){
     rawCreateAddress,
     setRawAddress,
     currentCreateAddress,
-    isRawInputLocked,
+    areThereChanges,
     setCreateAddressLine,
     handleInputChange,
-    displayType
+    displayType,
+    undoChange,
+    changeCount
   } = props
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
@@ -97,7 +107,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
   return <>
     <VStack>
       <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
-      <FormControl isRequired={true} isDisabled={isRawInputLocked}>   
+      <FormControl isRequired={true} isDisabled={areThereChanges}>   
         <FormLabel>Address</FormLabel>       
         <Textarea                  
         borderColor="gray.300"
@@ -113,7 +123,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
         />
       </FormControl>
       <Button
-      display={isRawInputLocked ? 'none' : 'initial'}
+      display={areThereChanges ? 'none' : 'initial'}
+      isDisabled={areThereChanges}
       variant="solid"
       _hover={{}}
       onClick={() => setRawAddress("")}>
@@ -125,6 +136,14 @@ function CreateAddressContent(props: CreateAddressContentProps){
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
           setCreateAddressLine={setCreateAddressLine}/>))}
+      <ButtonGroup isDisabled={!areThereChanges} display={areThereChanges ? 'initial' : 'none'}>
+        <Tooltip placement='bottom' label="Undo the last change to the structured address">
+          <Button onClick={() => undoChange(1)}>Undo</Button>
+        </Tooltip>
+        <Tooltip placement='bottom' label="Undo all changes to the structured address">
+          <Button onClick={() => undoChange(changeCount)}>Undo all</Button>
+        </Tooltip>
+      </ButtonGroup>
     </VStack>
   </>
 }

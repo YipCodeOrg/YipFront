@@ -22,8 +22,8 @@ export const createAddressSlice = createSlice({
     initialState: initialState,
     reducers: {
         setRawAddress(state: CreateAddressState, action: PayloadAction<string>){
-            if(isRawInputLocked(state)){
-                throw new Error("Cannot update raw address. Raw input is locked.");                
+            if(areThereCreateAddressChanges(state)){
+                throw new Error("Cannot update raw address while there are changes buffered.");                
             } else{
                 const newRawAddress = action.payload
                 const newAddress = parseStrToAddress(newRawAddress)
@@ -36,12 +36,18 @@ export const createAddressSlice = createSlice({
             const currentAddress = getCurrentAddress(state)
             const newAddress = shallowCopyUpdateLine(currentAddress, index, content)
             state.changeBuffer.push(newAddress)
+        },
+        undo(state: CreateAddressState, action: PayloadAction<{count: number}>){
+            const { count } = action.payload
+            const changeBuffer = state.changeBuffer
+            const spliceIndex = Math.max(changeBuffer.length - count, 1)
+            changeBuffer.splice(spliceIndex)
         }
     }
 })
 
-function isRawInputLocked(state: CreateAddressState){
-    return state.changeBuffer.length > 1
+function areThereCreateAddressChanges(state: CreateAddressState){
+    return getChangeCount(state) > 0
 }
 
 function getCurrentAddress(state: CreateAddressState): Address{
@@ -52,7 +58,11 @@ function getCurrentAddress(state: CreateAddressState): Address{
     throw new Error("Current state not found");    
 }
 
-export const { setRawAddress, updateLine } = createAddressSlice.actions
+function getChangeCount(state: CreateAddressState): number{
+    return state.changeBuffer.length - 1
+}
+
+export const { setRawAddress, updateLine, undo } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -70,9 +80,14 @@ export const useRawCreateAddress = () : string => {
     return useCreateAddressState().rawInput
 }
 
-export const useIsRawCreateAddresInputLocked = () : boolean => {
+export const useAreThereCreateAddressChanges = () : boolean => {
     const addressState = useCreateAddressState()
-    return isRawInputLocked(addressState)
+    return areThereCreateAddressChanges(addressState)
+}
+
+export const useCreateAddressChangeCount = () : number => {
+    const addressState = useCreateAddressState()
+    return getChangeCount(addressState)
 }
 
 export const useSetRawCreateAddress = () : (rawAddress: string) => void => {
@@ -84,6 +99,12 @@ export const useSetRawCreateAddress = () : (rawAddress: string) => void => {
 export const useSetCreateAddressLine = () : (index: number, content: string) => void => {
     const dispatch = useAppDispatch()
     const callback = useCallback((index: number, content: string) => dispatch(updateLine({index, content})), [dispatch])
+    return callback
+}
+
+export const useUndoCreateAddressChange = () : (count: number) => void => {
+    const dispatch = useAppDispatch()
+    const callback = useCallback((count: number) => dispatch(undo({count})), [dispatch])
     return callback
 }
 
