@@ -66,7 +66,8 @@ export function CreateAddress(props: CreateAddressProps){
     <VStack spacing={5} display={{base: "inherit", md: "none"}}>
       <CreateAddressContent {...props} displayType="vertical"/>
     </VStack>
-    <HStack spacing={5} display={{base: "none", md: "inherit"}} w="100%" justify="center" p={20}>
+    <HStack spacing={8} display={{base: "none", md: "inherit"}} w="100%" justify="center" p={20}
+      align="flex-start">
       <CreateAddressContent {...props} displayType="horizontal"/>
     </HStack>
   </PageWithHeading>
@@ -89,7 +90,9 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
 
-  const freeFormInfo = "Enter a freeform address first. Each address line should be on a new line. As you type, the address will be broken out into lines which you will see on the right hand side. When you are finished with the freeform address entry, you can start editing those lines further."
+  const freeFormInfo = "Enter a freeform address first. Each address line should be on a new line. As you type, the address will be broken out into lines which you will see appearing dynamically. When you are finished with the freeform address entry, you can start editing those lines further in the structured address entry, but once you do, you can no longer edit the freeform address."
+
+  const structuredAddressInfo = "Edit structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once you start editing the structured data, you can no longer make changes to the freeform address entry."
 
   return <>
     <VStack>
@@ -118,6 +121,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       </Button>
     </VStack>
     <VStack flexBasis="400px">
+      <SequenceHeading text="Structured Address Entry" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
           setCreateAddressLine={setCreateAddressLine}/>))}
