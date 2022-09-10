@@ -23,7 +23,8 @@ import {
     PopoverHeader,
     PopoverBody,
     useDisclosure,
-    PopoverTrigger
+    PopoverTrigger,
+    Flex
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useMemo } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
@@ -300,6 +301,15 @@ function AlliasCard(props: AlliasCardProps){
   const { index, invAliasMap } = props
 
   const aliases = invAliasMap.get(index)
+  const aliasList = useMemo(convertAliasesToList, [aliases])
+
+  function convertAliasesToList(): string[]{
+    if(aliases === undefined){
+      return []
+    } else {
+      return [...aliases]
+    }
+  }
 
   let mainAlias =  ""
 
@@ -317,26 +327,41 @@ function AlliasCard(props: AlliasCardProps){
   const { isOpen, onToggle, onClose } = useDisclosure()
 
   return <HStack boxShadow="lg" bg={cardBg}
-    borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
-      <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
-      <Popover isOpen={isOpen} placement="left">                
-        <Tooltip openDelay={1500} label={editAliasesTooltip}>
-        <PopoverTrigger>
+    borderRadius="lg" key={index} pl={{base: "none", md: 4}}>      
+      <Popover isOpen={isOpen} placement="left">
+          <PopoverTrigger>
+            <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
+          </PopoverTrigger>
+          <Tooltip openDelay={1500} label={editAliasesTooltip}>
             <IconButton aria-label={editAliasesTooltip} variant="ghost"
-            icon={<Icon as={MdLabel}/>} onClick={onToggle}/>                  
-        </PopoverTrigger>
-        </Tooltip>
-        <PopoverContent bg={popoverBg}>
+            icon={<Icon as={MdLabel}/>} onClick={onToggle}/>
+          </Tooltip>
+        <PopoverContent bg={popoverBg} style={{ margin: 0 }}>
             <PopoverArrow />
             <PopoverCloseButton onClick={onClose}/>
             <PopoverHeader fontWeight={600}>Edit Address Aliases</PopoverHeader>
             <PopoverBody>
-                TODO
-            </PopoverBody>
+              Edit, delete or add new aliases
+            </PopoverBody>            
             <VStack p={4}>
+              <EditableAliasCard alias={"test"}/>
+                {aliasList.map((a, i) => 
+                  <EditableAliasCard alias={a} key={i}/>)}
                 <Button bg={doneButtonBg} onClick={onClose}>Done</Button>
             </VStack>    
         </PopoverContent>
     </Popover>      
+  </HStack>
+}
+
+type EditableAliasCardProps = {
+  alias: string
+}
+
+function EditableAliasCard(props: EditableAliasCardProps){
+  const { alias } = props
+  const cardBg = useColorModeValue('gray.300', 'gray.800')
+  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg">
+    {alias}
   </HStack>
 }
