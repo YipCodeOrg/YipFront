@@ -15,7 +15,15 @@ import {
     IconButton,
     Icon,
     useColorModeValue,
-    Text
+    Text,
+    Popover,
+    PopoverContent,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverHeader,
+    PopoverBody,
+    useDisclosure,
+    PopoverTrigger
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useMemo } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
@@ -304,10 +312,28 @@ function AlliasCard(props: AlliasCardProps){
     }
   }
 
+  const saveButtonBg = useColorModeValue('gray.50', 'gray.900')
+  const { isOpen, onToggle, onClose } = useDisclosure()
+
   return <HStack boxShadow="lg" bg={cardBg}
     borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
       <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
-      <IconButton aria-label={editAliasesTooltip} variant="ghost"
-        icon={<Icon as={MdLabel}/>}/>
+      <Popover isOpen={isOpen} placement="left">        
+        <PopoverTrigger>
+          <IconButton aria-label={editAliasesTooltip} variant="ghost"
+          icon={<Icon as={MdLabel}/>} onClick={onToggle}/>        
+        </PopoverTrigger>
+        <PopoverContent >
+            <PopoverArrow />
+            <PopoverCloseButton onClick={onClose}/>
+            <PopoverHeader fontWeight={600}>Edit Address Aliases</PopoverHeader>
+            <PopoverBody>
+                TODO
+            </PopoverBody>
+            <VStack p={4}>
+                <Button bg={saveButtonBg} onClick={onClose}>Done</Button>
+            </VStack>    
+        </PopoverContent>
+    </Popover>      
   </HStack>
 }
