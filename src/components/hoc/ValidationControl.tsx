@@ -14,13 +14,13 @@ export type ValidationControlProps = {
 export function ValidationControl(props: ValidationControlProps){
 
     const { isInvalid, render, validationErrorMessage: message } = props
+    const errorColor = useColorModeValue("red.400", "red.300")
 
     if(!isInvalid){
         return render({isInvalid})
     } else{
 
         const infoMessage = message?? "There were validation errors"
-        const errorColor = useColorModeValue("red.400", "red.300")
 
         return <Flex>
                 <InfoButton {...{infoMessage}} iconColor={errorColor}/>        
