@@ -17,13 +17,13 @@ import {
     useColorModeValue,
     Text
   } from '@chakra-ui/react';
-import { ChangeEvent, useEffect } from 'react'
+import { ChangeEvent, useEffect, useMemo } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
-import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { Address, inverseAliasMap } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
@@ -110,6 +110,9 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to undo all changes to the structured data."
 
+  const invAliasMap : Map<number, Set<string>>
+    = useMemo(() => inverseAliasMap(currentCreateAddress), [currentCreateAddress])
+
   function addBlankLine(){    
     updateCreateAddressLines(function(lines: string[]){      
       const numLines = lines.length
@@ -149,7 +152,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
     <VStack flexBasis="470px">
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
-        (<AddressLine key={index} index={index} line={line}
+        (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
           updateCreateAddressLines={updateCreateAddressLines}/>))}
       <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
     </VStack>
@@ -232,10 +235,16 @@ function CircledDigit(props: CircledDigitProps){
   </Box>
 }
 
-type AddressLineProps = {line: string, index: number,
-  updateCreateAddressLines: (updater: (lines: string[]) => void) => void}
+type AddressLineProps = {
+  line: string,
+  index: number,
+  updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
+  invAliasMap : Map<number, Set<string>>
+}
 
-const AddressLine: React.FC<AddressLineProps> = ({line, index, updateCreateAddressLines}) => {
+const AddressLine: React.FC<AddressLineProps> = (props) => {
+
+  const {line, index, invAliasMap, updateCreateAddressLines} = props
 
   function setThisAddressLine(newVal: string){    
     updateCreateAddressLines(function(lines: string[]){
@@ -267,22 +276,33 @@ const AddressLine: React.FC<AddressLineProps> = ({line, index, updateCreateAddre
         onChange={handleInputChange}
         />      
     </FormControl>
-    <AlliasCard {...{index}}/>
+    <AlliasCard {...{index, invAliasMap}}/>
   </HStack>
 }
 
 type AlliasCardProps = {
-  index: number
+  index: number,
+  invAliasMap : Map<number, Set<string>>
 }
 
 function AlliasCard(props: AlliasCardProps){
   
   const cardBg = useColorModeValue('gray.300', 'gray.700')
   const editAliasesTooltip = "Edit aliases for this address line"
-  const { index } = props
+  const { index, invAliasMap } = props
 
-  //TODO: Calculate this from address- show three dots if there's more & just show dots if there are no aliases
-  const mainAlias = "PostCode"
+  const aliases = invAliasMap.get(index)
+
+  let mainAlias =  ""
+
+  if(aliases !== undefined && aliases.size > 0){
+    const [firstAlias] = aliases
+    if(firstAlias !== undefined){
+      const truncated = firstAlias.substring(0, 10)      
+      mainAlias = truncated.length < firstAlias.length
+        ? `${truncated}...` : truncated
+    }
+  }
 
   return <HStack boxShadow="lg" bg={cardBg}
     borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
