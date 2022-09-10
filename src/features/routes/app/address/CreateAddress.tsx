@@ -312,18 +312,21 @@ function AlliasCard(props: AlliasCardProps){
     }
   }
 
-  const saveButtonBg = useColorModeValue('gray.50', 'gray.900')
+  const doneButtonBg = useColorModeValue('gray.50', 'gray.900')
+  const popoverBg = useColorModeValue('gray.100', 'gray.700')
   const { isOpen, onToggle, onClose } = useDisclosure()
 
   return <HStack boxShadow="lg" bg={cardBg}
     borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
       <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
-      <Popover isOpen={isOpen} placement="left">        
+      <Popover isOpen={isOpen} placement="left">                
+        <Tooltip openDelay={1500} label={editAliasesTooltip}>
         <PopoverTrigger>
-          <IconButton aria-label={editAliasesTooltip} variant="ghost"
-          icon={<Icon as={MdLabel}/>} onClick={onToggle}/>        
+            <IconButton aria-label={editAliasesTooltip} variant="ghost"
+            icon={<Icon as={MdLabel}/>} onClick={onToggle}/>                  
         </PopoverTrigger>
-        <PopoverContent >
+        </Tooltip>
+        <PopoverContent bg={popoverBg}>
             <PopoverArrow />
             <PopoverCloseButton onClick={onClose}/>
             <PopoverHeader fontWeight={600}>Edit Address Aliases</PopoverHeader>
@@ -331,7 +334,7 @@ function AlliasCard(props: AlliasCardProps){
                 TODO
             </PopoverBody>
             <VStack p={4}>
-                <Button bg={saveButtonBg} onClick={onClose}>Done</Button>
+                <Button bg={doneButtonBg} onClick={onClose}>Done</Button>
             </VStack>    
         </PopoverContent>
     </Popover>      
