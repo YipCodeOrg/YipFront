@@ -339,14 +339,14 @@ function AlliasCard(props: AlliasCardProps){
         <PopoverContent bg={popoverBg} style={{ margin: 0 }}>
             <PopoverArrow />
             <PopoverCloseButton onClick={onClose}/>
-            <PopoverHeader fontWeight={600}>Edit Address Aliases</PopoverHeader>
+            <PopoverHeader fontWeight={600}>Edit Aliases - Line {index}</PopoverHeader>
             <PopoverBody>
-              Edit, delete or add new aliases
-            </PopoverBody>            
-            <VStack p={4}>
-              <EditableAliasCard alias={"test"}/>
+              <Flex>
                 {aliasList.map((a, i) => 
                   <EditableAliasCard alias={a} key={i}/>)}
+              </Flex>
+            </PopoverBody>            
+            <VStack p={4}>              
                 <Button bg={doneButtonBg} onClick={onClose}>Done</Button>
             </VStack>    
         </PopoverContent>
@@ -361,7 +361,7 @@ type EditableAliasCardProps = {
 function EditableAliasCard(props: EditableAliasCardProps){
   const { alias } = props
   const cardBg = useColorModeValue('gray.300', 'gray.800')
-  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg">
-    {alias}
+  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" pl={3} pr={3}>
+    <Text>{alias}</Text>
   </HStack>
 }
