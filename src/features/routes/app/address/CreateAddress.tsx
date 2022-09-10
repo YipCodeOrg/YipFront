@@ -327,16 +327,17 @@ function AlliasCard(props: AlliasCardProps){
   const { isOpen, onToggle, onClose } = useDisclosure()
 
   return <HStack boxShadow="lg" bg={cardBg}
-    borderRadius="lg" key={index} pl={{base: "none", md: 4}}>      
-      <Popover isOpen={isOpen} placement="left">
-          <PopoverTrigger>
-            <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
-          </PopoverTrigger>
-          <Tooltip openDelay={1500} label={editAliasesTooltip}>
-            <IconButton aria-label={editAliasesTooltip} variant="ghost"
-            icon={<Icon as={MdLabel}/>} onClick={onToggle}/>
-          </Tooltip>
-        <PopoverContent bg={popoverBg} style={{ margin: 0 }}>
+    borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
+      <Popover isOpen={isOpen} placement="left">      
+        <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>          
+        <PopoverTrigger>          
+          <Flex w={0} h={0} p={0} m={0}/>
+        </PopoverTrigger>
+        <Tooltip openDelay={1500} label={editAliasesTooltip}>
+          <IconButton aria-label={editAliasesTooltip} variant="ghost"
+          icon={<Icon as={MdLabel}/>} onClick={onToggle} p={0}/>
+        </Tooltip>
+        <PopoverContent bg={popoverBg} style={{ margin: 0 }} maxW="70vw">
             <PopoverArrow />
             <PopoverCloseButton onClick={onClose}/>
             <PopoverHeader fontWeight={600}>Edit Aliases - Line {index}</PopoverHeader>
