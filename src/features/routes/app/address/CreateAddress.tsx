@@ -13,11 +13,14 @@ import {
     ButtonGroup,
     Tooltip,
     IconButton,
-    Icon
+    Icon,
+    useColorModeValue,
+    Text
   } from '@chakra-ui/react';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
+import { MdLabel } from 'react-icons/md';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
@@ -143,7 +146,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       Clear
       </Button>
     </VStack>
-    <VStack flexBasis="420px">
+    <VStack flexBasis="470px">
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line}
@@ -264,5 +267,27 @@ const AddressLine: React.FC<AddressLineProps> = ({line, index, updateCreateAddre
         onChange={handleInputChange}
         />      
     </FormControl>
+    <AlliasCard {...{index}}/>
+  </HStack>
+}
+
+type AlliasCardProps = {
+  index: number
+}
+
+function AlliasCard(props: AlliasCardProps){
+  
+  const cardBg = useColorModeValue('gray.300', 'gray.700')
+  const editAliasesTooltip = "Edit aliases for this address line"
+  const { index } = props
+
+  //TODO: Calculate this from address- show three dots if there's more & just show dots if there are no aliases
+  const mainAlias = "PostCode"
+
+  return <HStack boxShadow="lg" bg={cardBg}
+    borderRadius="lg" key={index} pl={{base: "none", md: 4}}>
+      <Text display={{base: "none", md: "initial"}}>{mainAlias}</Text>
+      <IconButton aria-label={editAliasesTooltip} variant="ghost"
+        icon={<Icon as={MdLabel}/>}/>
   </HStack>
 }
