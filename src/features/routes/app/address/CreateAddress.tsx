@@ -363,7 +363,7 @@ function AlliasPopover(props: AlliasPopover){
             <PopoverCloseButton onClick={onClose} as={BiHide} size="m"/>
             <PopoverHeader fontWeight={600}>Aliases - Line {index}</PopoverHeader>
             <PopoverBody>
-              <Flex gap={1}>
+              <Flex gap={1} wrap="wrap">
                 {aliasList.map((a, i) => 
                   <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap}/>)}
               </Flex>
@@ -389,7 +389,7 @@ function AliasCard(props: AliasCardProps){
   return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
     onBlur={() => setIsEditing(false)}>
     {isEditing ? <EditableAlias {...{alias, updateAliasMap}}/>
-      : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)}/>}
+      : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)} maxW="100%"/>}
   </HStack>
 }
 
@@ -405,7 +405,7 @@ function ReadonlyAlias(props: ReadonlyAliasProps){
 
   return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}
     {...rest}>
-    {!!alias && <Text>{alias}</Text>}
+    {!!alias && <Text overflowWrap="break-word">{alias}</Text>}
     {!alias && <Text color={promptTextColor}>Enter text...</Text>}
   </HStack>
 }
@@ -418,25 +418,33 @@ type EditableAliasProps = {
 function EditableAlias(props: EditableAliasProps){
 
   const { alias, updateAliasMap } = props
+  const [val, setVal] = useState(alias)
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>){
     const inputValue = e.target.value
+    setVal(inputValue)
+  }
+
+  function dispatchValue(){
     updateAliasMap(function(aliasMap){
-      const existing = aliasMap[inputValue]
+      if(alias === val){
+        return
+      }
+      const existing = aliasMap[val]
       if(existing === undefined){
         const index = aliasMap[alias]
         delete aliasMap[alias]
         if(index !== undefined){
-          aliasMap[inputValue] = index
+          aliasMap[val] = index
         } else {
           throw new Error("Unexpected undefined index found in alias map");        
         }
       } else {
         const oneBased = existing + 1
-        alert(`Alias ${inputValue} already exists for line number ${oneBased}. You can't use the same alias for two different lines.`)
+        alert(`Alias ${val} already exists for line number ${oneBased}. You can't use the same alias for two different lines.`)
       }      
     })
   }
 
-  return <Input value={alias} onChange={handleInputChange} autoFocus/>
+  return <Input value={val} onChange={handleInputChange} onBlur={dispatchValue} autoFocus/>
 }
