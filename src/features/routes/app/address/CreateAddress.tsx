@@ -330,7 +330,7 @@ function AlliasPopover(props: AlliasPopover){
         map[""] = index
       } else {
         const oneBased = existing + 1
-        alert(`There is already a a blank alias at line ${oneBased}. Either give that a value or remove it before adding a new alias.`)
+        console.warn(`Unexpected blank alias found at line ${oneBased}.`)
       }      
     })
   }
