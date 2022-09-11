@@ -25,7 +25,8 @@ import {
     useDisclosure,
     PopoverTrigger,
     Flex,
-    StackProps
+    StackProps,
+    useToast
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { BiHide } from 'react-icons/bi';
@@ -419,6 +420,7 @@ function EditableAlias(props: EditableAliasProps){
 
   const { alias, updateAliasMap } = props
   const [val, setVal] = useState(alias)
+  const toast = useToast()
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>){
     const inputValue = e.target.value
@@ -441,7 +443,13 @@ function EditableAlias(props: EditableAliasProps){
         }
       } else {
         const oneBased = existing + 1
-        alert(`Alias ${val} already exists for line number ${oneBased}. You can't use the same alias for two different lines.`)
+        toast({
+          title: "Aliase Update Error",
+          description: `Alias ${val} already exists for line number ${oneBased}. You can't use the same alias for two different lines.`,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        })
       }      
     })
   }
