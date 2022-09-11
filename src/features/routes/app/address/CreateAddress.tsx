@@ -363,7 +363,7 @@ function AlliasPopover(props: AlliasPopover){
             <PopoverCloseButton onClick={onClose} as={BiHide} size="m"/>
             <PopoverHeader fontWeight={600}>Aliases - Line {index}</PopoverHeader>
             <PopoverBody>
-              <Flex>
+              <Flex gap={1}>
                 {aliasList.map((a, i) => 
                   <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap}/>)}
               </Flex>
@@ -401,10 +401,12 @@ function ReadonlyAlias(props: ReadonlyAliasProps){
 
   const { alias, ...rest } = props
   const readonlyAliasBg = useColorModeValue('gray.100', 'gray.700')
+  const promptTextColor = useColorModeValue('gray.500', 'gray.500')
 
   return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}
     {...rest}>
-    <Text>{alias}</Text>
+    {!!alias && <Text>{alias}</Text>}
+    {!alias && <Text color={promptTextColor}>Enter text...</Text>}
   </HStack>
 }
 
