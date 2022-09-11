@@ -33,6 +33,7 @@ import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
+import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
@@ -366,7 +367,7 @@ function AlliasPopover(props: AlliasPopover){
             <PopoverBody>
               <Flex gap={1} wrap="wrap">
                 {aliasList.map((a, i) => 
-                  <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap}/>)}
+                  <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap} forceIsEditing={!a}/>)}
               </Flex>
               <Tooltip openDelay={1500} label={addAliasTooltip}>
                 <IconButton aria-label={addAliasTooltip} variant="ghost"
@@ -380,13 +381,15 @@ function AlliasPopover(props: AlliasPopover){
 
 type AliasCardProps = {
   alias: string,
+  forceIsEditing: boolean,
   updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
 function AliasCard(props: AliasCardProps){
-  const { alias, updateAliasMap } = props
+  const { alias, updateAliasMap, forceIsEditing } = props
   const cardBg = useColorModeValue('gray.300', 'gray.800')
-  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [isEditing, setIsEditing] = useForceable<boolean>(forceIsEditing)
+
   return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
     onBlur={() => setIsEditing(false)}>
     {isEditing ? <EditableAlias {...{alias, updateAliasMap}}/>

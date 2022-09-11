@@ -106,6 +106,12 @@ export function useDisclosures<T>(t: T[]): DisclosuresResult{
     }
 }
 
+/** Like useState, but the value t can be forced to overwrite the state at any time. */
+export function useForceable<T>(t: T)
+: [T, (t: T) => void]{    
+    return useMutableMapped(t, u => u)
+}
+
 export function useMutableMapped<T, TRet>(t: T, f: (u: T) => TRet)
 : [TRet, (t: TRet) => void]{
     const [ret, setRet] = useState<TRet>(() => f(t))
