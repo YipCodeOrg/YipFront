@@ -306,7 +306,7 @@ type AlliasPopoverTriggerProps = {
 function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
   
   const cardBg = useColorModeValue('gray.300', 'gray.700')
-  const editAliasesTooltip = "Edit aliases for this address line"
+  const editAliasesTooltip = "View & edit aliases for this address line"
   const { index, invAliasMap, updateAliasMap } = props
 
   const aliases = invAliasMap.get(index)
