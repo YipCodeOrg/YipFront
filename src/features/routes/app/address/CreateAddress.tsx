@@ -36,7 +36,7 @@ import { MdLabel } from 'react-icons/md';
 import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
-import { Address, AliasMap, inverseAliasMap } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
@@ -432,6 +432,10 @@ function EditableAlias(props: EditableAliasProps){
 
   function dispatchValue(){
     updateAliasMap(function(aliasMap){
+      if(!val){
+        removeAlias(aliasMap, alias)
+        return
+      }
       if(alias === val){
         return
       }
