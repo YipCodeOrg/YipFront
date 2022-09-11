@@ -37,7 +37,7 @@ import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
-import { handleEnterKeyPress } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
+import { handleKeyPress } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
 import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
@@ -486,6 +486,11 @@ function EditableAlias(props: EditableAliasProps){
     })
   }
 
+  const keyPressHandlers = {
+    Enter: dispatchValue,
+    Escape: dispatchValue
+  }
+
   return <Input value={val} onChange={handleInputChange} onBlur={dispatchValue} autoFocus
-    onKeyDown={handleEnterKeyPress(dispatchValue)}/>
+    onKeyDown={handleKeyPress(keyPressHandlers)}/>
 }
