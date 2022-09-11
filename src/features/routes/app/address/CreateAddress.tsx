@@ -37,6 +37,7 @@ import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { handleEnterKeyPress } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
 import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
@@ -390,9 +391,8 @@ function AliasCard(props: AliasCardProps){
   const cardBg = useColorModeValue('gray.300', 'gray.800')
   const [isEditing, setIsEditing] = useForceable<boolean>(forceIsEditing)
 
-  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
-    onBlur={() => setIsEditing(false)}>
-    {isEditing ? <EditableAlias {...{alias, updateAliasMap}}/>
+  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}>
+    {isEditing ? <EditableAlias {...{alias, updateAliasMap, setIsEditing}}/>
       : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)} maxW="100%"/>}
   </HStack>
 }
@@ -416,12 +416,13 @@ function ReadonlyAlias(props: ReadonlyAliasProps){
 
 type EditableAliasProps = {
   alias: string,
-  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void,
+  setIsEditing: (b: boolean) => void
 }
 
 function EditableAlias(props: EditableAliasProps){
 
-  const { alias, updateAliasMap } = props
+  const { alias, updateAliasMap, setIsEditing } = props
   const [val, setVal] = useState(alias)
   const toast = useToast()
 
@@ -431,6 +432,7 @@ function EditableAlias(props: EditableAliasProps){
   }
 
   function dispatchValue(){
+    setIsEditing(false)
     updateAliasMap(function(aliasMap){
       if(!val){
         removeAlias(aliasMap, alias)
@@ -462,5 +464,6 @@ function EditableAlias(props: EditableAliasProps){
     })
   }
 
-  return <Input value={val} onChange={handleInputChange} onBlur={dispatchValue} autoFocus/>
+  return <Input value={val} onChange={handleInputChange} onBlur={dispatchValue} autoFocus
+    onKeyDown={handleEnterKeyPress(dispatchValue)}/>
 }
