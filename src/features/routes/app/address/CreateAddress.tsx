@@ -26,7 +26,7 @@ import {
     PopoverTrigger,
     Flex
   } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useMemo } from 'react'
+import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
@@ -285,16 +285,16 @@ const AddressLine: React.FC<AddressLineProps> = (props) => {
         onChange={handleInputChange}
         />      
     </FormControl>
-    <AlliasCard {...{index, invAliasMap}}/>
+    <AlliasPopoverTrigger {...{index, invAliasMap}}/>
   </HStack>
 }
 
-type AlliasCardProps = {
+type AlliasPopoverTriggerProps = {
   index: number,
   invAliasMap : Map<number, Set<string>>
 }
 
-function AlliasCard(props: AlliasCardProps){
+function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
   
   const cardBg = useColorModeValue('gray.300', 'gray.700')
   const editAliasesTooltip = "Edit aliases for this address line"
@@ -340,11 +340,11 @@ function AlliasCard(props: AlliasCardProps){
         <PopoverContent bg={popoverBg} style={{ margin: 0 }} maxW="70vw">
             <PopoverArrow />
             <PopoverCloseButton onClick={onClose}/>
-            <PopoverHeader fontWeight={600}>Edit Aliases - Line {index}</PopoverHeader>
+            <PopoverHeader fontWeight={600}>Aliases - Line {index}</PopoverHeader>
             <PopoverBody>
               <Flex>
                 {aliasList.map((a, i) => 
-                  <EditableAliasCard alias={a} key={i}/>)}
+                  <AliasCard alias={a} key={i}/>)}
               </Flex>
             </PopoverBody>            
             <VStack p={4}>              
@@ -355,14 +355,42 @@ function AlliasCard(props: AlliasCardProps){
   </HStack>
 }
 
-type EditableAliasCardProps = {
+type AliasCardProps = {
   alias: string
 }
 
-function EditableAliasCard(props: EditableAliasCardProps){
+function AliasCard(props: AliasCardProps){
   const { alias } = props
   const cardBg = useColorModeValue('gray.300', 'gray.800')
-  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" pl={3} pr={3}>
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
+  onFocus={() => setIsEditing(true)} onBlur={() => setIsEditing(false)} onClick={() => setIsEditing(true)}>
+    {isEditing ? <EditableAlias {...{alias}}/>
+      : <ReadonlyAlias {...{alias}}/>}
+  </HStack>
+}
+
+type ReadonlyAliasProps = {
+  alias: string
+}
+
+function ReadonlyAlias(props: ReadonlyAliasProps){
+
+  const { alias } = props
+  const readonlyAliasBg = useColorModeValue('gray.100', 'gray.700')
+
+  return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}>
     <Text>{alias}</Text>
   </HStack>
+}
+
+type EditableAliasProps = {
+  alias: string
+}
+
+function EditableAlias(props: EditableAliasProps){
+
+  const { alias } = props
+
+  return <Input value={alias} autoFocus/>
 }
