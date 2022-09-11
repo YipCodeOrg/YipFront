@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useCallback } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks"
 import { RootState } from "../../../../app/store"
-import { Address, emptyAddress } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
+import { Address, AliasMap, emptyAddress } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { ParseOptions, parseStrToAddress } from "../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress"
 
 type CreateAddressState = {
@@ -40,7 +40,15 @@ export const createAddressSlice = createSlice({
                     addressLines: action.payload
                 }
             })
-        },        
+        },    
+        setAddressAliases(state: CreateAddressState, action: PayloadAction<AliasMap>){
+            updateAddress(state, function(address){
+                return {
+                    ...address,
+                    aliasMap: action.payload
+                }
+            })
+        },     
         undo(state: CreateAddressState, action: PayloadAction<{count: number}>){
             const { count } = action.payload
             const changeBuffer = state.changeBuffer
@@ -50,7 +58,7 @@ export const createAddressSlice = createSlice({
     }
 })
 
-export const { setRawAddress, setAddressLines, undo } = createAddressSlice.actions
+export const { setRawAddress, setAddressLines, undo, setAddressAliases: setAliasMap } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -81,6 +89,20 @@ export const useCreateAddressChangeCount = () : number => {
 export const useSetRawCreateAddress = () : (rawAddress: string) => void => {
     const dispatch = useAppDispatch()
     const callback = useCallback((rawAddress: string) => dispatch(setRawAddress(rawAddress)), [dispatch])
+    return callback
+}
+
+export const useUpdateCreateAddressAliasMap = () : (updater: (aliases: AliasMap) => void) => void => {
+    const dispatch = useAppDispatch()
+    const currentAddressState = useCurrentCreateAddress()
+
+    function callBackFunction(updater: (aliases: AliasMap) => void){
+        const newMap = {...currentAddressState.aliasMap}
+        updater(newMap)
+        return dispatch(setAliasMap(newMap))
+    }
+
+    const callback = useCallback(callBackFunction, [dispatch, currentAddressState])
     return callback
 }
 

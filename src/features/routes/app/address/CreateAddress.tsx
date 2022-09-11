@@ -28,13 +28,14 @@ import {
     StackProps
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
-import { Address, inverseAliasMap } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
-import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange } from './createAddressSlice';
+import { Address, AliasMap, inverseAliasMap } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -49,6 +50,7 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const updateCreateAddressLines = useUpdateCreateAddressLines()
   const undoChange = useUndoCreateAddressChange()
   const changeCount = useCreateAddressChangeCount()
+  const updateAliasMap = useUpdateCreateAddressAliasMap()
 
   function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>){
     const inputValue = e.target.value
@@ -69,7 +71,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     updateCreateAddressLines,
     handleInputChange,
     undoChange,
-    changeCount
+    changeCount,
+    updateAliasMap
   }}/>
 }
 
@@ -81,6 +84,7 @@ type CreateAddressProps = {
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
   handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>,
   undoChange: (count: number) => void
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
   changeCount: number
 }
 
@@ -111,7 +115,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
     handleInputChange,
     displayType,
     undoChange,
-    changeCount
+    changeCount,
+    updateAliasMap
   } = props
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
@@ -163,7 +168,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {currentCreateAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
-          updateCreateAddressLines={updateCreateAddressLines}/>))}
+          updateCreateAddressLines={updateCreateAddressLines} updateAliasMap={updateAliasMap}/>))}
       <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
     </VStack>
   </>
@@ -249,12 +254,14 @@ type AddressLineProps = {
   line: string,
   index: number,
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
-  invAliasMap : Map<number, Set<string>>
+  invAliasMap : Map<number, Set<string>>,
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
 const AddressLine: React.FC<AddressLineProps> = (props) => {
 
-  const {line, index, invAliasMap, updateCreateAddressLines} = props
+  const {line, index, invAliasMap, updateCreateAddressLines,
+   updateAliasMap} = props
 
   function setThisAddressLine(newVal: string){    
     updateCreateAddressLines(function(lines: string[]){
@@ -286,20 +293,21 @@ const AddressLine: React.FC<AddressLineProps> = (props) => {
         onChange={handleInputChange}
         />      
     </FormControl>
-    <AlliasPopoverTrigger {...{index, invAliasMap}}/>
+    <AlliasPopoverTrigger {...{index, invAliasMap, updateAliasMap}}/>
   </HStack>
 }
 
 type AlliasPopoverTriggerProps = {
   index: number,
-  invAliasMap : Map<number, Set<string>>
+  invAliasMap : Map<number, Set<string>>,
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
 function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
   
   const cardBg = useColorModeValue('gray.300', 'gray.700')
   const editAliasesTooltip = "Edit aliases for this address line"
-  const { index, invAliasMap } = props
+  const { index, invAliasMap, updateAliasMap } = props
 
   const aliases = invAliasMap.get(index)
   const aliasList = useMemo(convertAliasesToList, [aliases])
@@ -323,7 +331,6 @@ function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
     }
   }
 
-  const doneButtonBg = useColorModeValue('gray.50', 'gray.900')
   const popoverBg = useColorModeValue('gray.100', 'gray.700')
   const { isOpen, onToggle, onClose } = useDisclosure()
 
@@ -340,33 +347,31 @@ function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
         </Tooltip>
         <PopoverContent bg={popoverBg} style={{ margin: 0 }} maxW="70vw">
             <PopoverArrow />
-            <PopoverCloseButton onClick={onClose}/>
+            <PopoverCloseButton onClick={onClose} as={BiHide} size="m"/>
             <PopoverHeader fontWeight={600}>Aliases - Line {index}</PopoverHeader>
             <PopoverBody>
               <Flex>
                 {aliasList.map((a, i) => 
-                  <AliasCard alias={a} key={i}/>)}
-              </Flex>
-            </PopoverBody>            
-            <VStack p={4}>              
-                <Button bg={doneButtonBg} onClick={onClose}>Done</Button>
-            </VStack>    
+                  <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap}/>)}
+              </Flex>       
+            </PopoverBody>     
         </PopoverContent>
     </Popover>      
   </HStack>
 }
 
 type AliasCardProps = {
-  alias: string
+  alias: string,
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
 function AliasCard(props: AliasCardProps){
-  const { alias } = props
+  const { alias, updateAliasMap } = props
   const cardBg = useColorModeValue('gray.300', 'gray.800')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
     onBlur={() => setIsEditing(false)}>
-    {isEditing ? <EditableAlias {...{alias}}/>
+    {isEditing ? <EditableAlias {...{alias, updateAliasMap}}/>
       : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)}/>}
   </HStack>
 }
@@ -387,12 +392,26 @@ function ReadonlyAlias(props: ReadonlyAliasProps){
 }
 
 type EditableAliasProps = {
-  alias: string
+  alias: string,
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
 function EditableAlias(props: EditableAliasProps){
 
-  const { alias } = props
+  const { alias, updateAliasMap } = props
 
-  return <Input value={alias} autoFocus/>
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>){
+    const inputValue = e.target.value
+    updateAliasMap(function(aliasMap){
+      const index = aliasMap[alias]
+      delete aliasMap[alias]
+      if(index !== undefined){
+        aliasMap[inputValue] = index
+      } else {
+        throw new Error("Unexpected undefined index found in alias map");        
+      }
+    })
+  }
+
+  return <Input value={alias} onChange={handleInputChange} autoFocus/>
 }
