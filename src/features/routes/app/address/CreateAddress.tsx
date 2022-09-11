@@ -24,7 +24,8 @@ import {
     PopoverBody,
     useDisclosure,
     PopoverTrigger,
-    Flex
+    Flex,
+    StackProps
   } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { FaPlusCircle } from 'react-icons/fa';
@@ -364,22 +365,23 @@ function AliasCard(props: AliasCardProps){
   const cardBg = useColorModeValue('gray.300', 'gray.800')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}
-  onFocus={() => setIsEditing(true)} onBlur={() => setIsEditing(false)} onClick={() => setIsEditing(true)}>
+    onBlur={() => setIsEditing(false)}>
     {isEditing ? <EditableAlias {...{alias}}/>
-      : <ReadonlyAlias {...{alias}}/>}
+      : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)}/>}
   </HStack>
 }
 
 type ReadonlyAliasProps = {
   alias: string
-}
+} & StackProps
 
 function ReadonlyAlias(props: ReadonlyAliasProps){
 
-  const { alias } = props
+  const { alias, ...rest } = props
   const readonlyAliasBg = useColorModeValue('gray.100', 'gray.700')
 
-  return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}>
+  return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}
+    {...rest}>
     <Text>{alias}</Text>
   </HStack>
 }
