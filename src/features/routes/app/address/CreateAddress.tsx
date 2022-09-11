@@ -391,26 +391,48 @@ function AliasCard(props: AliasCardProps){
   const cardBg = useColorModeValue('gray.300', 'gray.800')
   const [isEditing, setIsEditing] = useForceable<boolean>(forceIsEditing)
 
-  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1}>
+  return <HStack boxShadow="lg" bg={cardBg} borderRadius="lg" justify="center" p={1} className='alias-card'>
     {isEditing ? <EditableAlias {...{alias, updateAliasMap, setIsEditing}}/>
-      : <ReadonlyAlias {...{alias}} onClick={() => setIsEditing(true)} maxW="100%"/>}
+      : <ReadonlyAlias {...{alias, updateAliasMap}} onClick={() => setIsEditing(true)} maxW="100%"/>}
   </HStack>
 }
 
 type ReadonlyAliasProps = {
-  alias: string
+  alias: string,
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 } & StackProps
 
 function ReadonlyAlias(props: ReadonlyAliasProps){
 
-  const { alias, ...rest } = props
+  const { alias, updateAliasMap, ...rest } = props
   const readonlyAliasBg = useColorModeValue('gray.100', 'gray.700')
   const promptTextColor = useColorModeValue('gray.500', 'gray.500')
+  const deleteButtonLabel = "Delete this alias"
 
-  return <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}
-    {...rest}>
-    {!!alias && <Text overflowWrap="break-word">{alias}</Text>}
-    {!alias && <Text color={promptTextColor}>Enter text...</Text>}
+  function deleteThisAlias(){
+    updateAliasMap(function(aliasMap){
+      removeAlias(aliasMap, alias)
+    })
+  }
+
+  return <HStack maxW="100%">
+    <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
+        <IconButton aria-label={deleteButtonLabel} variant="ghost" size="s"
+          icon={<Icon as={ImBin} w="inherit" h="inherit"/>} onClick={deleteThisAlias}
+          sx={{
+            w: '10px',
+            h: '10px',
+            '.alias-card:hover &': {
+              w: '20px',
+              h: '20px',
+          },
+        }}/>
+    </Tooltip>
+    <HStack bg={readonlyAliasBg} borderRadius="lg" justify="center" pl={2} pr={2}
+      h="100%" maxW="100%" {...rest}>
+      {!!alias && <Text maxW="100%" overflowWrap="anywhere">{alias}</Text>}
+      {!alias && <Text color={promptTextColor}>Enter text...</Text>}
+    </HStack>
   </HStack>
 }
 
