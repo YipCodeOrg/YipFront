@@ -293,20 +293,21 @@ const AddressLine: React.FC<AddressLineProps> = (props) => {
         onChange={handleInputChange}
         />      
     </FormControl>
-    <AlliasPopoverTrigger {...{index, invAliasMap, updateAliasMap}}/>
+    <AlliasPopover {...{index, invAliasMap, updateAliasMap}}/>
   </HStack>
 }
 
-type AlliasPopoverTriggerProps = {
+type AlliasPopover = {
   index: number,
   invAliasMap : Map<number, Set<string>>,
   updateAliasMap: (updater: (aliases: AliasMap) => void) => void
 }
 
-function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
+function AlliasPopover(props: AlliasPopover){
   
   const cardBg = useColorModeValue('gray.300', 'gray.700')
   const editAliasesTooltip = "View & edit aliases for this address line"
+  const addAliasTooltip = "Add another alias for this address line"
   const { index, invAliasMap, updateAliasMap } = props
 
   const aliases = invAliasMap.get(index)
@@ -318,6 +319,18 @@ function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
     } else {
       return [...aliases]
     }
+  }
+
+  function addAlias(){
+    updateAliasMap(function(map: AliasMap){      
+      const existing = map[""]
+      if(existing === undefined){
+        map[""] = index
+      } else {
+        const oneBased = existing + 1
+        alert(`There is already a a blank alias at line ${oneBased}. Either give that a value or remove it before adding a new alias.`)
+      }      
+    })
   }
 
   let mainAlias =  ""
@@ -353,7 +366,11 @@ function AlliasPopoverTrigger(props: AlliasPopoverTriggerProps){
               <Flex>
                 {aliasList.map((a, i) => 
                   <AliasCard alias={a} key={i} updateAliasMap={updateAliasMap}/>)}
-              </Flex>       
+              </Flex>
+              <Tooltip openDelay={1500} label={addAliasTooltip}>
+                <IconButton aria-label={addAliasTooltip} variant="ghost"
+                icon={<Icon as={FaPlusCircle}/>} onClick={addAlias} p={0}/>
+              </Tooltip>       
             </PopoverBody>     
         </PopoverContent>
     </Popover>      
@@ -403,13 +420,19 @@ function EditableAlias(props: EditableAliasProps){
   function handleInputChange(e: ChangeEvent<HTMLInputElement>){
     const inputValue = e.target.value
     updateAliasMap(function(aliasMap){
-      const index = aliasMap[alias]
-      delete aliasMap[alias]
-      if(index !== undefined){
-        aliasMap[inputValue] = index
+      const existing = aliasMap[inputValue]
+      if(existing === undefined){
+        const index = aliasMap[alias]
+        delete aliasMap[alias]
+        if(index !== undefined){
+          aliasMap[inputValue] = index
+        } else {
+          throw new Error("Unexpected undefined index found in alias map");        
+        }
       } else {
-        throw new Error("Unexpected undefined index found in alias map");        
-      }
+        const oneBased = existing + 1
+        alert(`Alias ${inputValue} already exists for line number ${oneBased}. You can't use the same alias for two different lines.`)
+      }      
     })
   }
 
