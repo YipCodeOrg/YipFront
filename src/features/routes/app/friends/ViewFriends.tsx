@@ -1,7 +1,7 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
     Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer, ButtonGroup } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
-import { FaUserFriends } from "react-icons/fa"
+import { FaFilter, FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { DisclosureResult, useDisclosures, useFilter, useMutableMapped, usePagination } from "../../../../app/hooks"
 import React, { useCallback, useMemo } from "react"
@@ -126,10 +126,12 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                         sortFieldDesc="name"/>
                 </ButtonGroup>
                 <Spacer/>
-                <label>Filter: </label>
                 <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
-                    <Input onChange={handleFilterChange} maxW="500px"/>
+                    <Box>
+                        <Icon as={FaFilter}/>
+                    </Box>
                 </Tooltip>
+                <Input onChange={handleFilterChange} maxW="500px"/>                
                 <Spacer/>
             </HStack>
             <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>            
