@@ -37,8 +37,8 @@ import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
-import { handleKeyPress } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap } from './createAddressSlice';
+import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
+import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap, useCreateAddressName } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -54,17 +54,26 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const undoChange = useUndoCreateAddressChange()
   const changeCount = useCreateAddressChangeCount()
   const updateAliasMap = useUpdateCreateAddressAliasMap()
+  const { name, setName, deleteName } = useCreateAddressName()
 
-  function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>){
-    const inputValue = e.target.value
-    setRawAddress(inputValue)
-  }
+  const handleRawAddressChange = handleValueChange(setRawAddress)
 
   useEffect(() => {
     if(initialRawAddress !== undefined){
       setRawAddress(initialRawAddress)
     }    
   }, [initialRawAddress, setRawAddress])
+
+  const effectiveName: string = name ?? ""
+
+  // If user enters a name and then afterwards blanks it out completely, then remove the name altogether
+  function effectiveSetName(n: string){
+    if(!n){
+      deleteName()
+    } else {
+      setName(n)
+    }
+  }
   
   return <CreateAddress {...{
     rawCreateAddress,
@@ -72,10 +81,12 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     currentCreateAddress,
     areThereChanges,
     updateCreateAddressLines,
-    handleInputChange,
+    handleRawAddressChange,
     undoChange,
     changeCount,
-    updateAliasMap
+    updateAliasMap,
+    addressName: effectiveName,
+    setAddressName: effectiveSetName
   }}/>
 }
 
@@ -85,10 +96,12 @@ type CreateAddressProps = {
   currentCreateAddress: Address,
   areThereChanges: boolean,
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
-  handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement>,
+  handleRawAddressChange: React.ChangeEventHandler<HTMLTextAreaElement>,
   undoChange: (count: number) => void
   updateAliasMap: (updater: (aliases: AliasMap) => void) => void
-  changeCount: number
+  changeCount: number,
+  addressName: string,
+  setAddressName: (n: string) => void
 }
 
 export function CreateAddress(props: CreateAddressProps){
@@ -115,11 +128,13 @@ function CreateAddressContent(props: CreateAddressContentProps){
     currentCreateAddress,
     areThereChanges,
     updateCreateAddressLines,
-    handleInputChange,
+    handleRawAddressChange,
     displayType,
     undoChange,
     changeCount,
-    updateAliasMap
+    updateAliasMap,
+    addressName,
+    setAddressName
   } = props
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
@@ -141,6 +156,10 @@ function CreateAddressContent(props: CreateAddressContentProps){
   return <>
     <VStack>
       <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
+      <FormControl isRequired={false}>
+        <FormLabel>Name</FormLabel>       
+        <Input value={addressName} onChange={handleValueChange(setAddressName)}/>
+      </FormControl>
       <Tooltip label="You can't modify the freeform address while there are further changes made to the structured address. At this point, you can either edit the structured address or, if you'd like to scratch those changes, then click Undo All and you can then return to editing the freeform address." isDisabled={!areThereChanges} openDelay={500}>
         <FormControl isRequired={true} isDisabled={areThereChanges}>   
           <FormLabel>Address</FormLabel>       
@@ -154,7 +173,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
           rows={5}
           cols={rawAddressCols}
           value={rawCreateAddress}
-          onChange={handleInputChange}          
+          onChange={handleRawAddressChange}          
           />
         </FormControl>
       </Tooltip>

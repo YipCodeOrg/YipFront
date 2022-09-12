@@ -7,6 +7,7 @@ import { ParseOptions, parseStrToAddress } from "../../../../packages/YipStackLi
 
 type CreateAddressState = {
     rawInput: string,
+    addressName?: string,
     parseOptions: ParseOptions,
     changeBuffer: Address[]
 }
@@ -41,14 +42,21 @@ export const createAddressSlice = createSlice({
                 }
             })
         },    
-        setAddressAliases(state: CreateAddressState, action: PayloadAction<AliasMap>){
+        setAliasMap(state: CreateAddressState, action: PayloadAction<AliasMap>){
             updateAddress(state, function(address){
                 return {
                     ...address,
                     aliasMap: action.payload
                 }
             })
-        },     
+        },
+        setAddressName(state: CreateAddressState, action: PayloadAction<string>){
+            const name = action.payload
+            state.addressName = name
+        },
+        deleteAddressName(state: CreateAddressState){
+            delete state.addressName
+        },
         undo(state: CreateAddressState, action: PayloadAction<{count: number}>){
             const { count } = action.payload
             const changeBuffer = state.changeBuffer
@@ -58,7 +66,8 @@ export const createAddressSlice = createSlice({
     }
 })
 
-export const { setRawAddress, setAddressLines, undo, setAddressAliases: setAliasMap } = createAddressSlice.actions
+export const { setRawAddress, setAddressLines, undo,
+    setAliasMap, setAddressName, deleteAddressName } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -104,6 +113,24 @@ export const useUpdateCreateAddressAliasMap = () : (updater: (aliases: AliasMap)
 
     const callback = useCallback(callBackFunction, [dispatch, currentAddressState])
     return callback
+}
+
+type CreateAddressNameState = {
+    name: string | undefined,
+    setName: (n: string) => void,
+    deleteName: () => void
+}
+
+export function useCreateAddressName(): CreateAddressNameState{
+    const addressState = useCreateAddressState()
+    const dispatch = useAppDispatch()
+    const setCallback = useCallback((name: string) => dispatch(setAddressName(name)), [dispatch])
+    const deleteCallback = useCallback(() => dispatch(deleteAddressName()), [dispatch])
+    return {
+        name: addressState.addressName,
+        setName: setCallback,
+        deleteName: deleteCallback
+    }
 }
 
 export const useUpdateCreateAddressLines = () : (updater: (lines: string[]) => void) => void => {
