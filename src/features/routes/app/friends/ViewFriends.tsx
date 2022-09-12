@@ -16,7 +16,7 @@ import { Friend } from "../../../../packages/YipStackLib/types/friends"
 import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
-import { TextFilter } from "../../../../components/core/TextFilter"
+import { lowercaseFilterInSomeProp, TextFilter } from "../../../../components/core/TextFilter"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -99,13 +99,10 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
     function filterFunction(filterValue: string): (f: Indexed<Friend>) =>  boolean{
-        return (f) => {
-            const nameLower = f.obj.name.toLocaleLowerCase()
-            const yipCodeLower = f.obj.yipCode.toLocaleLowerCase()
-            const filterValueLower = filterValue.toLocaleLowerCase()
-            return (nameLower.includes(filterValueLower) || yipCodeLower.includes(filterValueLower))
-        }
+        return lowercaseFilterInSomeProp(filterValue,
+            [f => f.obj.name, f => f.obj.yipCode])
     }
+
     return <PageWithHeading heading="Friends " icon={FaUserFriends}> 
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%">

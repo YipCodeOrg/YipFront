@@ -33,3 +33,12 @@ export function TextFilter<T>(props: TextFilterProps<T>){
     </HStack>
 
 }
+
+export function lowercaseFilterInSomeProp<T>(filterValue: string, 
+    filterProps: ((t: T) => string)[]): (t: T) => boolean{
+        return (t) => {
+            const filterPropVals = filterProps.map(fp => fp(t).toLocaleLowerCase())
+            const filterValueLower = filterValue.toLocaleLowerCase()
+            return filterPropVals.some(v => v.includes(filterValueLower))
+        }
+}
