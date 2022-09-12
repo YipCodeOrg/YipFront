@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { LoadStatus } from "../../../../app/types"
 import { inverseIndexMap } from "../../../../packages/YipStackLib/packages/YipAddress/util/arrayUtil"
+import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
 import { LoadedFriend } from "./friends"
 import { FriendCard, FriendCardProps, FriendCardWrapperProps, ViewFriends, ViewFriendsProps } from "./ViewFriends"
 
@@ -60,23 +61,6 @@ function longRepeatedFriend(i: number): LoadedFriend{
   yipCode},
   addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
   
-}
-
-// Convert numbers to an alphabetic representation that preserves order (and suffix the number for good measure)
-function numberToAlpha(i: number, padZeroes: number){
-  const strNumber = String(i)
-    .padStart(padZeroes, '0')
-    .replaceAll("0", "A")
-    .replaceAll("1", "B")
-    .replaceAll("2", "C")
-    .replaceAll("3", "D")
-    .replaceAll("4", "E")
-    .replaceAll("5", "F")
-    .replaceAll("6", "G")
-    .replaceAll("7", "H")
-    .replaceAll("8", "I")
-    .replaceAll("9", "J")
-  return strNumber
 }
 
 function MockLongFriendCardWrapper(props: FriendCardWrapperProps){
