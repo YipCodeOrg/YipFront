@@ -1,6 +1,7 @@
 import { AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
 import type { RootState, AppDispatch } from './store'
@@ -128,35 +129,49 @@ export function useMapped<T, TRet>(t: T, f: (u: T) => TRet){
     return ret
 }
 
-export type FilterResult<T> = {
-    filtered: T[],
-    applyFilter: (f: (t: T) => boolean) => void,
-    clearFilter: () => void
+export type IndexFilterResult<T> = {
+    preFiltered: Indexed<T>[],
+    setPreFiltered: (ts: Indexed<T>[]) => void,
+    filtered: Indexed<T>[],
+    applyFilter: (f: (t: T, i: number) => boolean) => void,
+    clearFilter: () => void,    
 }
 
-type FilterFunction<T> = {
-    func: (t: T) => boolean
+type IndexFilterFunction<T> = {
+    func: (t: T, i: number) => boolean
 }
 
-export function useFilter<T>(ts: T[]): FilterResult<T>{
-    const [filtered, setFiltered] = useState(ts)
-    const [filter, setFilter] = useState<FilterFunction<T>>({func: (_: T) => true})
+export function useIndexFilter<T>(ts: T[]): IndexFilterResult<T>{
+
+    const [preFiltered, setPreFiltered] = useMutableMapped<T[], Indexed<T>[]>(
+        ts, (u: T[]) => u.map((t, i) => {return {obj: t, index: i}}))
+
+    const [filtered, setFiltered] = useState(preFiltered)
+
+    const [filter, setFilter] = useState<IndexFilterFunction<T>>({func: (_: T, __: number) => true})
+
+    function convertFilter(g: IndexFilterFunction<T>): (ind: Indexed<T>) => boolean{
+        return function(ind: Indexed<T>){
+            return g.func(ind.obj, ind.index)
+        }
+    }
 
     useEffect(() => {
-        setFiltered(ts.filter(filter.func))
-    }, [ts])
+        setFiltered(preFiltered.filter(convertFilter(filter)))
+    }, [preFiltered])
 
-    function applyFilter(f: (t: T) => boolean){
-        setFiltered(ts.filter(f))
-        setFilter({func: f})
+    function applyFilter(f: (t: T, i: number) => boolean){
+        const newFilter = {func: f}
+        setFiltered(preFiltered.filter(convertFilter(newFilter)))
+        setFilter(newFilter)
     }
 
     function clearFilter(){
-        setFiltered(ts)
+        setFiltered(preFiltered)
         setFilter({func: (_: T) => true})
     }
 
-    return {filtered, applyFilter, clearFilter}
+    return {filtered, applyFilter, clearFilter, preFiltered, setPreFiltered}
 }
 
 export function useAsyncHubLoad<TReturn>(

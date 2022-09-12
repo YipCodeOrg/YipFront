@@ -1,10 +1,10 @@
 import { Box, HStack, Icon, Input, StackProps, Tooltip } from "@chakra-ui/react"
 import { FaFilter } from "react-icons/fa"
-import { FilterResult } from "../../app/hooks"
+import { IndexFilterResult } from "../../app/hooks"
 
 type TextFilterProps<T> = {
     objPluralLabel: string,
-    filterResult: FilterResult<T>,
+    filterResult: IndexFilterResult<T>,
     filterGenerator: (s: string) => (t: T) => boolean
 } & StackProps
 

@@ -3,7 +3,7 @@ import { Button, Center, Flex, Heading, HStack, Icon, Stack,
 import { LoadedFriend } from "./friends"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
-import { DisclosureResult, useDisclosures, useFilter, useMutableMapped, usePagination } from "../../../../app/hooks"
+import { DisclosureResult, useDisclosures, useIndexFilter, usePagination } from "../../../../app/hooks"
 import React, { useCallback, useMemo } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
@@ -67,17 +67,15 @@ export type FriendCardWrapperProps = {
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const { friends, renderCard } = props
-    const [indexedFriends, setIndexedFriends] = useMutableMapped<Friend[], Indexed<Friend>[]>(
-        friends, (f) => f.map((f, i) => {return {obj: f, index: i}}))
-    const filterResult = useFilter(indexedFriends)
-    const { filtered } = filterResult
+    const filterResult = useIndexFilter(friends)
+    const { filtered, setPreFiltered, preFiltered } = filterResult
     const collapseAllTooltip = "Collapse all card details"
     const itemsPerPage = 20
 
     const {currentItems, pageCount, selectedPage, handlePageClick} = 
         usePagination(itemsPerPage, filtered)
 
-    const { disclosures, setAllClosed } = useDisclosures(indexedFriends)
+    const { disclosures, setAllClosed } = useDisclosures(friends)
 
     const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardWrapperProps{
         
@@ -98,9 +96,9 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
-    function filterFunction(filterValue: string): (f: Indexed<Friend>) =>  boolean{
+    function filterFunction(filterValue: string): (f: Friend) =>  boolean{
         return lowercaseFilterInSomeProp(filterValue,
-            [f => f.obj.name, f => f.obj.yipCode])
+            [f => f.name, f => f.yipCode])
     }
 
     return <PageWithHeading heading="Friends " icon={FaUserFriends}> 
@@ -111,7 +109,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                         <IconButton icon={<BsChevronContract/>} aria-label="collapseAllTooltip"
                             onClick={setAllClosed}/>
                     </Tooltip>
-                    <AlphaSortButtonsContent setter={setIndexedFriends} arr={indexedFriends} sortField={f=>f.obj.name}
+                    <AlphaSortButtonsContent setter={setPreFiltered} arr={preFiltered} sortField={f=>f.obj.name}
                         sortFieldDesc="name"/>
                 </ButtonGroup>
                 <Spacer/>
