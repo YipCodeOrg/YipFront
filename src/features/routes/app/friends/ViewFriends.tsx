@@ -118,7 +118,8 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                         sortFieldDesc="name"/>
                 </ButtonGroup>
                 <Spacer/>
-                <TextFilter {...{filterResult, objPluralLabel: "friends", filterGenerator: filterFunction}}/>
+                <TextFilter {...{filterResult, objPluralLabel: "friends", filterGenerator: filterFunction}} w="100%"
+                    justify="center"/>
                 <Spacer/>
             </HStack>
             <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>            
