@@ -1,7 +1,7 @@
-import { Button, Center, Flex, Heading, HStack, Icon, Input, Stack,
+import { Button, Center, Flex, Heading, HStack, Icon, Stack,
     Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer, ButtonGroup } from "@chakra-ui/react"
 import { LoadedFriend } from "./friends"
-import { FaFilter, FaUserFriends } from "react-icons/fa"
+import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { DisclosureResult, useDisclosures, useFilter, useMutableMapped, usePagination } from "../../../../app/hooks"
 import React, { useCallback, useMemo } from "react"
@@ -16,6 +16,7 @@ import { Friend } from "../../../../packages/YipStackLib/types/friends"
 import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
+import { TextFilter } from "../../../../components/core/TextFilter"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -68,8 +69,8 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     const { friends, renderCard } = props
     const [indexedFriends, setIndexedFriends] = useMutableMapped<Friend[], Indexed<Friend>[]>(
         friends, (f) => f.map((f, i) => {return {obj: f, index: i}}))
-    const { filtered, applyFilter, clearFilter } = useFilter(indexedFriends)
-    const filterFriendsTooltip = "Enter text to filter friends by name"
+    const filterResult = useFilter(indexedFriends)
+    const { filtered } = filterResult
     const collapseAllTooltip = "Collapse all card details"
     const itemsPerPage = 20
 
@@ -95,15 +96,6 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const fusedItems = useMemo(() => currentItems.map(fuse), [currentItems, fuse])
 
-    function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>){
-        const v = e.target.value
-        if(v){
-            applyFilter(filterFunction(v))
-        } else{
-            clearFilter()
-        }
-    }
-
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
     function filterFunction(filterValue: string): (f: Indexed<Friend>) =>  boolean{
@@ -126,12 +118,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                         sortFieldDesc="name"/>
                 </ButtonGroup>
                 <Spacer/>
-                <Tooltip label={filterFriendsTooltip} placement="top" openDelay={1500}>
-                    <Box>
-                        <Icon as={FaFilter}/>
-                    </Box>
-                </Tooltip>
-                <Input onChange={handleFilterChange} maxW="500px"/>                
+                <TextFilter {...{filterResult, objPluralLabel: "friends", filterGenerator: filterFunction}}/>
                 <Spacer/>
             </HStack>
             <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>            
