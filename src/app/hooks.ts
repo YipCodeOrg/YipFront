@@ -143,8 +143,7 @@ type IndexFilterFunction<T> = {
 
 export function useIndexFilter<T>(ts: T[]): IndexFilterResult<T>{
 
-    const [preFiltered, setPreFiltered] = useMutableMapped<T[], Indexed<T>[]>(
-        ts, (u: T[]) => u.map((t, i) => {return {obj: t, index: i}}))
+    const [preFiltered, setPreFiltered] = useMutableIndexed(ts)
 
     const [filtered, setFiltered] = useState(preFiltered)
 
@@ -172,6 +171,13 @@ export function useIndexFilter<T>(ts: T[]): IndexFilterResult<T>{
     }
 
     return {filtered, applyFilter, clearFilter, preFiltered, setPreFiltered}
+}
+
+export function useMutableIndexed<T>(ts: T[]): [Indexed<T>[], (t: Indexed<T>[]) => void]{
+    const [indexed, setIndexed] = useMutableMapped<T[], Indexed<T>[]>(
+        ts, (u: T[]) => u.map((t, i) => {return {obj: t, index: i}}))
+    
+        return [indexed, setIndexed]
 }
 
 export function useAsyncHubLoad<TReturn>(
