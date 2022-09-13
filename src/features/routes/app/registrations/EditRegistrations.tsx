@@ -15,6 +15,8 @@ import { FormValidationErrorMessage } from "../../../../components/core/FormVali
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
 import { CancelButton } from "../../../../components/core/CancelButton"
+import { useMutableIndexed, usePagination } from "../../../../app/hooks"
+import { StyledPagination } from "../../../../components/core/StyledPagination"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -26,9 +28,15 @@ export type EditRegistrationsProps = {
     addressLastUpdated: Date,
 }
 
-export const EditRegistrations: React.FC<EditRegistrationsProps> = ({registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
-saveRegistrations, cancel}) => {
+export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     
+    const {registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
+        saveRegistrations, cancel} = props
+    const [indexedRegistrations, _] = useMutableIndexed(registrations)
+    const itemsPerPage = 10
+
+    const {currentItems, pageCount, selectedPage, handlePageClick} = 
+        usePagination(itemsPerPage, indexedRegistrations)
 
     function addNewRegistration(){
         const addressLastUpdated = new Date()
@@ -63,11 +71,18 @@ saveRegistrations, cancel}) => {
                 bg={useColorModeValue('gray.50', 'whiteAlpha.100')} p={{ base: 1, sm: 3, md: 5 }}
                 borderRadius="lg">
                 <TitleRow {...{registrations, addressLastUpdated, setRegistrations}}/>
-                {registrations.map((_, i) => <EditRegistrationRow
+                {currentItems.map(({obj: _, index}) => <EditRegistrationRow
                     {...{addressLastUpdated, registrations}}
-                    index={i} key={i} setRegistrations={setRegistrations}
-                    validation={getRegsitrationValidation(i)} />)}
+                    index={index} key={index} setRegistrations={setRegistrations}
+                    validation={getRegsitrationValidation(index)} />)}
             </Grid>
+            <StyledPagination size="small"
+                {...{
+                    handlePageClick,
+                    selectedPage,
+                    pageCount
+                }}                    
+            />
         </VStack>
     </PageWithHeading>        
 }

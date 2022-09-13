@@ -117,7 +117,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                     justify="center"/>
                 <Spacer/>
             </HStack>
-            <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>            
+            <ViewFriendsPanel {...{cardProps: fusedItems, renderCard}}/>
             <StyledPagination size="small"
                 {...{
                     handlePageClick,
