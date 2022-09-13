@@ -73,7 +73,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     const itemsPerPage = 20
 
     const {currentItems, pageCount, selectedPage, handlePageClick} = 
-        usePagination(itemsPerPage, filtered)
+        usePagination(itemsPerPage, filtered, true)
 
     const { disclosures, setAllClosed } = useDisclosures(friends)
 

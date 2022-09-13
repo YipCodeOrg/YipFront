@@ -17,7 +17,8 @@ export type PaginationResult<T> = {
     handlePageClick: (event: { selected: number }) => void
 }
 
-export function usePagination<T>(itemsPerPage: number, data: T[]) : PaginationResult<T>{
+export function usePagination<T>(itemsPerPage: number, data: T[],
+    resetOnDataChange: boolean) : PaginationResult<T>{
 
     const [currentItems, setCurrentItems] = useState<T[]>([])
     const [pageCount, setPageCount] = useState(0)
@@ -31,8 +32,10 @@ export function usePagination<T>(itemsPerPage: number, data: T[]) : PaginationRe
       }, [itemOffset, itemsPerPage, data])
 
       useEffect(() => {
-        setSelectedPage(0)
-        setItemOffset(0)
+        if(resetOnDataChange){
+            setSelectedPage(0)
+            setItemOffset(0)
+        }
       }, [data, setSelectedPage, setItemOffset])
 
     const handlePageClick = (event: { selected: number }) => {

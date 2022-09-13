@@ -36,7 +36,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     const itemsPerPage = 10
 
     const {currentItems, pageCount, selectedPage, handlePageClick} = 
-        usePagination(itemsPerPage, indexedRegistrations)
+        usePagination(itemsPerPage, indexedRegistrations, false)
 
     function addNewRegistration(){
         const addressLastUpdated = new Date()
