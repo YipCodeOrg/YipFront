@@ -58,7 +58,7 @@ DupeName.args = {
     addressLabel: "Father Ted's House"
 }
 
-const longRegistrations = [...Array(300).keys()].map((_, i) => longRepeatedRegistration(i))
+const longRegistrations = makeLongRegistrationsArray(300)
 
 export const Long = Template.bind({})
 Long.args = {
@@ -66,7 +66,19 @@ Long.args = {
     addressLabel: "Long Way from Tip"
 }
 
+const veryLongRegistrations = makeLongRegistrationsArray(3000)
+
+export const VeryLong = Template.bind({})
+VeryLong.args = {
+    initialRegistrations: veryLongRegistrations,
+    addressLabel: "Very Long Way from Tip"
+}
+
 function longRepeatedRegistration(i: number): Registration{
     return {name: `${numberToAlpha(i, 3)}-NAME-${i}`, addressLastUpdated: new Date(arbitraryDate1.getTime() + 86400000*i),
         hyperlink: `https://${numberToAlpha(i, 3)}-${i}.com`}    
+}
+
+function makeLongRegistrationsArray(size: number){
+    return [...Array(size).keys()].map((_, i) => longRepeatedRegistration(i))
 }

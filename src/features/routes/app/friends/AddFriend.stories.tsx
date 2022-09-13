@@ -1,5 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { Friend, FriendsValidationResult, validateFriends } from "../../../../packages/YipStackLib/types/friends"
+import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
 import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../util/storybook/ValidateWrapper"
 import AddFriend, { AddFriendProps } from "./AddFriend"
 
@@ -44,4 +45,27 @@ Standard.args={
     initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
     {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
     {name: "Gauss", yipCode: "FFC9229ALDN04"}]
+}
+
+const longFriends = makeLongFriendsArray(300)
+
+export const Long = Template.bind({})
+Long.args = {
+    initialFriends: longFriends
+}
+
+const veryLongFriends = makeLongFriendsArray(3000)
+
+export const VeryLong = Template.bind({})
+VeryLong.args = {
+    initialFriends: veryLongFriends
+}
+
+
+function longRepeatedFriend(i: number): Friend{
+    return {name: `${numberToAlpha(i, 3)}-NAME-${i}`, yipCode: `YIPEEIAY${i}`}    
+}
+
+function makeLongFriendsArray(size: number){
+    return [...Array(size).keys()].map((_, i) => longRepeatedFriend(i))
 }
