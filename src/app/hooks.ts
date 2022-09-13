@@ -14,6 +14,7 @@ export type PaginationResult<T> = {
     currentItems: T[],
     pageCount: number,
     selectedPage: number,
+    itemOffset: number,
     handlePageClick: (event: { selected: number }) => void
 }
 
@@ -49,6 +50,7 @@ export function usePagination<T>(itemsPerPage: number, data: T[],
         currentItems,
         pageCount,
         selectedPage,
+        itemOffset,
         handlePageClick
     }
 }

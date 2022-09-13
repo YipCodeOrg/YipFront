@@ -35,13 +35,16 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     const [indexedRegistrations, _] = useMutableIndexed(registrations)
     const itemsPerPage = 10
 
-    const {currentItems, pageCount, selectedPage, handlePageClick} = 
+    const {currentItems, pageCount, selectedPage, handlePageClick, itemOffset} = 
         usePagination(itemsPerPage, indexedRegistrations, false)
 
     function addNewRegistration(){
         const addressLastUpdated = new Date()
-        setRegistrations([{name: "", addressLastUpdated}, ...registrations])
+        registrations.splice(itemOffset, 0, {name: "", addressLastUpdated})
+        setRegistrations([...registrations])
     }
+
+    const addNewRegistrationCallback = useCallback(addNewRegistration, [registrations, itemOffset])
 
     function getRegsitrationValidation(i: number) : RegistrationValidationResult | null{
         if(validation === null){
@@ -55,7 +58,8 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     }
 
     function renderButtonGroup({isInvalid}: ValidationComponentProps){
-        return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations, addNewRegistration, cancel}} />
+        return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations,
+            addNewRegistration: addNewRegistrationCallback, cancel}} />
     }
 
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
@@ -221,7 +225,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
     }, [registrations])    
 
     if(!registration){
-        throw new Error("Problem getting registration from registrations list");        
+        throw new Error(`Problem getting registration from registrations list at index ${index}`);
     }
 
     const name = registration.name
