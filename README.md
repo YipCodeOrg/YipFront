@@ -1,4 +1,4 @@
-Presentation layer for [yipcode.com](https://yipcode.com/). This inlcudes an informational website under the route `/site` & in future the plan is to include an interactive webapp under the route `/app`.
+Presentation layer for [yipcode.com](https://yipcode.com/). This inlcudes an informational website under the route `/site` & an interactive webapp under the route `/app`.
 
 ## Available Scripts
 
