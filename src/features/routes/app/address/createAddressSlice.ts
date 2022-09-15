@@ -30,7 +30,7 @@ export const createAddressSlice = createSlice({
                 throw new Error("Can't initialise address - address is already initialised")
             }
         },
-        setAddressLines(state: CreateAddressState, action: PayloadAction<string[]>){
+        setAddressLines(state: CreateAddressState, action: PayloadAction<string[]>){            
             updateAddress(state, function(address){
                 return {
                     ...address,
@@ -89,29 +89,36 @@ export function useCreateAddressName(): CreateAddressNameState{
     }
 }
 
-export function useUpdateCreateAddressLines() : (updater: (lines: string[]) => void) => void{
-    return useUpdateAddressAndDispatch(setAddressLines, a => a.addressLines)
+export function useUpdateCreateAddressLines(fallbackAddress: Address)
+: (updater: (lines: string[]) => void) => void{
+    return useUpdateAddressAndDispatch(setAddressLines, a => a.addressLines, fallbackAddress,
+        l => [...l])
 }
 
-export function useUpdateCreateAddressAliasMap() : (updater: (aliases: AliasMap) => void) => void{
-    return useUpdateAddressAndDispatch(setAliasMap, a => a.aliasMap)
+export function useUpdateCreateAddressAliasMap(fallbackAddress: Address)
+: (updater: (aliases: AliasMap) => void) => void{
+    return useUpdateAddressAndDispatch(setAliasMap, a => a.aliasMap, fallbackAddress,
+        m => {return {...m}})
 }
 
 function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload<T>,
-    propCopy: (a: Address) => T){
+    prop: (a: Address) => T, fallbackAddress: Address, copy: (t: T) => T){
     const dispatch = useAppDispatch()
     const currentAddressState = useCurrentCreateAddress()
     
-    function callBackFunction(updater: (t: T) => void){
-        if(currentAddressState === null){
-            throw new Error("Current address is null - cannot update");        
-        }    
-        const newProp = propCopy(currentAddressState)
-        updater(newProp)
-        return dispatch(payloadCreator(newProp))
+    function callBackFunction(updater: (t: T) => void){        
+        if(currentAddressState !== null){
+            const newProp = copy(prop(currentAddressState))
+            updater(newProp)
+            return dispatch(payloadCreator(newProp))
+        } else {
+            updater(prop(fallbackAddress))
+            return dispatch(initialiseAddress(fallbackAddress))
+        }
     }
 
-    const callback = useCallback(callBackFunction, [dispatch, currentAddressState])
+    const callback = useCallback(callBackFunction, [dispatch, currentAddressState,
+        fallbackAddress, prop, copy])
     return callback
 }
 
