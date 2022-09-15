@@ -9,6 +9,7 @@ import { UndoActionType } from "../../../../util/undo/undoActions"
 
 type CreateAddressState = {
     addressName?: string,
+    rawAddress: string,
     parseOptions: ParseOptions,
     address: Address | null
 }
@@ -16,6 +17,7 @@ type CreateAddressState = {
 type AddressUpdateFunction = (address: Address) => Address
 
 const initialState: CreateAddressState = {
+    rawAddress: "",
     parseOptions: {},
     address: null
 }
@@ -29,6 +31,9 @@ export const createAddressSlice = createSlice({
     name: "createAddress",
     initialState: initialState,
     reducers: {
+        setRawAddress(state: CreateAddressState, action: PayloadAction<string>){
+            state.rawAddress = action.payload
+        },
         setAddressLines(state: CreateAddressState, action: PayloadAction<PayloadWithFallback<string[]>>){                        
             updateAddress(state, function(address){
                 return {
@@ -59,7 +64,7 @@ export const createAddressSlice = createSlice({
 })
 
 export const { setAddressLines, setAliasMap, setAddressName,
-    deleteAddressName, clearAddress } = createAddressSlice.actions
+    deleteAddressName, clearAddress, setRawAddress } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -67,6 +72,17 @@ export const useCreateAddressState = () : CreateAddressState => {
     const addressState = useAppSelector(selectCreateAddress)
     return addressState.present
 }
+
+export function useRawAddress() : [string, (s: string) => void]{
+    const addressState = useCreateAddressState()
+    const dispatch = useAppDispatch()
+    const rawAddress = addressState.rawAddress
+    const setter = useCallback(function(s: string){
+        dispatch(setRawAddress(s))
+    }, [dispatch])
+    return [rawAddress, setter]
+}
+
 
 export function useCreateAddressHistoryLength(){
     const addressState = useAppSelector(selectCreateAddress)

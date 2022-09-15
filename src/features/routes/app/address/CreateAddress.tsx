@@ -40,7 +40,7 @@ import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../pac
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
-import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength } from './createAddressSlice';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -48,7 +48,7 @@ export type CreateAddressWrapperProps = {
 
 export default function CreateAddressWrapper({initialRawAddress}: CreateAddressWrapperProps) {
   
-  const [rawAddress, setRawAddress] = useState<string>("")
+  const [rawAddress, setRawAddress] = useRawAddress()
   const currentCreateAddress = useCurrentCreateAddress()  
   const isAddressCleared = currentCreateAddress === null
   const numChanges = useCreateAddressHistoryLength()
