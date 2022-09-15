@@ -33,13 +33,14 @@ import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
-import { useForceable } from '../../../../app/hooks';
+import { useAppDispatch, useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName } from './createAddressSlice';
+import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -49,13 +50,14 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   
   const [rawAddress, setRawAddress] = useState<string>("")
   const currentCreateAddress = useCurrentCreateAddress()  
-  const areThereChanges = currentCreateAddress !== null
-  const undoChange = () => {} // TODO
-  const changeCount = areThereChanges ? 1 : 0 // TODO
+  const isAddressCleared = currentCreateAddress === null
+  const numChanges = useCreateAddressHistoryLength()
+  const areThereChanges = numChanges > 0
   const { name, setName, deleteName } = useCreateAddressName()
   const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress, currentCreateAddress])
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
+  const dispatch = useAppDispatch()
 
   const handleRawAddressChange = handleValueChange(setRawAddress)
 
@@ -83,16 +85,25 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
       return parseStrToAddress(rawAddress)
     }
   }
+
+  function undo(){
+    dispatch(createAction(UndoActionType.UndoCreateAddress))
+  }
+
+  function clearStructuredAddress(){
+    dispatch(clearAddress())
+  }  
   
   return <CreateAddress {...{
     rawAddress,
     setRawAddress,
     structuredAddress: effectiveStructuredAddress,
+    isAddressCleared,
     areThereChanges,
     updateCreateAddressLines,
     handleRawAddressChange,
-    undoChange,
-    changeCount,
+    undo,
+    clearStructuredAddress,
     updateAliasMap,
     addressName: effectiveName,
     setAddressName: effectiveSetName
@@ -103,12 +114,13 @@ type CreateAddressProps = {
   rawAddress: string,
   setRawAddress: (newAddress: string) => void,
   structuredAddress: Address,
+  isAddressCleared: boolean,
   areThereChanges: boolean,
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
   handleRawAddressChange: React.ChangeEventHandler<HTMLTextAreaElement>,
-  undoChange: (count: number) => void
   updateAliasMap: (updater: (aliases: AliasMap) => void) => void
-  changeCount: number,
+  undo: () => void,
+  clearStructuredAddress: () => void,
   addressName: string,
   setAddressName: (n: string) => void
 }
@@ -135,12 +147,13 @@ function CreateAddressContent(props: CreateAddressContentProps){
     rawAddress: rawCreateAddress,
     setRawAddress,
     structuredAddress,
+    isAddressCleared,
     areThereChanges,
     updateCreateAddressLines,
     handleRawAddressChange,
     displayType,
-    undoChange,
-    changeCount,
+    undo,
+    clearStructuredAddress,
     updateAliasMap,
     addressName,
     setAddressName
@@ -150,7 +163,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const freeFormInfo = "Enter a freeform address first. Each address line should be on a new line. As you type, the address will be broken out into lines which you will see appearing dynamically. When you are finished with the freeform address entry, you can start editing those lines further in the structured address entry, but once you do, you can no longer edit the freeform address."
 
-  const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to undo all changes to the structured data."
+  const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to clear all changes to the structured data."
 
   const invAliasMap : Map<number, Set<string>>
     = useMemo(() => inverseAliasMap(structuredAddress), [structuredAddress])
@@ -169,8 +182,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
         <FormLabel>Address Name</FormLabel>       
         <Input value={addressName} onChange={handleValueChange(setAddressName)}/>
       </FormControl>
-      <Tooltip label="You can't modify the freeform address while there are further changes made to the structured address. At this point, you can either edit the structured address or, if you'd like to scratch those changes, then click Undo All and you can then return to editing the freeform address." isDisabled={!areThereChanges} openDelay={500}>
-        <FormControl isRequired={true} isDisabled={areThereChanges}>   
+      <Tooltip label="You can't modify the freeform address while there are further changes made to the structured address. At this point, you can either edit the structured address or, if you'd like to scratch those changes, then click on the button to clear all changes to the structured address and you can then return to editing the freeform address." isDisabled={isAddressCleared} openDelay={500}>
+        <FormControl isRequired={true} isDisabled={!isAddressCleared}>
           <FormLabel>Freeform Address</FormLabel>       
           <Textarea                  
           borderColor="gray.300"
@@ -187,8 +200,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
         </FormControl>
       </Tooltip>
       <Button
-      display={areThereChanges ? 'none' : 'initial'}
-      isDisabled={areThereChanges}
+      display={isAddressCleared ? 'none' : 'initial'}
+      isDisabled={isAddressCleared}
       variant="solid"
       _hover={{}}
       onClick={() => setRawAddress("")}>
@@ -200,29 +213,31 @@ function CreateAddressContent(props: CreateAddressContentProps){
       {structuredAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
           updateCreateAddressLines={updateCreateAddressLines} updateAliasMap={updateAliasMap}/>))}
-      <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
+      <StructuredAddressButtons {...{undo, clearStructuredAddress, isAddressCleared, addBlankLine, areThereChanges}}/>
     </VStack>
   </>
 }
 
 type StructuredAddressButtonsProps = {
+  isAddressCleared: boolean,
   areThereChanges: boolean,
-  undoChange: (count: number) => void,
-  changeCount: number,
+  undo: () => void,
+  clearStructuredAddress: () => void,
   addBlankLine: () => void
 }
 
 function StructuredAddressButtons(props: StructuredAddressButtonsProps){
 
-  const { areThereChanges, undoChange, changeCount, addBlankLine } = props
+  const { isAddressCleared, undo, clearStructuredAddress,
+    addBlankLine, areThereChanges } = props
 
   const addNewAddressLineTooltip = "Add a new address line"
+  const areButtonsVisible = (areThereChanges || !isAddressCleared)
 
   return <HStack w="100%" pr={2}>
     <Spacer/>
-    {areThereChanges ? 
-      <StructuredAddressUndoButtons {...{undoChange, changeCount}}/>
-      : <></>}
+      {areButtonsVisible && <StructuredAddressUndoButtons {...{undo, clearStructuredAddress,
+          areThereChanges, isAddressCleared}}/>}
     <Spacer/>
     <Tooltip label={addNewAddressLineTooltip} openDelay={1500}>
       <IconButton aria-label={addNewAddressLineTooltip} variant="ghost"
@@ -232,21 +247,27 @@ function StructuredAddressButtons(props: StructuredAddressButtonsProps){
 }
 
 type StructuredAddressUndoButtonsProps = {
-  undoChange: (count: number) => void,
-  changeCount: number
+  undo: () => void,
+  areThereChanges: boolean,
+  isAddressCleared: boolean,
+  clearStructuredAddress: () => void
 }
-
 
 function StructuredAddressUndoButtons(props: StructuredAddressUndoButtonsProps){
 
-  const { undoChange, changeCount } = props
+  const { undo, clearStructuredAddress, areThereChanges, isAddressCleared } = props
+
+  const clearLabel = isAddressCleared ? "There are no changes to clear" : 
+    "Clear changes to the structured address"
+  const undoLabel = areThereChanges ? "Undo the last change to the structured address" :
+    "There are no changes to undo"
   
   return <ButtonGroup>
-    <Tooltip placement='bottom' label="Undo the last change to the structured address" openDelay={1500}>
-      <Button onClick={() => undoChange(1)}>Undo</Button>
+    <Tooltip placement='bottom' label={undoLabel} openDelay={1500}>
+      <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
     </Tooltip>
-    <Tooltip placement='bottom' label="Undo all changes to the structured address" openDelay={1500}>
-      <Button onClick={() => undoChange(changeCount)}>Undo all</Button>
+    <Tooltip placement='bottom' label={clearLabel} openDelay={1500}>
+      <Button onClick={clearStructuredAddress} isDisabled={isAddressCleared}>Clear</Button>
     </Tooltip>
   </ButtonGroup>
 }

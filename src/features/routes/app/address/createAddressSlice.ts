@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks"
 import { RootState } from "../../../../app/store"
 import { Address, AliasMap } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
 import { ParseOptions } from "../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress"
+import { UndoActionType } from "../../../../util/undo/undoActions"
 
 type CreateAddressState = {
     addressName?: string,
@@ -48,19 +49,28 @@ export const createAddressSlice = createSlice({
             const name = action.payload
             state.addressName = name
         },
+        clearAddress(state: CreateAddressState){
+            state.address = null
+        },
         deleteAddressName(state: CreateAddressState){
             delete state.addressName
         }
     }
 })
 
-export const { setAddressLines, setAliasMap, setAddressName, deleteAddressName } = createAddressSlice.actions
+export const { setAddressLines, setAliasMap, setAddressName,
+    deleteAddressName, clearAddress } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
 export const useCreateAddressState = () : CreateAddressState => {
     const addressState = useAppSelector(selectCreateAddress)
     return addressState.present
+}
+
+export function useCreateAddressHistoryLength(){
+    const addressState = useAppSelector(selectCreateAddress)
+    return addressState.past.length
 }
 
 export const useCurrentCreateAddress = () : Address | null => {
@@ -98,7 +108,10 @@ export function useUpdateCreateAddressAliasMap(fallbackAddress: Address)
         m => {return {...m}})
 }
 
-export default undoable(createAddressSlice.reducer)
+export default undoable(createAddressSlice.reducer, {
+    undoType: UndoActionType.UndoCreateAddress,
+    clearHistoryType: UndoActionType.ClearCreateAddress
+})
 
 function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload<PayloadWithFallback<T>>,
     prop: (a: Address) => T, fallbackAddress: Address, copy: (t: T) => T){
