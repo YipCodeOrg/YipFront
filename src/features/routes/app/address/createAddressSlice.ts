@@ -18,33 +18,30 @@ const initialState: CreateAddressState = {
     address: null
 }
 
+type PayloadWithFallback<T> = {
+    obj: T,
+    fallbackAddress: Address
+}
+
 export const createAddressSlice = createSlice({
     name: "createAddress",
     initialState: initialState,
     reducers: {
-        initialiseAddress(state: CreateAddressState, action: PayloadAction<Address>){
-            const oldAddress = state.address
-            if(oldAddress === null){
-                state.address = action.payload
-            } else {
-                throw new Error("Can't initialise address - address is already initialised")
-            }
-        },
-        setAddressLines(state: CreateAddressState, action: PayloadAction<string[]>){            
+        setAddressLines(state: CreateAddressState, action: PayloadAction<PayloadWithFallback<string[]>>){                        
             updateAddress(state, function(address){
                 return {
                     ...address,
-                    addressLines: action.payload
+                    addressLines: action.payload.obj
                 }
-            })
+            }, action.payload.fallbackAddress)
         },    
-        setAliasMap(state: CreateAddressState, action: PayloadAction<AliasMap>){
+        setAliasMap(state: CreateAddressState, action: PayloadAction<PayloadWithFallback<AliasMap>>){
             updateAddress(state, function(address){
                 return {
                     ...address,
-                    aliasMap: action.payload
+                    aliasMap: action.payload.obj
                 }
-            })
+            }, action.payload.fallbackAddress)
         },
         setAddressName(state: CreateAddressState, action: PayloadAction<string>){
             const name = action.payload
@@ -56,8 +53,7 @@ export const createAddressSlice = createSlice({
     }
 })
 
-export const { initialiseAddress, setAddressLines,
-    setAliasMap, setAddressName, deleteAddressName } = createAddressSlice.actions
+export const { setAddressLines, setAliasMap, setAddressName, deleteAddressName } = createAddressSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
@@ -101,34 +97,38 @@ export function useUpdateCreateAddressAliasMap(fallbackAddress: Address)
         m => {return {...m}})
 }
 
-function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload<T>,
+export default createAddressSlice.reducer
+
+function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload<PayloadWithFallback<T>>,
     prop: (a: Address) => T, fallbackAddress: Address, copy: (t: T) => T){
     const dispatch = useAppDispatch()
-    const currentAddressState = useCurrentCreateAddress()
+    const currentAddress = useCurrentCreateAddress()
     
-    function callBackFunction(updater: (t: T) => void){        
-        if(currentAddressState !== null){
-            const newProp = copy(prop(currentAddressState))
-            updater(newProp)
-            return dispatch(payloadCreator(newProp))
-        } else {
-            updater(prop(fallbackAddress))
-            return dispatch(initialiseAddress(fallbackAddress))
+    function callBackFunction(updater: (t: T) => void){
+        const sourceAddress = currentAddress ?? fallbackAddress
+        const propCopy = copy(prop(sourceAddress))        
+        updater(propCopy)        
+        const payloadWithFallback: PayloadWithFallback<T> = {
+            obj: propCopy,
+            fallbackAddress
         }
+        return dispatch(payloadCreator(payloadWithFallback))
     }
 
-    const callback = useCallback(callBackFunction, [dispatch, currentAddressState,
+    const callback = useCallback(callBackFunction, [dispatch, currentAddress,
         fallbackAddress, prop, copy])
     return callback
 }
 
-export default createAddressSlice.reducer
+function updateAddress(state: CreateAddressState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
+    state.address = transformAddress(state, transform, fallBackAddress)
+}
 
-function updateAddress(state: CreateAddressState, update: AddressUpdateFunction){                        
-    const currentAddress = state.address
-    if(currentAddress === null){
-        throw new Error("Cannot update address - it has not been initialised");        
+function transformAddress(state: CreateAddressState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
+    const currentAddress = state.address      
+    if(currentAddress !== null){
+        return transform(currentAddress)
+    } else {
+        return transform(fallBackAddress)
     }
-    const newAddress = update(currentAddress)
-    state.address = newAddress
 }
