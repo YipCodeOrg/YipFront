@@ -53,7 +53,7 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const undoChange = () => {} // TODO
   const changeCount = areThereChanges ? 1 : 0 // TODO
   const { name, setName, deleteName } = useCreateAddressName()
-  const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress])
+  const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress, currentCreateAddress])
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
 
