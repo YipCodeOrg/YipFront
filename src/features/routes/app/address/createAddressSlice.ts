@@ -1,5 +1,6 @@
 import { ActionCreatorWithPayload, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { useCallback } from "react"
+import undoable from "redux-undo"
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks"
 import { RootState } from "../../../../app/store"
 import { Address, AliasMap } from "../../../../packages/YipStackLib/packages/YipAddress/core/address"
@@ -59,7 +60,7 @@ export const selectCreateAddress = (state: RootState) => state.createAddress
 
 export const useCreateAddressState = () : CreateAddressState => {
     const addressState = useAppSelector(selectCreateAddress)
-    return addressState
+    return addressState.present
 }
 
 export const useCurrentCreateAddress = () : Address | null => {
@@ -97,7 +98,7 @@ export function useUpdateCreateAddressAliasMap(fallbackAddress: Address)
         m => {return {...m}})
 }
 
-export default createAddressSlice.reducer
+export default undoable(createAddressSlice.reducer)
 
 function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload<PayloadWithFallback<T>>,
     prop: (a: Address) => T, fallbackAddress: Address, copy: (t: T) => T){
