@@ -127,14 +127,20 @@ type CreateAddressProps = {
 
 export function CreateAddress(props: CreateAddressProps){
 
+  const { areThereChanges, undo } = props
+
   return <PageWithHeading heading="Create Address " icon={FaPlusCircle}>
     <VStack spacing={5} display={{base: "inherit", md: "none"}}>
       <CreateAddressContent {...props} displayType="vertical"/>
     </VStack>
-    <HStack spacing={8} display={{base: "none", md: "inherit"}} w="100%" justify="center" p={20}
+    <HStack spacing={8} display={{base: "none", md: "inherit"}} w="100%" justify="center" pt={20}
       align="flex-start">
       <CreateAddressContent {...props} displayType="horizontal"/>
     </HStack>
+    <VStack justify="flex-start">
+      <CreateAddressButtons {...{areThereChanges, undo}}/>
+      <Spacer/>
+    </VStack>
   </PageWithHeading>
 }
 
@@ -175,6 +181,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
     })
   }
 
+  const isRawAddressCleared = !rawCreateAddress
+
   return <>
     <VStack>
       <SequenceHeading text="Freeform Address Entry" infoMessage={freeFormInfo} sequenceNumber={1}/>      
@@ -200,15 +208,15 @@ function CreateAddressContent(props: CreateAddressContentProps){
         </FormControl>
       </Tooltip>
       <Button
-      display={isAddressCleared ? 'none' : 'initial'}
-      isDisabled={isAddressCleared}
+      display={isRawAddressCleared ? 'none' : 'initial'}
+      isDisabled={isRawAddressCleared}
       variant="solid"
       _hover={{}}
       onClick={() => setRawAddress("")}>
       Clear
       </Button>
     </VStack>
-    <VStack flexBasis="470px">
+    <VStack flexBasis={displayType === 'horizontal' ? "470px" : "initial"}>
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {structuredAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
@@ -218,25 +226,42 @@ function CreateAddressContent(props: CreateAddressContentProps){
   </>
 }
 
+type CreateAddressButtonsProps = {
+  areThereChanges: boolean,
+  undo: () => void
+}
+
+function CreateAddressButtons(props: CreateAddressButtonsProps){
+
+  const { areThereChanges, undo } = props
+
+  const undoLabel = areThereChanges ? "Undo the last change to the structured address" :
+    "There are no changes to undo"
+  return <ButtonGroup>
+    <Tooltip placement='bottom' label={undoLabel} openDelay={1500} shouldWrapChildren>
+        <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
+    </Tooltip>
+  </ButtonGroup>
+}
+
 type StructuredAddressButtonsProps = {
   isAddressCleared: boolean,
   areThereChanges: boolean,
-  undo: () => void,
   clearStructuredAddress: () => void,
   addBlankLine: () => void
 }
 
 function StructuredAddressButtons(props: StructuredAddressButtonsProps){
 
-  const { isAddressCleared, undo, clearStructuredAddress,
+  const { isAddressCleared, clearStructuredAddress,
     addBlankLine, areThereChanges } = props
 
   const addNewAddressLineTooltip = "Add a new address line"
-  const areButtonsVisible = (areThereChanges || !isAddressCleared)
+  const areButtonsVisible = !isAddressCleared
 
   return <HStack w="100%" pr={2}>
     <Spacer/>
-      {areButtonsVisible && <StructuredAddressUndoButtons {...{undo, clearStructuredAddress,
+      {areButtonsVisible && <StructuredAddressClearButton {...{clearStructuredAddress,
           areThereChanges, isAddressCleared}}/>}
     <Spacer/>
     <Tooltip label={addNewAddressLineTooltip} openDelay={1500}>
@@ -246,27 +271,20 @@ function StructuredAddressButtons(props: StructuredAddressButtonsProps){
   </HStack>
 }
 
-type StructuredAddressUndoButtonsProps = {
-  undo: () => void,
-  areThereChanges: boolean,
+type StructuredAddressClearButtonProps = {
   isAddressCleared: boolean,
   clearStructuredAddress: () => void
 }
 
-function StructuredAddressUndoButtons(props: StructuredAddressUndoButtonsProps){
+function StructuredAddressClearButton(props: StructuredAddressClearButtonProps){
 
-  const { undo, clearStructuredAddress, areThereChanges, isAddressCleared } = props
+  const { clearStructuredAddress, isAddressCleared } = props
 
   const clearLabel = isAddressCleared ? "There are no changes to clear" : 
-    "Clear changes to the structured address"
-  const undoLabel = areThereChanges ? "Undo the last change to the structured address" :
-    "There are no changes to undo"
+    "Clear changes to the structured address"  
   
   return <ButtonGroup>
-    <Tooltip placement='bottom' label={undoLabel} openDelay={1500}>
-      <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
-    </Tooltip>
-    <Tooltip placement='bottom' label={clearLabel} openDelay={1500}>
+    <Tooltip placement='bottom' label={clearLabel} openDelay={1500} shouldWrapChildren>
       <Button onClick={clearStructuredAddress} isDisabled={isAddressCleared}>Clear</Button>
     </Tooltip>
   </ButtonGroup>
