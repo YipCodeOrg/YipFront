@@ -37,8 +37,9 @@ import { useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/core/address';
+import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/parse/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { useCreateAddressChangeCount, useCurrentCreateAddress, useAreThereCreateAddressChanges, useRawCreateAddress, useUpdateCreateAddressLines, useSetRawCreateAddress, useUndoCreateAddressChange, useUpdateCreateAddressAliasMap, useCreateAddressName } from './createAddressSlice';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName } from './createAddressSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined
@@ -46,13 +47,12 @@ export type CreateAddressWrapperProps = {
 
 export default function CreateAddressWrapper({initialRawAddress}: CreateAddressWrapperProps) {
   
-  const rawCreateAddress = useRawCreateAddress()
-  const currentCreateAddress = useCurrentCreateAddress()
-  const setRawAddress = useSetRawCreateAddress()
-  const areThereChanges = useAreThereCreateAddressChanges()
+  const [rawAddress, setRawAddress] = useState<string>("")
+  const currentCreateAddress = useCurrentCreateAddress()  
+  const areThereChanges = currentCreateAddress !== null
   const updateCreateAddressLines = useUpdateCreateAddressLines()
-  const undoChange = useUndoCreateAddressChange()
-  const changeCount = useCreateAddressChangeCount()
+  const undoChange = () => {} // TODO
+  const changeCount = areThereChanges ? 1 : 0 // TODO
   const updateAliasMap = useUpdateCreateAddressAliasMap()
   const { name, setName, deleteName } = useCreateAddressName()
 
@@ -74,11 +74,21 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
       setName(n)
     }
   }
+
+  function computeEffectiveStructuredAddress(){
+    if(currentCreateAddress !== null){
+      return currentCreateAddress
+    } else {
+      return parseStrToAddress(rawAddress)
+    }
+  }
+
+  const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress])
   
   return <CreateAddress {...{
-    rawCreateAddress,
+    rawAddress,
     setRawAddress,
-    currentCreateAddress,
+    structuredAddress: effectiveStructuredAddress,
     areThereChanges,
     updateCreateAddressLines,
     handleRawAddressChange,
@@ -91,9 +101,9 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
 }
 
 type CreateAddressProps = {
-  rawCreateAddress: string,
+  rawAddress: string,
   setRawAddress: (newAddress: string) => void,
-  currentCreateAddress: Address,
+  structuredAddress: Address,
   areThereChanges: boolean,
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
   handleRawAddressChange: React.ChangeEventHandler<HTMLTextAreaElement>,
@@ -123,9 +133,9 @@ type CreateAddressContentProps = {
 
 function CreateAddressContent(props: CreateAddressContentProps){
   const {
-    rawCreateAddress,
+    rawAddress: rawCreateAddress,
     setRawAddress,
-    currentCreateAddress,
+    structuredAddress,
     areThereChanges,
     updateCreateAddressLines,
     handleRawAddressChange,
@@ -144,7 +154,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
   const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to undo all changes to the structured data."
 
   const invAliasMap : Map<number, Set<string>>
-    = useMemo(() => inverseAliasMap(currentCreateAddress), [currentCreateAddress])
+    = useMemo(() => inverseAliasMap(structuredAddress), [structuredAddress])
 
   function addBlankLine(){    
     updateCreateAddressLines(function(lines: string[]){      
@@ -188,7 +198,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
     </VStack>
     <VStack flexBasis="470px">
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
-      {currentCreateAddress.addressLines.map((line, index) =>
+      {structuredAddress.addressLines.map((line, index) =>
         (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
           updateCreateAddressLines={updateCreateAddressLines} updateAliasMap={updateAliasMap}/>))}
       <StructuredAddressButtons {...{undoChange, changeCount, areThereChanges, addBlankLine}}/>
