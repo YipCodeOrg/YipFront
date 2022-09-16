@@ -39,6 +39,7 @@ import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/address';
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
+import { CreateAddressValidationResult } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
 
@@ -58,6 +59,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
   const dispatch = useAppDispatch()
+  // TODO - this should be the memoised result of validating the data as a CreateAddressData object
+  const validation: CreateAddressValidationResult | null = null
 
   const handleRawAddressChange = handleValueChange(setRawAddress)
 
@@ -106,7 +109,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     clearStructuredAddress,
     updateAliasMap,
     addressName: effectiveName,
-    setAddressName: effectiveSetName
+    setAddressName: effectiveSetName,
+    validation
   }}/>
 }
 
@@ -122,12 +126,13 @@ type CreateAddressProps = {
   undo: () => void,
   clearStructuredAddress: () => void,
   addressName: string,
-  setAddressName: (n: string) => void
+  setAddressName: (n: string) => void,
+  validation: CreateAddressValidationResult | null
 }
 
 export function CreateAddress(props: CreateAddressProps){
 
-  const { areThereChanges, undo } = props
+  const { areThereChanges, undo, validation } = props
 
   return <PageWithHeading heading="Create Address " icon={FaPlusCircle}>
     <VStack spacing={5} display={{base: "inherit", md: "none"}}>
@@ -138,7 +143,7 @@ export function CreateAddress(props: CreateAddressProps){
       <CreateAddressContent {...props} displayType="horizontal"/>
     </HStack>
     <VStack justify="flex-start">
-      <CreateAddressButtons {...{areThereChanges, undo}}/>
+      <CreateAddressButtons {...{areThereChanges, undo, validation}}/>
       <Spacer/>
     </VStack>
   </PageWithHeading>
@@ -228,12 +233,13 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
 type CreateAddressButtonsProps = {
   areThereChanges: boolean,
-  undo: () => void
+  undo: () => void,
+  validation: CreateAddressValidationResult | null
 }
 
 function CreateAddressButtons(props: CreateAddressButtonsProps){
 
-  const { areThereChanges, undo } = props
+  const { areThereChanges, undo, validation } = props
 
   const undoLabel = areThereChanges ? "Undo the last change to the structured address" :
     "There are no changes to undo"
@@ -243,7 +249,7 @@ function CreateAddressButtons(props: CreateAddressButtonsProps){
         <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
     </Tooltip>
     <Tooltip placement='bottom' label={saveLabel} openDelay={1500} shouldWrapChildren>
-        <Button onClick={() => alert("TODO")}>Save</Button>
+        <Button onClick={() => alert(`TODO: hook this into the validation object - ${validation}`)}>Save</Button>
     </Tooltip>
   </ButtonGroup>
 }
