@@ -7,7 +7,7 @@ import { DisclosureResult, useDisclosures, useIndexFilter, usePagination } from 
 import React, { useCallback, useMemo } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
-import { AddressItem } from "../../../../packages/YipStackLib/types/userAddressData"
+import { AddressItem } from "../../../../packages/YipStackLib/types/address/address"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
 import { AddressPanel, YipCodeAndCopyButton } from "../../../../components/core/AddressPanel"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"

@@ -1,7 +1,7 @@
 import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubLoad } from "../../app/hooks";
-import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/userAddressData";
+import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
 import { createApiGetThunk, createStandardSlice } from "../../util/slices";
 import { useUserDataHubLoad } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";

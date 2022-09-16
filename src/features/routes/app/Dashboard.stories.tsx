@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { LoadStatus } from "../../../app/types";
-import { UserAddressData } from "../../../packages/YipStackLib/types/userAddressData";
+import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
 import { Dashboard, DashboardProps } from "./Dashboard";
 
 type DashboardType = typeof Dashboard
