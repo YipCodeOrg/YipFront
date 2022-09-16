@@ -237,9 +237,13 @@ function CreateAddressButtons(props: CreateAddressButtonsProps){
 
   const undoLabel = areThereChanges ? "Undo the last change to the structured address" :
     "There are no changes to undo"
+  const saveLabel = "Save this address"
   return <ButtonGroup>
     <Tooltip placement='bottom' label={undoLabel} openDelay={1500} shouldWrapChildren>
         <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
+    </Tooltip>
+    <Tooltip placement='bottom' label={saveLabel} openDelay={1500} shouldWrapChildren>
+        <Button onClick={() => alert("TODO")}>Save</Button>
     </Tooltip>
   </ButtonGroup>
 }
