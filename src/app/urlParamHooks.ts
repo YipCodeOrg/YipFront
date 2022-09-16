@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import { isValidYipCode } from '../packages/YipStackLib/packages/YipAddress/validate/yipCodeValidation'
+import { isValidYipCode } from '../packages/YipStackLib/packages/YipAddress/types/yipcode/yipCodeValidation'
 
 export default function useUrlParams(): URLSearchParams {
   const location = useLocation();

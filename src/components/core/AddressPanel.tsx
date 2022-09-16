@@ -1,5 +1,5 @@
 import { HStack, VStack, Text, useColorModeValue, List, ListItem, StackProps, Spacer } from "@chakra-ui/react"    
-import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/core/address"
+import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/types/address/address"
 import { AddressItem } from "../../packages/YipStackLib/types/userAddressData"
 import { CopyTextButton } from "./CopyTextButton"
 import { InfoButton } from "./InfoButton"
