@@ -39,7 +39,7 @@ import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/address';
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { hasErrors } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
+import { hasErrors, ValidationResult } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
 import { CreateAddressValidationResult } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
@@ -256,10 +256,27 @@ function CreateAddressButtons(props: CreateAddressButtonsProps){
     <Tooltip placement='bottom' label={undoLabel} openDelay={1500} shouldWrapChildren>
         <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
     </Tooltip>
-    <Tooltip placement='bottom' label={saveLabel} openDelay={1500} shouldWrapChildren>
-        <Button isDisabled={hasErrors(validation?.topValidationResult ?? null)} onClick={submitChanges}>Save</Button>
-    </Tooltip>
+    <SubmitChangesButton {...{label: saveLabel, text: "Save",
+      validation: validation?.topValidationResult ?? null, submitChanges}}/>
   </ButtonGroup>
+}
+
+type SubmitChangesButtonProps = {
+  label: string,
+  text: string,
+  validation: ValidationResult | null,
+  submitChanges: () => void
+}
+
+function SubmitChangesButton(props: SubmitChangesButtonProps){
+
+  const { text, validation, label, submitChanges } = props
+
+  return <Tooltip placement='bottom' label={label} openDelay={1500} shouldWrapChildren>
+      <Button isDisabled={hasErrors(validation)} onClick={submitChanges}>
+        {text}
+      </Button>
+  </Tooltip>
 }
 
 type StructuredAddressButtonsProps = {
