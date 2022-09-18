@@ -28,7 +28,7 @@ import {
     StackProps,
     useToast
   } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
@@ -41,7 +41,8 @@ import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../pac
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
 import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
-import { CreateAddressValidationResult } from '../../../../packages/YipStackLib/types/address/validateAddress';
+import { CreateAddressData } from '../../../../packages/YipStackLib/types/address/address';
+import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
 
@@ -60,9 +61,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress, currentCreateAddress])
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
-  const dispatch = useAppDispatch()
-  // TODO - this should be the memoised result of validating the data as a CreateAddressData object
-  const validation: CreateAddressValidationResult | null = null
+  const dispatch = useAppDispatch()  
+  const [validation, setValidation] = useState<CreateAddressValidationResult | null>(null)
 
   const handleRawAddressChange = handleValueChange(setRawAddress)
 
@@ -73,6 +73,18 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   }, [initialRawAddress, setRawAddress])
 
   const effectiveName: string = name ?? ""
+
+  function getCreateAddressData(): CreateAddressData{
+    const data: CreateAddressData = {      
+      address: effectiveStructuredAddress
+    }
+
+    if(!!name){
+      data.name = name
+    }
+
+    return data
+  }
 
   // If user enters a name and then afterwards blanks it out completely, then remove the name altogether
   function effectiveSetName(n: string){
@@ -99,8 +111,32 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     dispatch(clearAddress())
   }
 
+  function validateCreateAddressData(): CreateAddressValidationResult{
+    const data = getCreateAddressData()
+    const validation = validateCreateAddress(data)
+    return validation
+  }
+
+  function updateValidation(){
+    setValidation(validateCreateAddressData())
+  }
+
+  function updateValidationIfNotNull(){
+    if(validation !== null){
+      updateValidation()
+    }
+  }
+
+  const updateNotNullCallback =
+    useCallback(updateValidationIfNotNull, [validation, setValidation, validateCreateAddressData])
+
+  useEffect(function(){
+    updateNotNullCallback()
+  }, [name, effectiveStructuredAddress, setValidation])
+
   function submitChanges(){
-    alert("TODO")
+    updateValidation()
+    // TODO - add logic to actually submit the changes
   }
   
   return <CreateAddress {...{
