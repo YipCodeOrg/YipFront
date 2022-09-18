@@ -32,9 +32,8 @@ export function ValidationControl(props: ValidationControlProps){
 }
 
 export type ValidationControlData = {
-    validationErrorMessage: string,
-    isInvalid: boolean,
-}
+    validationErrorMessage: string
+} & ValidationComponentProps
 
 export function standardValidationControlDataFromArray<TItemValid>(validation: ArrayValidationResult<TItemValid> | null): ValidationControlData{
     return(standardValidationControlData(validation?.topValidationResult ?? null))

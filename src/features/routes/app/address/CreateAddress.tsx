@@ -36,10 +36,11 @@ import { MdLabel } from 'react-icons/md';
 import { useAppDispatch, useForceable } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
+import { ValidationComponentProps, ValidationControl } from '../../../../components/hoc/ValidationControl';
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/address';
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { hasErrors, ValidationResult } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
+import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
 import { CreateAddressValidationResult } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
@@ -272,8 +273,31 @@ function SubmitChangesButton(props: SubmitChangesButtonProps){
 
   const { text, validation, label, submitChanges } = props
 
+  const hasValidationErrors = hasErrors(validation)  
+
+  const validationErrorMessage = hasValidationErrors ?
+    printMessages(validation, ValidationSeverity.ERROR) : ""
+
+  function render({isInvalid} : ValidationComponentProps){
+    return <SubmitChangesButtonInner {...{label, text, submitChanges}} isDisabled={isInvalid}/>
+  }
+
+  return <ValidationControl {...{render, validationErrorMessage}} isInvalid={hasValidationErrors}/>
+}
+
+type SubmitChangesButtonInnerProps = {
+  label: string,
+  text: string,
+  isDisabled: boolean,
+  submitChanges: () => void
+}
+
+function SubmitChangesButtonInner(props: SubmitChangesButtonInnerProps){
+
+  const { text, isDisabled, label, submitChanges } = props
+
   return <Tooltip placement='bottom' label={label} openDelay={1500} shouldWrapChildren>
-      <Button isDisabled={hasErrors(validation)} onClick={submitChanges}>
+      <Button isDisabled={isDisabled} onClick={submitChanges}>
         {text}
       </Button>
   </Tooltip>
