@@ -28,12 +28,12 @@ import {
     StackProps,
     useToast
   } from '@chakra-ui/react';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
-import { useAppDispatch, useForceable } from '../../../../app/hooks';
+import { useAppDispatch, useForceable, useValidation } from '../../../../app/hooks';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
 import { ValidationComponentProps, ValidationControl } from '../../../../components/hoc/ValidationControl';
@@ -62,7 +62,6 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
   const dispatch = useAppDispatch()  
-  const [validation, setValidation] = useState<CreateAddressValidationResult | null>(null)
 
   const handleRawAddressChange = handleValueChange(setRawAddress)
 
@@ -111,30 +110,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     dispatch(clearAddress())
   }
 
-  function validateCreateAddressData(): CreateAddressValidationResult{
-    const data = getCreateAddressData()
-    const validation = validateCreateAddress(data)
-    return validation
-  }
-
-  function updateValidation(){
-    const latestValidation = validateCreateAddressData()
-    setValidation(latestValidation)
-    return latestValidation.topValidationResult
-  }
-
-  function updateValidationIfNotNull(){
-    if(validation !== null){
-      updateValidation()
-    }
-  }
-
-  const updateNotNullCallback =
-    useCallback(updateValidationIfNotNull, [validation, setValidation, validateCreateAddressData])
-
-  useEffect(function(){
-    updateNotNullCallback()
-  }, [name, effectiveStructuredAddress, setValidation])
+  const { validation, updateValidation } = useValidation(getCreateAddressData,
+      validateCreateAddress, v => v.topValidationResult, [name, effectiveStructuredAddress])
 
   function submitChanges(){
     // TODO - add logic to actually submit the changes

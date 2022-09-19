@@ -2,6 +2,7 @@ import { AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
+import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
 import type { RootState, AppDispatch } from './store'
@@ -9,6 +10,47 @@ import { LoadStatus } from './types'
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+type UseValidationResult<TValid> = {
+    validation: TValid | null,
+    updateValidation: () => ValidationResult
+}
+
+export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T) => TValid,
+    getValidation: (v: TValid) => ValidationResult, updateDependencies: any[]): UseValidationResult<TValid>{
+    
+    const [validation, setValidation] = useState<TValid | null>(null)
+
+    function validateLatestData(): TValid{
+        const data = getLatestData()
+        const validation = validate(data)
+        return validation
+    }
+
+    function updateValidation(){
+        const latestValidation = validateLatestData()
+        setValidation(latestValidation)
+        return getValidation(latestValidation)
+    }
+
+    function updateValidationIfNotNull(){
+        if(validation !== null){
+            updateValidation()
+        }
+    }
+
+    const updateNotNullCallback =
+        useCallback(updateValidationIfNotNull, [validation, setValidation, validateLatestData])
+
+    useEffect(function(){
+        updateNotNullCallback()
+    }, [setValidation, ...updateDependencies])
+
+    return {
+        validation,
+        updateValidation
+    }
+}
 
 export type PaginationResult<T> = {
     currentItems: T[],
