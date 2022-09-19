@@ -40,7 +40,7 @@ import { ValidationComponentProps, ValidationControl } from '../../../../compone
 import { Address, AliasMap, inverseAliasMap, removeAlias } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/address';
 import { parseStrToAddress } from '../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress';
 import { handleKeyPress, handleValueChange } from '../../../../packages/YipStackLib/packages/YipAddress/util/event';
-import { hasErrors, printMessages, ValidationResult, ValidationSeverity } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
+import { hasErrors, hasWarnings, printMessages, ValidationResult, ValidationSeverity } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
 import { CreateAddressData } from '../../../../packages/YipStackLib/types/address/address';
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
@@ -293,13 +293,13 @@ function CreateAddressButtons(props: CreateAddressButtonsProps){
     <Tooltip placement='bottom' label={undoLabel} openDelay={1500} shouldWrapChildren>
         <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
     </Tooltip>
-    <SubmitChangesButton {...{label: saveLabel, text: "Save",
+    <SubmitChangesButton {...{tooltipLabel: saveLabel, text: "Save",
       validation: validation?.topValidationResult ?? null, submitChanges}}/>
   </ButtonGroup>
 }
 
 type SubmitChangesButtonProps = {
-  label: string,
+  tooltipLabel: string,
   text: string,
   validation: ValidationResult | null,
   submitChanges: () => void
@@ -307,7 +307,7 @@ type SubmitChangesButtonProps = {
 
 function SubmitChangesButton(props: SubmitChangesButtonProps){
 
-  const { text, validation, label, submitChanges } = props
+  const { text, validation, tooltipLabel, submitChanges } = props
 
   const hasValidationErrors = hasErrors(validation)  
 
@@ -315,29 +315,72 @@ function SubmitChangesButton(props: SubmitChangesButtonProps){
     printMessages(validation, ValidationSeverity.ERROR) : ""
 
   function render({isInvalid} : ValidationComponentProps){
-    return <SubmitChangesButtonInner {...{label, text, submitChanges}} isDisabled={isInvalid}/>
+    return <SubmitChangesButtonInner {...{tooltipLabel, actionName: text, submitChanges, validation, isInvalid}}/>
   }
 
   return <ValidationControl {...{render, validationErrorMessage}} isInvalid={hasValidationErrors}/>
 }
 
 type SubmitChangesButtonInnerProps = {
-  label: string,
-  text: string,
-  isDisabled: boolean,
+  tooltipLabel: string,
+  actionName: string,
+  isInvalid: boolean,
+  validation: ValidationResult | null,
   submitChanges: () => void
 }
 
 function SubmitChangesButtonInner(props: SubmitChangesButtonInnerProps){
 
-  const { text, isDisabled, label, submitChanges } = props
+  const { actionName, isInvalid, tooltipLabel, submitChanges, validation } = props
+  const valHasWarnings = hasWarnings(validation)
+  const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
 
-  return <Tooltip placement='bottom' label={label} openDelay={1500} shouldWrapChildren>
-      <Button isDisabled={isDisabled} onClick={submitChanges}>
-        {text}
+  function submitValidationAction(){
+    if(isInvalid){
+      throw new Error("Submit unexpectedly called with invalid data");      
+    }
+    submitChanges()
+  }
+
+  if(!valHasWarnings){    
+    return <Tooltip placement='bottom' label={tooltipLabel} openDelay={1500} shouldWrapChildren>
+      <Button isDisabled={isInvalid} onClick={submitValidationAction}>
+        {actionName}
       </Button>
-  </Tooltip>
+    </Tooltip>
+  } else {
+
+    const warningMessages = printMessages(validation, ValidationSeverity.WARNING)
+    const { isOpen, onToggle, onClose } = useDisclosure()
+
+    function confirmAction(){
+      onClose()
+      submitValidationAction()
+    }
+
+    return <Popover isOpen={isOpen}>
+      <PopoverTrigger>             
+          <Flex w={0} h={0} p={0} m={0}/>
+      </PopoverTrigger>
+      <Tooltip placement='bottom' label={tooltipLabel} openDelay={1500} shouldWrapChildren>
+        <Button isDisabled={isInvalid} onClick={onToggle}>{actionName}</Button>
+      </Tooltip>
+      <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton onClick={onClose}/>
+          <PopoverHeader fontWeight={600}>{`Confirm ${actionName}`}</PopoverHeader>
+          <PopoverBody>
+              {`Are you sure you want to ${actionName}? The following validation warnings were found: ${warningMessages}`}
+          </PopoverBody>
+          <VStack p={4}>
+              <Button bg={confirmButtonBg} onClick={confirmAction}>{`Yes, I want to ${actionName}`}</Button>
+          </VStack>    
+      </PopoverContent>
+  </Popover>    
+  } 
 }
+
+
 
 type StructuredAddressButtonsProps = {
   isAddressCleared: boolean,
