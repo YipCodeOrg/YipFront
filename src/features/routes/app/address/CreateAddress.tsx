@@ -274,12 +274,12 @@ function CreateAddressButtons(props: CreateAddressButtonsProps){
     <Tooltip placement='bottom' label={undoLabel} openDelay={1500} shouldWrapChildren>
         <Button onClick={undo} isDisabled={!areThereChanges}>Undo</Button>
     </Tooltip>
-    <SubmitChangesButton {...{tooltipLabel: saveLabel, text: "Save",
+    <ValidateSubmitButton {...{tooltipLabel: saveLabel, text: "Save",
       validation: validation?.topValidationResult ?? null, submitChanges, revalidate}}/>
   </ButtonGroup>
 }
 
-type SubmitChangesButtonProps = {
+type ValidateSubmitButtonProps = {
   tooltipLabel: string,
   text: string,
   validation: ValidationResult | null,
@@ -287,7 +287,7 @@ type SubmitChangesButtonProps = {
   submitChanges: () => void
 }
 
-function SubmitChangesButton(props: SubmitChangesButtonProps){
+function ValidateSubmitButton(props: ValidateSubmitButtonProps){
 
   const { text, validation, tooltipLabel, submitChanges, revalidate } = props
 
@@ -297,7 +297,7 @@ function SubmitChangesButton(props: SubmitChangesButtonProps){
     printMessages(validation, ValidationSeverity.ERROR) : ""
 
   function render({isInvalid} : ValidationComponentProps){
-    return <SubmitChangesButtonInner {...{tooltipLabel, actionName: text, submitChanges,
+    return <ValidateSubmitButtonInner {...{tooltipLabel, actionName: text, submitChanges,
       validation, isInvalid, revalidate}}/>
   }
 
@@ -313,7 +313,7 @@ type SubmitChangesButtonInnerProps = {
   submitChanges: () => void
 }
 
-function SubmitChangesButtonInner(props: SubmitChangesButtonInnerProps){
+function ValidateSubmitButtonInner(props: SubmitChangesButtonInnerProps){
 
   const { actionName, isInvalid, tooltipLabel, submitChanges, validation, revalidate } = props
   const { isOpen, onOpen, onClose } = useDisclosure()
