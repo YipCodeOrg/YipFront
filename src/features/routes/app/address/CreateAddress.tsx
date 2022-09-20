@@ -44,7 +44,7 @@ import { ValidationResult } from '../../../../packages/YipStackLib/packages/YipA
 import { CreateAddressData } from '../../../../packages/YipStackLib/types/address/address';
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
-import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressSlice';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined

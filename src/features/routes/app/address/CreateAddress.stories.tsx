@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress, CreateAddressWrapperProps } from "./CreateAddress"
-import createAddressState from "../../../routes/app/address/createAddressSlice"
+import createAddressState from "./createAddressEditSlice"
 import { Provider } from "react-redux"
 
 

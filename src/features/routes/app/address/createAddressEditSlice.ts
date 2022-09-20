@@ -7,7 +7,7 @@ import { Address, AliasMap } from "../../../../packages/YipStackLib/packages/Yip
 import { ParseOptions } from "../../../../packages/YipStackLib/packages/YipAddress/types/address/parseAddress"
 import { UndoActionType } from "../../../../util/undo/undoActions"
 
-type CreateAddressState = {
+type CreateAddressEditState = {
     addressName?: string,
     rawAddress: string,
     parseOptions: ParseOptions,
@@ -16,7 +16,7 @@ type CreateAddressState = {
 
 type AddressUpdateFunction = (address: Address) => Address
 
-const initialState: CreateAddressState = {
+const initialState: CreateAddressEditState = {
     rawAddress: "",
     parseOptions: {},
     address: null
@@ -27,14 +27,14 @@ type PayloadWithFallback<T> = {
     fallbackAddress: Address
 }
 
-export const createAddressSlice = createSlice({
-    name: "createAddress",
+export const createAddressEditSlice = createSlice({
+    name: "createAddress/edit",
     initialState: initialState,
     reducers: {
-        setRawAddress(state: CreateAddressState, action: PayloadAction<string>){
+        setRawAddress(state: CreateAddressEditState, action: PayloadAction<string>){
             state.rawAddress = action.payload
         },
-        setAddressLines(state: CreateAddressState, action: PayloadAction<PayloadWithFallback<string[]>>){                        
+        setAddressLines(state: CreateAddressEditState, action: PayloadAction<PayloadWithFallback<string[]>>){                        
             updateAddress(state, function(address){
                 return {
                     ...address,
@@ -42,7 +42,7 @@ export const createAddressSlice = createSlice({
                 }
             }, action.payload.fallbackAddress)
         },    
-        setAliasMap(state: CreateAddressState, action: PayloadAction<PayloadWithFallback<AliasMap>>){
+        setAliasMap(state: CreateAddressEditState, action: PayloadAction<PayloadWithFallback<AliasMap>>){
             updateAddress(state, function(address){
                 return {
                     ...address,
@@ -50,25 +50,25 @@ export const createAddressSlice = createSlice({
                 }
             }, action.payload.fallbackAddress)
         },
-        setAddressName(state: CreateAddressState, action: PayloadAction<string>){
+        setAddressName(state: CreateAddressEditState, action: PayloadAction<string>){
             const name = action.payload
             state.addressName = name
         },
-        clearAddress(state: CreateAddressState){
+        clearAddress(state: CreateAddressEditState){
             state.address = null
         },
-        deleteAddressName(state: CreateAddressState){
+        deleteAddressName(state: CreateAddressEditState){
             delete state.addressName
         }
     }
 })
 
 export const { setAddressLines, setAliasMap, setAddressName,
-    deleteAddressName, clearAddress, setRawAddress } = createAddressSlice.actions
+    deleteAddressName, clearAddress, setRawAddress } = createAddressEditSlice.actions
 
 export const selectCreateAddress = (state: RootState) => state.createAddress
 
-export const useCreateAddressState = () : CreateAddressState => {
+export const useCreateAddressState = () : CreateAddressEditState => {
     const addressState = useAppSelector(selectCreateAddress)
     return addressState.present
 }
@@ -124,7 +124,7 @@ export function useUpdateCreateAddressAliasMap(fallbackAddress: Address)
         m => {return {...m}})
 }
 
-export default undoable(createAddressSlice.reducer, {
+export default undoable(createAddressEditSlice.reducer, {
     undoType: UndoActionType.UndoCreateAddress,
     clearHistoryType: UndoActionType.ClearCreateAddress
 })
@@ -150,11 +150,11 @@ function useUpdateAddressAndDispatch<T>(payloadCreator: ActionCreatorWithPayload
     return callback
 }
 
-function updateAddress(state: CreateAddressState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
+function updateAddress(state: CreateAddressEditState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
     state.address = transformAddress(state, transform, fallBackAddress)
 }
 
-function transformAddress(state: CreateAddressState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
+function transformAddress(state: CreateAddressEditState, transform: AddressUpdateFunction, fallBackAddress: Address){                        
     const currentAddress = state.address      
     if(currentAddress !== null){
         return transform(currentAddress)
