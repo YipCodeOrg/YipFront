@@ -11,6 +11,24 @@ import { LoadStatus } from './types'
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
+export function useLazyMemo<T>(init: () => T): () => T{
+    const [cached, setCached] = useState<T | null>(null)
+
+    function getValue(){
+        if(cached !== null){
+            return cached
+        } else {
+            const val = init()
+            setCached(val)
+            return val
+        }
+    }
+
+    const callBack = useCallback(getValue, [cached, setCached, init])
+
+    return callBack
+}
+
 type UseValidationResult<TValid> = {
     validation: TValid | null,
     updateValidation: () => ValidationResult
