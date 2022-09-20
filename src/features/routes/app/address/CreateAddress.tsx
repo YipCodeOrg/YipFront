@@ -399,7 +399,7 @@ const AddressLine: React.FC<AddressLineProps> = (props) => {
   }
   const deleteButtonLabel = "Delete this address line"
   
-  return <HStack w="100%">
+  return <HStack w="100%" align="flex-start">
     <Tooltip label={deleteButtonLabel} placement="top" openDelay={1500}>
         <IconButton aria-label={deleteButtonLabel} variant="ghost"
             icon={<Icon as={ImBin}/>} onClick={deleteThisAddressLine}/>
