@@ -15,7 +15,7 @@ import { FormValidationErrorMessage } from "../../../../components/core/FormVali
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
 import { CancelButton } from "../../../../components/core/CancelButton"
-import { useMutableIndexed, usePagination } from "../../../../app/hooks"
+import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../../../app/hooks"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 
 export type EditRegistrationsProps = {
@@ -309,6 +309,8 @@ type DragItem = {
 const NameCell: React.FC<NameCellProps> = ({name,
 handleInputRegistrationChange, bg, nameValidationResult}) => {
 
+    const enhanced = useEnhancedValidation(nameValidationResult)
+
     const anyErrors = hasErrors(nameValidationResult)
     const props: InputProps = {
         value: name,
@@ -320,7 +322,7 @@ handleInputRegistrationChange, bg, nameValidationResult}) => {
     return <GridItem bg="inherit">
         <FormControl isInvalid={anyErrors} isRequired>
             <Input {...props} bg={bg} borderRadius="lg" opacity="inherit"/>
-            <FormValidationErrorMessage validation={nameValidationResult}/>
+            <FormValidationErrorMessage validation={enhanced}/>
         </FormControl>
     </GridItem>
 }

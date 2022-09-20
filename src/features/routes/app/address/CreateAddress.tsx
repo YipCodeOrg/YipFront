@@ -33,7 +33,8 @@ import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
 import { MdLabel } from 'react-icons/md';
-import { useAppDispatch, useForceable, useValidation } from '../../../../app/hooks';
+import { useAppDispatch, useEnhancedValidation, useForceable, useValidation } from '../../../../app/hooks';
+import { FormValidationErrorMessage } from '../../../../components/core/FormValidationErrorMessage';
 import { InfoButton } from '../../../../components/core/InfoButton';
 import { ValidateSubmitButton } from '../../../../components/core/ValidateSubmitButton';
 import { PageWithHeading } from '../../../../components/hoc/PageWithHeading';
@@ -191,7 +192,8 @@ function CreateAddressContent(props: CreateAddressContentProps){
     clearStructuredAddress,
     updateAliasMap,
     addressName,
-    setAddressName
+    setAddressName,
+    validation
   } = props
 
   const rawAddressCols = displayType === "horizontal" ? 35 : 25
@@ -248,7 +250,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
     <VStack flexBasis={displayType === 'horizontal' ? "470px" : "initial"}>
       <SequenceHeading text="Edit Structured Address" infoMessage={structuredAddressInfo} sequenceNumber={2}/>      
       {structuredAddress.addressLines.map((line, index) =>
-        (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap}
+        (<AddressLine key={index} index={index} line={line} invAliasMap={invAliasMap} validation={validation}
           updateCreateAddressLines={updateCreateAddressLines} updateAliasMap={updateAliasMap}/>))}
       <StructuredAddressButtons {...{undo, clearStructuredAddress, isAddressCleared, addBlankLine, areThereChanges}}/>
     </VStack>
@@ -360,13 +362,24 @@ type AddressLineProps = {
   index: number,
   updateCreateAddressLines: (updater: (lines: string[]) => void) => void,
   invAliasMap : Map<number, Set<string>>,
-  updateAliasMap: (updater: (aliases: AliasMap) => void) => void
+  updateAliasMap: (updater: (aliases: AliasMap) => void) => void,
+  validation: CreateAddressValidationResult | null
 }
 
 const AddressLine: React.FC<AddressLineProps> = (props) => {
 
   const {line, index, invAliasMap, updateCreateAddressLines,
-   updateAliasMap} = props
+   updateAliasMap, validation} = props
+
+   function getThisLineValidation() : ValidationResult | null{
+    const thisLineValidation = validation?.fieldValidations.address
+      .fieldValidations.addressLines.itemValidations[index]
+    return thisLineValidation ?? null    
+   }
+
+   const thisLineValidation = useMemo(getThisLineValidation, [index, validation])
+   const enhanced = useEnhancedValidation(thisLineValidation)
+   const isInvalid = enhanced?.hasErrors ?? false
 
   function setThisAddressLine(newVal: string){    
     updateCreateAddressLines(function(lines: string[]){
@@ -391,12 +404,13 @@ const AddressLine: React.FC<AddressLineProps> = (props) => {
         <IconButton aria-label={deleteButtonLabel} variant="ghost"
             icon={<Icon as={ImBin}/>} onClick={deleteThisAddressLine}/>
     </Tooltip>
-    <FormControl>
+    <FormControl isInvalid={isInvalid}>
         <Input
         _hover={{}}
         value={line}
         onChange={handleInputChange}
-        />      
+        />
+      <FormValidationErrorMessage validation={enhanced}/>
     </FormControl>
     <AlliasPopover {...{index, invAliasMap, updateAliasMap}}/>
   </HStack>

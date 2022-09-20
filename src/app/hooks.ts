@@ -2,7 +2,7 @@ import { AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
-import { EnhancedValidation, lazyEnhancedValidation } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
+import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
@@ -30,6 +30,11 @@ export function useLazyMemo<T>(init: () => T): () => T{
     return callBack
 }
 
+export function useEnhancedValidation(validation: ValidationResult | null): EnhancedValidation | null{
+    const enhanced = useMapped(validation, lazyEnhancedValidationOrNull)
+    return enhanced
+}
+
 type UseValidationResult<TValid> = {
     validation: TValid | null,
     enhancedValidation: EnhancedValidation | null,
@@ -40,7 +45,15 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
     getValidation: (v: TValid) => ValidationResult, updateDependencies: any[]): UseValidationResult<TValid>{
     
     const [validation, setValidation] = useState<TValid | null>(null)
-    const enhanced = useRef<EnhancedValidation | null>(null)
+    const validationResult = useMapped(validation, getValidationOrNull)
+    const enhanced = useEnhancedValidation(validationResult)
+
+    function getValidationOrNull(v: TValid | null){
+        if(v === null){
+            return null
+        }
+        return getValidation(v)
+    }
 
     function validateLatestData(): TValid{
         const data = getLatestData()
@@ -60,15 +73,6 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
         }
     }
 
-    useEffect(function(){
-        if(validation === null){
-            enhanced.current = null
-        } else {
-            const validationResult = getValidation(validation)
-            enhanced.current = lazyEnhancedValidation(validationResult)
-        }
-    }, [validation])
-
     const updateNotNullCallback =
         useCallback(updateValidationIfNotNull, [validation, setValidation, validateLatestData])
 
@@ -78,7 +82,7 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
 
     return {
         validation,
-        enhancedValidation: enhanced.current,
+        enhancedValidation: enhanced,
         updateValidation
     }
 }

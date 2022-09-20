@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
 import { BsPersonPlusFill } from "react-icons/bs"
+import { useEnhancedValidation } from "../../../../app/hooks"
 import { CancelButton } from "../../../../components/core/CancelButton"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
@@ -96,17 +97,19 @@ function FormContent({nameValidationResult, yipCodeValidationResult,
 
     const handleNameInputChange = handleInputRegistrationChange((f, s) => {return {...f, name: s}})
     const handleYipCodeInputChange = handleInputRegistrationChange((f, s) => {return {...f, yipCode: s}})
+    const enhancedNameValidation = useEnhancedValidation(nameValidationResult)
+    const enhancedYipCodeValidation = useEnhancedValidation(yipCodeValidationResult)
 
     return <>
             <FormControl isRequired isInvalid={isNameInvalid}>
                 <FormLabel>Name</FormLabel>
                 <Input value={newName} onChange={handleNameInputChange}/>
-                <FormValidationErrorMessage validation={nameValidationResult}/>
+                <FormValidationErrorMessage validation={enhancedNameValidation}/>
             </FormControl>
             <FormControl isRequired isInvalid={isYipCodeInvalid}>
                 <FormLabel>YipCode</FormLabel>
                 <Input value={newYipCode} onChange={handleYipCodeInputChange}/>
-                <FormValidationErrorMessage validation={yipCodeValidationResult}/>
+                <FormValidationErrorMessage validation={enhancedYipCodeValidation}/>
             </FormControl>
     </>
 }

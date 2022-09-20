@@ -1,8 +1,8 @@
 import { FormErrorMessage } from "@chakra-ui/react"
-import { printMessages, ValidationResult, ValidationSeverity } from "../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { EnhancedValidation } from "../../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation"
 
 export type FormValidationErrorMessageProps = {
-    validation: ValidationResult | null
+    validation: EnhancedValidation | null
 }
 
 export function FormValidationErrorMessage(props: FormValidationErrorMessageProps){
@@ -10,7 +10,7 @@ export function FormValidationErrorMessage(props: FormValidationErrorMessageProp
     const { validation } = props
     
     if(validation !== null){
-        return <FormErrorMessage>{ printMessages(validation, ValidationSeverity.ERROR)}</FormErrorMessage>
+        return <FormErrorMessage>{ validation.errorMessages}</FormErrorMessage>
     }        
     return <></>
 }
