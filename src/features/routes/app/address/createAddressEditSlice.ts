@@ -29,7 +29,7 @@ type PayloadWithFallback<T> = {
 
 export const createAddressEditSlice = createSlice({
     name: "createAddress/edit",
-    initialState: initialState,
+    initialState,
     reducers: {
         setRawAddress(state: CreateAddressEditState, action: PayloadAction<string>){
             state.rawAddress = action.payload
