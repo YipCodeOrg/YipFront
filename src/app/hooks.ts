@@ -2,6 +2,7 @@ import { AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
+import { EnhancedValidation, lazyEnhancedValidation } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { HubContext } from './App'
@@ -31,6 +32,7 @@ export function useLazyMemo<T>(init: () => T): () => T{
 
 type UseValidationResult<TValid> = {
     validation: TValid | null,
+    enhancedValidation: EnhancedValidation | null,
     updateValidation: () => ValidationResult
 }
 
@@ -38,6 +40,7 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
     getValidation: (v: TValid) => ValidationResult, updateDependencies: any[]): UseValidationResult<TValid>{
     
     const [validation, setValidation] = useState<TValid | null>(null)
+    const enhanced = useRef<EnhancedValidation | null>(null)
 
     function validateLatestData(): TValid{
         const data = getLatestData()
@@ -57,6 +60,15 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
         }
     }
 
+    useEffect(function(){
+        if(validation === null){
+            enhanced.current = null
+        } else {
+            const validationResult = getValidation(validation)
+            enhanced.current = lazyEnhancedValidation(validationResult)
+        }
+    }, [validation])
+
     const updateNotNullCallback =
         useCallback(updateValidationIfNotNull, [validation, setValidation, validateLatestData])
 
@@ -66,6 +78,7 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
 
     return {
         validation,
+        enhancedValidation: enhanced.current,
         updateValidation
     }
 }
