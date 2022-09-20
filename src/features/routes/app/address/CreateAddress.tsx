@@ -198,7 +198,7 @@ function CreateAddressContent(props: CreateAddressContentProps){
 
   const freeFormInfo = "Enter a freeform address first. Each address line should be on a new line. As you type, the address will be broken out into lines which you will see appearing dynamically. When you are finished with the freeform address entry, you can start editing those lines further in the structured address entry, but once you do, you can no longer edit the freeform address."
 
-  const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to clear all changes to the structured data."
+  const structuredAddressInfo = "You can optionally make further changes to your address by editing the structured address data here. The address is broken into a sequence of address lines. You can add new lines, remove lines or edit existing lines. You can also give aliases to each line. Aliases allow you to define certain lines of your address as being special fields e.g. PostCode, State, County etc. Note: once there are changes made to the structured data, you can no longer make changes to the freeform address entry. To return to freeform editing, you need to reset all changes to the structured data."
 
   const invAliasMap : Map<number, Set<string>>
     = useMemo(() => inverseAliasMap(structuredAddress), [structuredAddress])
@@ -315,12 +315,12 @@ function StructuredAddressClearButton(props: StructuredAddressClearButtonProps){
 
   const { clearStructuredAddress, isAddressCleared } = props
 
-  const clearLabel = isAddressCleared ? "There are no changes to clear" : 
-    "Clear changes to the structured address"  
+  const clearLabel = isAddressCleared ? "There are no changes to reset" : 
+    "Reset the structured address to match the freeform address"  
   
   return <ButtonGroup>
     <Tooltip placement='bottom' label={clearLabel} openDelay={1500} shouldWrapChildren>
-      <Button onClick={clearStructuredAddress} isDisabled={isAddressCleared}>Clear</Button>
+      <Button onClick={clearStructuredAddress} isDisabled={isAddressCleared}>Reset</Button>
     </Tooltip>
   </ButtonGroup>
 }
