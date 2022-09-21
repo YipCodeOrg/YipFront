@@ -11,11 +11,11 @@ export type SliceOf<T> = {
 }
 
 export function initialSlice<T>(): SliceOf<T> {
-    return {loadStatus: LoadStatus.NotLoaded}
+    return { loadStatus: LoadStatus.NotLoaded }
 }
 
 export function createStandardSlice<T>(name: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
-    boilerplateCastFunction: (t: T) => Draft<T>){        
+    boilerplateCastFunction: (t: T) => Draft<T>) {
     return createSlice({
         name,
         initialState: initialSlice<T>(),
@@ -27,45 +27,64 @@ export function createStandardSlice<T>(name: string, loadSlice: AsyncThunk<T, Me
     })
 }
 
-export function createApiGetThunk<T>(typePrefix: string, path: string, isCorrectType: (obj: any) => obj is T){
-    const payload = {method: "GET", path: path}
-    return createApiRequestThunk<MessagePort, T>(typePrefix, () => payload, p => p, isCorrectType, HttpStatusOk)    
+type ThunkInputWithPort = {
+    port: MessagePort
+}
+
+type PostThunkInput<TBody> = {
+    body: TBody
+} & ThunkInputWithPort
+
+export function createApiPostThunk<TBody, TResponse>(typePrefix: string, path: string,
+    isCorrectType: (obj: any) => obj is TResponse) {
+    function generatePayload(input: PostThunkInput<TBody>): ApiRequestPayload {
+        const body = input.body
+        const serializedBody = JSON.stringify(body)
+        return { method: "POST", path, body: serializedBody }
+    }
+    return createApiRequestThunk<PostThunkInput<TBody>, TResponse>
+        (typePrefix, generatePayload, p => p.port, isCorrectType, HttpStatusOk)
+}
+
+export function createApiGetThunk<T>(typePrefix: string, path: string, isCorrectType: (obj: any) => obj is T) {
+    const payload = { method: "GET", path }
+    return createApiRequestThunk<MessagePort, T>(typePrefix, () => payload, p => p, isCorrectType, HttpStatusOk)
 }
 
 function createApiRequestThunk<TThunkInput, TResponse>(typePrefix: string,
     requestGenerator: (i: TThunkInput) => ApiRequestPayload,
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,
-    expectedStatus: number){
+    expectedStatus: number) {
     return createAsyncThunk(
-        typePrefix, 
+        typePrefix,
         async (input: TThunkInput) => {
 
             const request = requestGenerator(input)
             const toHubPort = getPort(input)
 
             const processedResponse = await sendApiRequest(request, toHubPort)
-            .then(res => {
-                if(res.status !== expectedStatus){
-                    return logAndReturnRejectedPromise("Unexpected response status")
-                }
-                const body = res.body
-                if(!!body){
-                    return body
-                } else{
-                    return logAndReturnRejectedPromise("No body in response")         
-                }            
-            })
-            .then(body => {
-                const obj = JSON.parse(body)
-                if(isResponseCorrectType(obj)){
-                    return obj
-                }
-                return logAndReturnRejectedPromise("Response is not of the correct type")
-            })
+                .then(res => {
+                    if (res.status !== expectedStatus) {
+                        return logAndReturnRejectedPromise("Unexpected response status")
+                    }
+                    const body = res.body
+                    if (!!body) {
+                        return body
+                    } else {
+                        return logAndReturnRejectedPromise("No body in response")
+                    }
+                })
+                .then(body => {
+                    const obj = JSON.parse(body)
+                    if (isResponseCorrectType(obj)) {
+                        return obj
+                    }
+                    return logAndReturnRejectedPromise("Response is not of the correct type")
+                })
             return processedResponse
         }
-    )    
+    )
 }
 
 
