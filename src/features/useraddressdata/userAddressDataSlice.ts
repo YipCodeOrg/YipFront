@@ -2,7 +2,7 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubLoad } from "../../app/hooks";
 import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
-import { createStandardSlice } from "../../util/redux/slices";
+import { createFetchSlice } from "../../util/redux/slices";
 import { createApiGetThunk } from "../../util/redux/thunks";
 import { useUserDataHubLoad } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
@@ -13,7 +13,7 @@ import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/pa
 export const loadUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
     "userAddressData/load", "/addresses", isUserAddressDataArray)
 
-export const userAddressDataSlice = createStandardSlice("userAddressData", loadUserAddressData, d => d)
+export const userAddressDataSlice = createFetchSlice("userAddressData", loadUserAddressData, d => d)
 
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData
 export const selectUserAddressDataStatus = (state: RootState) => state.userAddressData.loadStatus

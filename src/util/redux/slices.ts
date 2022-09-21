@@ -11,7 +11,7 @@ export function initialSlice<T>(): SliceOf<T> {
     return { loadStatus: LoadStatus.NotLoaded }
 }
 
-export function createStandardSlice<T>(name: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
+export function createFetchSlice<T>(name: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
     boilerplateCastFunction: (t: T) => Draft<T>) {
     return createSlice({
         name,
