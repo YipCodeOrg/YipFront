@@ -1,20 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit"
 import { AddressItem, CreateAddressData } from "../../../../packages/YipStackLib/types/address/address"
 
 enum SubmissionStatus{
     Clear,
     Submitted,
-    Success,
-    Failure
+    Sent,
+    Responded,
+    Failed
 }
 
-type SubmissionSlice<TSubmit, TResponse> = {
+type SubmissionState<TSubmit, TResponse> = {
     submitted: TSubmit | null,
     response: TResponse | null,
     status: SubmissionStatus
 }
 
-function newClearSubmissionSlice<TSubmit, TResponse>() : SubmissionSlice<TSubmit, TResponse>{
+function newClearSubmissionSlice<TSubmit, TResponse>() : SubmissionState<TSubmit, TResponse>{
     return {
         submitted: null,
         response: null,
@@ -22,15 +23,26 @@ function newClearSubmissionSlice<TSubmit, TResponse>() : SubmissionSlice<TSubmit
     }
 }
 
-type CreateAddressSubmissionSlice = SubmissionSlice<CreateAddressData, AddressItem>
+type CreateAddressSubmissionState = SubmissionState<CreateAddressData, AddressItem>
 
-const initialState: CreateAddressSubmissionSlice = newClearSubmissionSlice()
+function isClear<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>){
+    return s.status === SubmissionStatus.Clear && s.submitted === null && s.status === null
+}
 
 // TODO: Parameterise this on a backend
-export function buildCreateAddressSubmissionSlice(){
+export function buildSubmissionSlice<TSubmit extends string, TResponse>(name: string,
+    boilerplateCastFunction: (t: TSubmit) => Draft<TSubmit>){
     return createSlice({
-        name: "createAddress/submission",
-        initialState,
-        reducers: {}
+        name,
+        initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
+        reducers: {
+            submit(state: Draft<SubmissionState<TSubmit, TResponse>>, action: PayloadAction<TSubmit>){
+                if(!isClear(state)){
+                    throw new Error("Cannot submit data - submission state is not clear");
+                    
+                }
+                state.submitted = boilerplateCastFunction(action.payload)
+            },
+        }
     })
 }
