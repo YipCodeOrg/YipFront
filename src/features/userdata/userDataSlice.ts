@@ -2,7 +2,8 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubLoad } from "../../app/hooks";
 import { isUserData, UserData } from "../../packages/YipStackLib/types/userData";
-import { createApiGetThunk, createStandardSlice } from "../../util/slices";
+import { createStandardSlice } from "../../util/redux/slices";
+import { createApiGetThunk } from "../../util/redux/thunks";
 
 export const loadUserData: AsyncThunk<UserData, MessagePort, {}> = createApiGetThunk(
     "userdata/load", "/userdata", isUserData)

@@ -1,5 +1,5 @@
 import { ActionReducerMapBuilder, AsyncThunk, Draft } from "@reduxjs/toolkit"
-import { LoadStatus } from "../app/types"
+import { LoadStatus } from "../../app/types"
 
 export const addStandardThunkReducers = <TState, TPayload>
     (statusSetter: (state: Draft<TState>, status: LoadStatus) => void,

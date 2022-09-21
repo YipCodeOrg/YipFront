@@ -1,31 +1,7 @@
-import { LoadStatus } from "../app/types"
-import { addStandardThunkReducers } from "./reduxHelpers"
-import { AsyncThunk, createAsyncThunk, createSlice, Draft } from "@reduxjs/toolkit";
-import { HttpStatusOk, sendApiRequest } from "./hubApi";
-import { logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc";
-import { ApiRequestPayload } from "../packages/YipStackLib/util/hubFront";
-
-export type SliceOf<T> = {
-    sliceData?: T,
-    loadStatus: LoadStatus
-}
-
-export function initialSlice<T>(): SliceOf<T> {
-    return { loadStatus: LoadStatus.NotLoaded }
-}
-
-export function createStandardSlice<T>(name: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
-    boilerplateCastFunction: (t: T) => Draft<T>) {
-    return createSlice({
-        name,
-        initialState: initialSlice<T>(),
-        reducers: {},
-        extraReducers: addStandardThunkReducers<SliceOf<T>, T>(
-            (state, status) => state.loadStatus = status,
-            (state, payload) => state.sliceData = boilerplateCastFunction(payload),
-            loadSlice),
-    })
-}
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import { ApiRequestPayload } from "../../packages/YipStackLib/util/hubFront"
+import { logAndReturnRejectedPromise } from "../../packages/YipStackLib/util/misc"
+import { HttpStatusOk, sendApiRequest } from "../hubApi"
 
 type ThunkInputWithPort = {
     port: MessagePort
@@ -86,5 +62,3 @@ function createApiRequestThunk<TThunkInput, TResponse>(typePrefix: string,
         }
     )
 }
-
-

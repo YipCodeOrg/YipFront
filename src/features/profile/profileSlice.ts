@@ -4,7 +4,7 @@ import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { sendHubRequest } from "../../util/hubApi"
 import { useAsyncHubLoad } from "../../app/hooks";
-import { addStandardThunkReducers } from "../../util/reduxHelpers";
+import { addStandardThunkReducers } from "../../util/redux/reduxHelpers";
 
 type ProfileSliceState = {
     isLoggedIn: boolean,

@@ -23,7 +23,7 @@ function newClearSubmissionSlice<TSubmit, TResponse>() : SubmissionState<TSubmit
     }
 }
 
-type CreateAddressSubmissionState = SubmissionState<CreateAddressData, AddressItem>
+export type CreateAddressSubmissionState = SubmissionState<CreateAddressData, AddressItem>
 
 function isClear<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>){
     return s.status === SubmissionStatus.Clear && s.submitted === null && s.status === null
