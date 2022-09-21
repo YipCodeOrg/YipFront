@@ -11,7 +11,7 @@ import { UserData } from "../../packages/YipStackLib/types/userData";
 import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/packages/YipAddress/util/arrayUtil";
 
 export const loadUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
-    "userAddressData/load", "/addresses", isUserAddressDataArray)
+    "/addresses", isUserAddressDataArray)
 
 export const userAddressDataSlice = createFetchSlice("userAddressData", loadUserAddressData, d => d)
 

@@ -11,35 +11,41 @@ type PostThunkInput<TBody> = {
     body: TBody
 } & ThunkInputWithPort
 
-export function createApiPostThunk<TBody, TResponse>(typePrefix: string, path: string,
+export function createApiPostThunk<TBody, TResponse>(path: string,
     isCorrectType: (obj: any) => obj is TResponse) {
-    function generatePayload(input: PostThunkInput<TBody>): ApiRequestPayload {
-        const body = input.body
-        const serializedBody = JSON.stringify(body)
-        return { method: "POST", path, body: serializedBody }
-    }
-    return createApiRequestThunk<PostThunkInput<TBody>, TResponse>
-        (typePrefix, generatePayload, p => p.port, isCorrectType, HttpStatusOk)
+    return createApiRequestThunk<PostThunkInput<TBody>, TResponse, TBody>
+        (p => p.port, isCorrectType, HttpStatusOk, "POST", path, i => i.body)
 }
 
-export function createApiGetThunk<T>(typePrefix: string, path: string, isCorrectType: (obj: any) => obj is T) {
-    const payload = { method: "GET", path }
-    return createApiRequestThunk<MessagePort, T>(typePrefix, () => payload, p => p, isCorrectType, HttpStatusOk)
+export function createApiGetThunk<T>(path: string, isCorrectType: (obj: any) => obj is T) {    
+    return createApiRequestThunk<MessagePort, T>(p => p, isCorrectType, HttpStatusOk, "GET", path)
 }
 
-function createApiRequestThunk<TThunkInput, TResponse>(typePrefix: string,
-    requestGenerator: (i: TThunkInput) => ApiRequestPayload,
+function createApiRequestThunk<TThunkInput, TResponse, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
-    isResponseCorrectType: (obj: any) => obj is TResponse,
-    expectedStatus: number) {
+    isResponseCorrectType: (obj: any) => obj is TResponse,    
+    expectedStatus: number, method: string, path: string,    
+    bodyGenerator?: (i: TThunkInput) => TBody) {
+
+    const apiRequest: ApiRequestPayload = {
+        method,
+        path
+    }
+
+    const pathStartingWithForwardSlash = path.startsWith("/") ? path : `/${path}`
+    const typePrefix = `request${pathStartingWithForwardSlash}/${method}`
+
     return createAsyncThunk(
         typePrefix,
         async (input: TThunkInput) => {
 
-            const request = requestGenerator(input)
+            if(bodyGenerator !== undefined){
+                apiRequest.body = JSON.stringify(bodyGenerator(input))
+            }
+
             const toHubPort = getPort(input)
 
-            const processedResponse = await sendApiRequest(request, toHubPort)
+            const processedResponse = await sendApiRequest(apiRequest, toHubPort)
                 .then(res => {
                     if (res.status !== expectedStatus) {
                         return logAndReturnRejectedPromise("Unexpected response status")
