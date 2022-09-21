@@ -11,10 +11,10 @@ export function initialSlice<T>(): FetchSliceOf<T> {
     return { loadStatus: LoadStatus.NotLoaded }
 }
 
-export function createFetchSlice<T>(name: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
+export function createFetchSlice<T>(objectType: string, loadSlice: AsyncThunk<T, MessagePort, {}>,
     boilerplateCastFunction: (t: T) => Draft<T>) {
     return createSlice({
-        name,
+        name: `${objectType}/fetch`,
         initialState: initialSlice<T>(),
         reducers: {},
         extraReducers: addStandardThunkReducers<FetchSliceOf<T>, T>(
