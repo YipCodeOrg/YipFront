@@ -1,9 +1,12 @@
+import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { LoadStatus } from "../../../app/types";
+import { Provider } from "react-redux";
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
-import { Dashboard, DashboardProps } from "./Dashboard";
+import { createMockApiRequestThunk } from "../../../util/storybook/mockThunks";
+import { userAddressDataSliceGenerator } from "../../useraddressdata/userAddressDataSlice";
+import { ConnectedDashboard, Dashboard } from "./Dashboard";
 
-type DashboardType = typeof Dashboard
+type StoryType = typeof StoryWrapper
 
 enum StoryYipCode {
   Home = "QLC9229ALDN04",
@@ -21,9 +24,33 @@ export default {
         options: StoryYipCode
       }
     }
-  } as ComponentMeta<DashboardType>
+  } as ComponentMeta<StoryType>
 
-const Template: ComponentStory<DashboardType> = (args: DashboardProps) => <Dashboard {...args}/>
+const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryWrapper {...args}/>
+
+type StoryWrapperProps = {
+  selectedYipCode: string | null,
+  userAddressData: UserAddressData[],
+  delayMilis: number
+}
+
+function StoryWrapper(props: StoryWrapperProps){
+
+  const { selectedYipCode, userAddressData, delayMilis } = props
+
+  const mockThunk = createMockApiRequestThunk<MessagePort, UserAddressData[]>(userAddressData, "mockUserAddressData", delayMilis)
+  const userAddressDataReducer = userAddressDataSliceGenerator(mockThunk).reducer
+    
+  const mockStore = configureStore({
+      reducer: {
+          userAddressDataReducer
+      }
+  })
+  
+  return <Provider store={mockStore}>
+      <ConnectedDashboard {...{selectedYipCode}}/>
+  </Provider>
+}
 
 const arbitraryDate1 = new Date(2020, 12)
 const arbitraryDate2 = new Date(2021, 12)
@@ -130,40 +157,42 @@ const longAddress: UserAddressData = {
 
 export const Standard = Template.bind({})
 Standard.args = {
+    delayMilis: 100,
     userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
-    userAddressDataStatus: LoadStatus.Loaded,
     selectedYipCode: workAddress.address.yipCode
 }
 
 export const EmptyRegistrations = Template.bind({})
 EmptyRegistrations.args = {
+  delayMilis: 100,
   userAddressData: [emptyRegistraiontsAddress],
-  userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: emptyRegistraiontsAddress.address.yipCode
 }
 
 export const NoAddresses = Template.bind({})
 NoAddresses.args = {
+  delayMilis: 100,
   userAddressData: [],
-  userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: null
 }
 
 export const Long = Template.bind({})
 Long.args = {
+  delayMilis: 100,
   userAddressData: [longAddress],
-  userAddressDataStatus: LoadStatus.Loaded,
   selectedYipCode: longAddress.address.yipCode
 }
 
-export const Loading = Template.bind({})
-Loading.args = {
-  userAddressDataStatus: LoadStatus.Pending,
-  selectedYipCode: null
+export const NoDelay = Template.bind({})
+Long.args = {
+  delayMilis: 100,
+  userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
+  selectedYipCode: workAddress.address.yipCode
 }
 
-export const Failed = Template.bind({})
-Failed.args = {
-  userAddressDataStatus: LoadStatus.Failed,
-  selectedYipCode: null
+export const RealisticDelay = Template.bind({})
+Long.args = {
+  delayMilis: 1500,
+  userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
+  selectedYipCode: workAddress.address.yipCode
 }

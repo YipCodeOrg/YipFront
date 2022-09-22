@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress, CreateAddressWrapperProps } from "./CreateAddress"
-import createAddressState from "./createAddressEditSlice"
+import createAddressReducer from "./createAddressEditSlice"
 import { Provider } from "react-redux"
 
 
@@ -18,7 +18,7 @@ function StoryWrapper(props: CreateAddressWrapperProps){
     
     const mockStore = configureStore({
         reducer: {
-            createAddress: createAddressState
+            createAddress: createAddressReducer
         }
     })
     
