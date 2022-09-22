@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit"
 import { ApiRequestPayload } from "../../packages/YipStackLib/util/hubFront"
 import { logAndReturnRejectedPromise } from "../../packages/YipStackLib/util/misc"
 import { HttpStatusOk, sendApiRequest } from "../hubApi"
@@ -25,7 +25,7 @@ function createApiRequestThunk<TThunkInput, TResponse, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
     expectedStatus: number, method: string, path: string,    
-    bodyGenerator?: (i: TThunkInput) => TBody) {
+    bodyGenerator?: (i: TThunkInput) => TBody) : AsyncThunk<TResponse, TThunkInput, {}> {
 
     const apiRequest: ApiRequestPayload = {
         method,
