@@ -10,7 +10,7 @@ import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
 import { shrinkToParent } from "../../../util/cssHelpers"
-import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
+import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
@@ -38,7 +38,7 @@ export function ConnectedDashboard(props: ConnectedDashboardProps){
 
     const { selectedYipCode, userAddressDataThunk, userDataThunk} = props
     
-    const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad(userAddressDataThunk, userDataThunk)
+    const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubFetch(userAddressDataThunk, userDataThunk)
     return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>    
 }
 

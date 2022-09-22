@@ -5,7 +5,7 @@ import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
 import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
-import { HubContext } from './App'
+import { HubContext, HubContextType } from './App'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
 
@@ -262,13 +262,13 @@ export function useMutableIndexed<T>(ts: T[]): [Indexed<T>[], (t: Indexed<T>[]) 
         return [indexed, setIndexed]
 }
 
-export function useAsyncHubLoad<TReturn>(
+export function useAsyncHubFetch<TReturn>(
     thunk: AsyncThunk<TReturn, MessagePort, {}>,
     dataSelector: (state: RootState) => TReturn | undefined,
     statusSelector: (state: RootState) => LoadStatus) : [TReturn | undefined, LoadStatus]{        
         const status = useAppSelector(statusSelector)
         const data = useAppSelector(dataSelector)
-        const [hubPort] = useContext(HubContext)
+        const { port: hubPort } = useContext(HubContext)
         const dispatch = useAppDispatch()
 
         useEffect(
@@ -315,7 +315,7 @@ function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     return [state, setState]
 }
 
-export function useHubHandshake() : [MessagePort | null, boolean]{
+export function useHubHandshake() : HubContextType{
 
     const [toHubPort, setToHubPort] = useTimeoutState<MessagePort | null>(handleHandshakeTimeout, 1000)
     const [isHubLoadError, setIsHubLoadError] = useState(false)
@@ -375,5 +375,8 @@ export function useHubHandshake() : [MessagePort | null, boolean]{
 
     }, [setToHubPort]);
 
-    return [toHubPort, isHubLoadError]
+    return {
+        port: toHubPort,
+        isHubLoadError
+    }
 }

@@ -1,6 +1,6 @@
 import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { useAsyncHubLoad } from "../../app/hooks";
+import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserData, UserData } from "../../packages/YipStackLib/types/userData";
 import { createFetchSlice } from "../../util/redux/slices";
 import { createApiGetThunk } from "../../util/redux/thunks";
@@ -16,6 +16,6 @@ export const selectUserDataStatus = (state: RootState) => state.userData.loadSta
 
 export const selectYipCodes = (state: RootState) => selectUserData(state)?.data.yipCodes
 
-export const useUserDataHubLoad = (thunk: AsyncThunk<UserData, MessagePort, {}>) => useAsyncHubLoad(thunk, selectUserData, selectUserDataStatus)  
+export const useUserDataHubFetch = (thunk: AsyncThunk<UserData, MessagePort, {}>) => useAsyncHubFetch(thunk, selectUserData, selectUserDataStatus)  
 
 export default userDataSlice.reducer

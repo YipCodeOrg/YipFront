@@ -2,7 +2,7 @@ import { Center } from "@chakra-ui/react"
 import { FunctionComponent, useContext } from "react"
 import { useLocation } from "react-router-dom"
 import { HubContext } from "../../app/App"
-import { useLoginHubLoad } from "../../features/profile/profileSlice"
+import { useLoginHubFetch } from "../../features/profile/profileSlice"
 import { EmptyLoadStateWrapper } from "../hoc/LoadStateWrapper"
 import {FullAppRoutingLayout} from "./routingLayouts"
 
@@ -16,7 +16,7 @@ const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 //TODO: Refactor this to a general-purpose HOC
 const LoginWrapper: FunctionComponent<IsLoggedInProps> = (props) => {
     const [,isHubLoadError] = useContext(HubContext)
-    const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubLoad()
+    const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubFetch()
 
     if(isHubLoadError){
         return <Center>ERROR LOADING PAGE</Center>

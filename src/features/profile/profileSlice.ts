@@ -3,7 +3,7 @@ import { RootState } from "../../app/store";
 import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { sendHubRequest } from "../../util/hubApi"
-import { useAsyncHubLoad } from "../../app/hooks";
+import { useAsyncHubFetch } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/redux/reduxHelpers";
 
 type ProfileSliceState = {
@@ -47,6 +47,6 @@ export const profileSlice = createSlice({
 export const selectIsLoggedIn = (state: RootState) => state.profile.isLoggedIn
 export const selectIsLoggedInStatus = (state: RootState) => state.profile.isLoggedInLoadState
 
-export const useLoginHubLoad = () => useAsyncHubLoad(loadLoginState, selectIsLoggedIn, selectIsLoggedInStatus)  
+export const useLoginHubFetch = () => useAsyncHubFetch(loadLoginState, selectIsLoggedIn, selectIsLoggedInStatus)  
 
 export default profileSlice.reducer

@@ -8,7 +8,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
 
-export const HubContext = createContext<[MessagePort | null, boolean]>([null, false])
+export type HubContextType = {
+    port: MessagePort | null,
+    isHubLoadError: boolean
+}
+
+export const HubContext = createContext<HubContextType>({port: null, isHubLoadError: false})
 
 export default function App(){
 

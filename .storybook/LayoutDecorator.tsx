@@ -7,6 +7,7 @@ import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
 import { ColorModeSwitcher } from '../src/components/core/ColorModeSwitcher'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { HubContext } from "../src/app/App"
 
 const LayoutDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context) => {
   
@@ -52,14 +53,19 @@ const DefaultLayout = ({children}) => {
     </ChakraProvider>
 }
 
-const AppLayoutDecorator = ({children}) => {      
+const AppLayoutDecorator = ({children}) => {
+
+    const mockHubContext = {port: new MessageChannel().port1, isHubLoadError: false}
+
     return <ChakraProvider theme={theme}>
-        <DndProvider backend={HTML5Backend}>
-            <ColorModeScript/>
-            <FullAppLayout {...layoutProps}>
-                {children}
-            </FullAppLayout>
-        </DndProvider>
+        <HubContext.Provider value={mockHubContext}>
+            <DndProvider backend={HTML5Backend}>
+                <ColorModeScript/>
+                <FullAppLayout {...layoutProps}>
+                    {children}
+                </FullAppLayout>
+            </DndProvider>
+        </HubContext.Provider>
     </ChakraProvider>
 }
 
