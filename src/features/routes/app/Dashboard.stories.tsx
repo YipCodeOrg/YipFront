@@ -200,14 +200,14 @@ Long.args = {
 }
 
 export const NoDelay = Template.bind({})
-Long.args = {
+NoDelay.args = {
   delayMilis: 100,
   userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
   selectedYipCode: workAddress.address.yipCode
 }
 
 export const RealisticDelay = Template.bind({})
-Long.args = {
+RealisticDelay.args = {
   delayMilis: 1500,
   userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
   selectedYipCode: workAddress.address.yipCode
