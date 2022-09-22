@@ -1,4 +1,4 @@
-import { AsyncThunk, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit"
+import { AsyncThunk, createSlice, Draft } from "@reduxjs/toolkit"
 import { LoadStatus } from "../../../app/types"
 import { addStandardThunkReducers } from "../reduxHelpers"
 
@@ -11,7 +11,6 @@ export type ThunkSubmission<T> = {
 enum SubmissionStatus{
     Clear,
     Submitted,
-    Sent,
     Responded,
     Failed
 }
@@ -38,28 +37,13 @@ function isSubmitted<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>)
     return s.status === SubmissionStatus.Submitted && s.submitted !== null && s.response === null
 }
 
-function isSent<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>){
-    return s.status === SubmissionStatus.Sent && s.submitted !== null && s.response === null
-}
-
-export function submissionSliceGenerator<TSubmit extends string, TResponse>(name: string,
-    boilerplateSubmitCastFunction: (t: TSubmit) => Draft<TSubmit>,
+export function submissionSliceGenerator<TSubmit extends string, TResponse>(name: string,    
     boilerplateResponseCastFunction: (t: TResponse) => Draft<TResponse>){
     return (submissionThunk: AsyncThunk<TResponse, ThunkSubmission<TSubmit>, {}>) => {
         return createSlice({
             name,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
-            reducers: {
-                submit(state: Draft<SubmissionState<TSubmit, TResponse>>, action: PayloadAction<TSubmit>){
-                    if(!isClear(state)){
-                        throw new Error("Cannot submit data - submission state is not clear");
-                        
-                    }
-                    state.submitted = boilerplateSubmitCastFunction(action.payload)
-
-                    //TODO: Kick off the thunk here
-                },
-            },
+            reducers: {},
             extraReducers: addStandardThunkReducers<SubmissionState<TSubmit, TResponse>, ThunkSubmission<TSubmit>, TResponse>(
                 handleThunkStatus,
                 (state, payload) => state.response = boilerplateResponseCastFunction(payload),
@@ -70,18 +54,18 @@ export function submissionSliceGenerator<TSubmit extends string, TResponse>(name
 
 function handleThunkStatus<TSubmit, TResponse>(state: SubmissionState<TSubmit, TResponse>, loadStatus: LoadStatus){
     if(loadStatus === LoadStatus.Pending){
-        if(isSubmitted(state)){
-            state.status = SubmissionStatus.Sent
+        if(isClear(state)){
+            state.status = SubmissionStatus.Submitted
         } else {
-            throw new Error("Unexpected pending status encountered - not in a submission state");            
+            throw new Error("Unexpected pending status encountered - not in a clear state");            
         }
     } else if (loadStatus === LoadStatus.Failed) {
         state.status = SubmissionStatus.Failed
     } else if (loadStatus === LoadStatus.Loaded) {
-        if(isSent(state)){
-            state.status = SubmissionStatus.Submitted
+        if(isSubmitted(state)){
+            state.status = SubmissionStatus.Responded
         } else {
-            throw new Error("Unexpected loaded status encountered - not in a sent state");            
+            throw new Error("Unexpected loaded status encountered - not in a submitted state");            
         }
     }
 }
