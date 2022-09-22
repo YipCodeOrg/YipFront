@@ -20,8 +20,17 @@ import { PageWithHeading } from "../../../components/hoc/PageWithHeading"
 export default function DashboardWrapper(){
     
     const selectedYipCode = useYipCodeUrlParam()
+    return <ConnectedDashboard {...{selectedYipCode}}/>
+}
+
+export type ConnectedDashboardProps = {
+    selectedYipCode: string | null
+}
+
+export function ConnectedDashboard({selectedYipCode}: ConnectedDashboardProps){
+    
     const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad()
-    return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>
+    return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>    
 }
 
 export type DashboardProps = {
