@@ -3,7 +3,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
 import { UserData } from "../../../packages/YipStackLib/types/userData";
-import { createMockApiRequestThunk } from "../../../util/storybook/mockThunks";
+import { createMockApiRequestThunk, createMockFailureApiRequestThunk } from "../../../util/storybook/mockThunks";
 import { userAddressDataSliceGenerator } from "../../useraddressdata/userAddressDataSlice";
 import { userDataSliceGenerator } from "../../userdata/userDataSlice";
 import { ConnectedDashboard, Dashboard } from "./Dashboard";
@@ -32,7 +32,7 @@ const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryW
 
 type StoryWrapperProps = {
   selectedYipCode: string | null,
-  userAddressData: UserAddressData[],
+  userAddressData: UserAddressData[] | null,
   delayMilis: number
 }
 
@@ -40,19 +40,38 @@ function StoryWrapper(props: StoryWrapperProps){
 
   const { selectedYipCode, userAddressData, delayMilis } = props
 
-  const mockAddressDataThunk = createMockApiRequestThunk<MessagePort, UserAddressData[]>(userAddressData, "mockUserAddressData", delayMilis)
+  const mockAddressDataThunk = createMockUserAddressDataThunk()
   const userAddressDataReducer = userAddressDataSliceGenerator(mockAddressDataThunk).reducer
+  
+  const mockUserDataThunk = createMockUserDataThunk()
+  const userDataReducer = userDataSliceGenerator(mockUserDataThunk).reducer
 
-  //Non-MVP: We could inject user data into each story as a story arg.
-  const mockUserData: UserData = {
-    sub: "Mock-SUB-32432789",
-    data: {
-      //For now, we just pass in yipCodes as they are ordered in the address data
-      yipCodes: userAddressData.map(d => d.address.yipCode)
+  function createMockUserDataThunk(){
+    const typePrefix = "mockUserData"
+    if(userAddressData === null){
+      return createMockFailureApiRequestThunk<MessagePort, UserData>(typePrefix, delayMilis)
+    } else {
+      
+      //Non-MVP: We could inject user data into each story as a story arg.
+      const mockUserData: UserData = {
+        sub: "Mock-SUB-32432789",
+        data: {
+          //For now, we just pass in yipCodes as they are ordered in the address data
+          yipCodes: userAddressData.map(d => d.address.yipCode)
+        }
+      }
+      return createMockApiRequestThunk<MessagePort, UserData>(mockUserData, "mockUserData", delayMilis)
     }
   }
-  const mockUserDataThunk = createMockApiRequestThunk<MessagePort, UserData>(mockUserData, "mockUserData", delayMilis)
-  const userDataReducer = userDataSliceGenerator(mockUserDataThunk).reducer
+
+  function createMockUserAddressDataThunk(){
+    const typePrefix = "mockUserData"
+    if(userAddressData === null){
+      return createMockFailureApiRequestThunk<MessagePort, UserAddressData[]>(typePrefix, delayMilis)
+    } else {    
+      return createMockApiRequestThunk<MessagePort, UserAddressData[]>(userAddressData, "mockUserAddressData", delayMilis)
+    }
+  }
     
   const mockStore = configureStore({
       reducer: {
@@ -210,5 +229,19 @@ export const RealisticDelay = Template.bind({})
 RealisticDelay.args = {
   delayMilis: 1500,
   userAddressData: [homeAddress, workAddress, parentsAddress, noNameAddress, emptyAddress],
+  selectedYipCode: workAddress.address.yipCode
+}
+
+export const QuickFail = Template.bind({})
+QuickFail.args = {
+  delayMilis: 100,
+  userAddressData: null,
+  selectedYipCode: workAddress.address.yipCode
+}
+
+export const MediumLengthFail = Template.bind({})
+MediumLengthFail.args = {
+  delayMilis: 1500,
+  userAddressData: null,
   selectedYipCode: workAddress.address.yipCode
 }
