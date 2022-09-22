@@ -10,16 +10,16 @@ import { useMemo } from "react";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/packages/YipAddress/util/arrayUtil";
 
-export const loadUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
+export const fetchUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
     "/addresses", isUserAddressDataArray)
 
-export const userAddressDataSlice = createFetchSlice("userAddressData", loadUserAddressData, d => d)
+export const userAddressDataSlice = createFetchSlice<UserAddressData[]>("userAddressData", d => d)(fetchUserAddressData)
 
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData
 export const selectUserAddressDataStatus = (state: RootState) => state.userAddressData.loadStatus
 
 export const useUserAddressDataHubLoad: () => [UserAddressData[] | undefined, LoadStatus] =
-    () => useAsyncHubLoad(loadUserAddressData, selectUserAddressData, selectUserAddressDataStatus)  
+    () => useAsyncHubLoad(fetchUserAddressData, selectUserAddressData, selectUserAddressDataStatus)  
 
 export const useSortedAddressDataHubLoad: () => [UserAddressData[] | undefined, LoadStatus] = () => {
     const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad()
