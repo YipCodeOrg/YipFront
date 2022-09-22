@@ -2,7 +2,7 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
-import { createFetchSlice } from "../../util/redux/slices";
+import { fetchSliceGenerator } from "../../util/redux/slices";
 import { createApiGetThunk } from "../../util/redux/thunks";
 import { useUserDataHubFetch } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
@@ -13,7 +13,7 @@ import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/pa
 export const fetchUserAddressData: AsyncThunk<UserAddressData[], MessagePort, {}> = createApiGetThunk(
     "/addresses", isUserAddressDataArray)
 
-export const userAddressDataSliceGenerator = createFetchSlice<UserAddressData[]>("userAddressData", d => d)
+export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData[]>("userAddressData", d => d)
 
 export const userAddressDataSlice = userAddressDataSliceGenerator(fetchUserAddressData)
 

@@ -2,12 +2,12 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserData, UserData } from "../../packages/YipStackLib/types/userData";
-import { createFetchSlice } from "../../util/redux/slices";
+import { fetchSliceGenerator } from "../../util/redux/slices";
 import { createApiGetThunk } from "../../util/redux/thunks";
 
 export const fetchUserData: AsyncThunk<UserData, MessagePort, {}> = createApiGetThunk("/userdata", isUserData)
 
-export const userDataSliceGenerator = createFetchSlice<UserData>("userData", d => d)
+export const userDataSliceGenerator = fetchSliceGenerator<UserData>("userData", d => d)
 
 export const userDataSlice = userDataSliceGenerator(fetchUserData)
 
