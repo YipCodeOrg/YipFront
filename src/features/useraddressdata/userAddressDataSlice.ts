@@ -2,7 +2,7 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
-import { fetchSliceGenerator } from "../../util/redux/slices";
+import { fetchSliceGenerator } from "../../util/redux/slices/fetchSlice";
 import { createApiGetThunk } from "../../util/redux/thunks";
 import { useUserDataHubFetch } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
