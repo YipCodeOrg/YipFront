@@ -2,8 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
+import { UserData } from "../../../packages/YipStackLib/types/userData";
 import { createMockApiRequestThunk } from "../../../util/storybook/mockThunks";
 import { userAddressDataSliceGenerator } from "../../useraddressdata/userAddressDataSlice";
+import { userDataSliceGenerator } from "../../userdata/userDataSlice";
 import { ConnectedDashboard, Dashboard } from "./Dashboard";
 
 type StoryType = typeof StoryWrapper
@@ -38,17 +40,31 @@ function StoryWrapper(props: StoryWrapperProps){
 
   const { selectedYipCode, userAddressData, delayMilis } = props
 
-  const mockThunk = createMockApiRequestThunk<MessagePort, UserAddressData[]>(userAddressData, "mockUserAddressData", delayMilis)
-  const userAddressDataReducer = userAddressDataSliceGenerator(mockThunk).reducer
+  const mockAddressDataThunk = createMockApiRequestThunk<MessagePort, UserAddressData[]>(userAddressData, "mockUserAddressData", delayMilis)
+  const userAddressDataReducer = userAddressDataSliceGenerator(mockAddressDataThunk).reducer
+
+  //Non-MVP: We could inject user data into each story as a story arg.
+  const mockUserData: UserData = {
+    sub: "Mock-SUB-32432789",
+    data: {
+      //For now, we just pass in yipCodes as they are ordered in the address data
+      yipCodes: userAddressData.map(d => d.address.yipCode)
+    }
+  }
+  const mockUserDataThunk = createMockApiRequestThunk<MessagePort, UserData>(mockUserData, "mockUserData", delayMilis)
+  const userDataReducer = userDataSliceGenerator(mockUserDataThunk).reducer
     
   const mockStore = configureStore({
       reducer: {
-          userAddressDataReducer
+        userAddressData: userAddressDataReducer,
+        userData: userDataReducer
       }
   })
   
   return <Provider store={mockStore}>
-      <ConnectedDashboard {...{selectedYipCode}}/>
+      <ConnectedDashboard {...{selectedYipCode}}
+        userAddressDataThunk={mockAddressDataThunk}
+        userDataThunk={mockUserDataThunk} />
   </Provider>
 }
 

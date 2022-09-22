@@ -10,26 +10,35 @@ import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
 import { shrinkToParent } from "../../../util/cssHelpers"
-import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
+import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, useSortedAddressDataHubLoad } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
 import { AddressPanel } from "../../../components/core/AddressPanel"
 import { PageWithHeading } from "../../../components/hoc/PageWithHeading"
+import { AsyncThunk } from "@reduxjs/toolkit"
+import { UserData } from "../../../packages/YipStackLib/types/userData"
+import { fetchUserData } from "../../userdata/userDataSlice"
 
 export default function DashboardWrapper(){
     
     const selectedYipCode = useYipCodeUrlParam()
-    return <ConnectedDashboard {...{selectedYipCode}}/>
+    return <ConnectedDashboard {...{selectedYipCode}}
+        userAddressDataThunk={fetchUserAddressData}
+        userDataThunk={fetchUserData} />
 }
 
 export type ConnectedDashboardProps = {
-    selectedYipCode: string | null
+    selectedYipCode: string | null,
+    userAddressDataThunk: AsyncThunk<UserAddressData[], MessagePort, {}>,
+    userDataThunk: AsyncThunk<UserData, MessagePort, {}>
 }
 
-export function ConnectedDashboard({selectedYipCode}: ConnectedDashboardProps){
+export function ConnectedDashboard(props: ConnectedDashboardProps){
+
+    const { selectedYipCode, userAddressDataThunk, userDataThunk} = props
     
-    const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad()
+    const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubLoad(userAddressDataThunk, userDataThunk)
     return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>    
 }
 

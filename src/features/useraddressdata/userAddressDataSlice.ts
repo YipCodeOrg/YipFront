@@ -20,12 +20,15 @@ export const userAddressDataSlice = userAddressDataSliceGenerator(fetchUserAddre
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData
 export const selectUserAddressDataStatus = (state: RootState) => state.userAddressData.loadStatus
 
-export const useUserAddressDataHubLoad: () => [UserAddressData[] | undefined, LoadStatus] =
-    () => useAsyncHubLoad(fetchUserAddressData, selectUserAddressData, selectUserAddressDataStatus)  
+export function useUserAddressDataHubLoad(thunk: AsyncThunk<UserAddressData[], MessagePort, {}>)
+: [UserAddressData[] | undefined, LoadStatus]{
+    return useAsyncHubLoad(thunk, selectUserAddressData, selectUserAddressDataStatus)  
+}    
 
-export const useSortedAddressDataHubLoad: () => [UserAddressData[] | undefined, LoadStatus] = () => {
-    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad()
-    const [userData, userDataStatus] = useUserDataHubLoad()
+export function useSortedAddressDataHubLoad(userAddressDataThunk: AsyncThunk<UserAddressData[], MessagePort, {}>,
+    userDataThunk: AsyncThunk<UserData, MessagePort, {}>): [UserAddressData[] | undefined, LoadStatus]{
+    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad(userAddressDataThunk)
+    const [userData, userDataStatus] = useUserDataHubLoad(userDataThunk)
 
     const status = getLowestLoadStatus(userAddressDataStatus, [userDataStatus])
     let sortedDataOrUndefined: UserAddressData[] | undefined = undefined
@@ -36,9 +39,9 @@ export const useSortedAddressDataHubLoad: () => [UserAddressData[] | undefined, 
     return [sortedDataOrUndefined, status]
 }
 
-export const useYipCodeToUserAddressMap: () => [Map<string, UserAddressData>, LoadStatus]
-    = () => {
-    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad()
+export function useYipCodeToUserAddressMap(thunk: AsyncThunk<UserAddressData[], MessagePort, {}>)
+:[Map<string, UserAddressData>, LoadStatus]{
+    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubLoad(thunk)
     const map = useMemoisedYipCodeToAddressMap(userAddressData)
     return [map, userAddressDataStatus]
 }
