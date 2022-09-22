@@ -15,7 +15,7 @@ const HUB_AUTH_INIT_URL = `${process.env.REACT_APP_HUB_ORIGIN_URL}/auth/init`
 
 //TODO: Refactor this to a general-purpose HOC
 const LoginWrapper: FunctionComponent<IsLoggedInProps> = (props) => {
-    const [,isHubLoadError] = useContext(HubContext)
+    const { isHubLoadError } = useContext(HubContext)
     const [isLoggedIn, isLoggedInLoadStatus] = useLoginHubFetch()
 
     if(isHubLoadError){
