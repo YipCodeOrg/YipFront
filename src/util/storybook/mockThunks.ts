@@ -4,8 +4,9 @@ import { timeoutPromiseOf } from "../../packages/YipStackLib/packages/YipAddress
 export function createMockApiRequestThunk<TThunkInput, TResponse>(mockedResponse: TResponse, 
     typePrefix: string, delayMilis: number)
     : AsyncThunk<TResponse, TThunkInput, {}> {
-        return createAsyncThunk(typePrefix, async function(_: TThunkInput){
-            return timeoutPromiseOf(mockedResponse, delayMilis)
-        })        
+        const thunk = createAsyncThunk(typePrefix, async function(_: TThunkInput){
+            return await timeoutPromiseOf(mockedResponse, delayMilis)
+        })
+        return thunk
 }
 
