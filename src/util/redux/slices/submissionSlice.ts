@@ -8,7 +8,7 @@ export type ThunkSubmission<T> = {
     port: MessagePort
 }
 
-enum SubmissionStatus{
+export enum SubmissionStatus{
     Clear,
     Submitted,
     Responded,

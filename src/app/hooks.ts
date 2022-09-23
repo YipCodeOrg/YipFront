@@ -6,6 +6,7 @@ import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/Yi
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { FetchSliceOf } from '../util/redux/slices/fetchSlice'
+import { SubmissionState, SubmissionStatus, ThunkSubmission } from '../util/redux/slices/submissionSlice'
 import { HubContext, HubContextType } from './App'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
@@ -290,6 +291,28 @@ export function useAsyncHubFetch<T>(
         return data
 }
 
+
+export function useAsyncHubSubmit<TSubmit, TResponse>(
+    thunk: AsyncThunk<TResponse, ThunkSubmission<TSubmit>, {}>,
+    submissionData: TSubmit,
+    selector: (state: RootState) => SubmissionState<TSubmit, TResponse>) : SubmissionState<TSubmit, TResponse>{        
+        const data = useAppSelector(selector)
+        const { status } = data
+        const { port: hubPort } = useContext(HubContext)
+        const dispatch = useAppDispatch()
+
+        useEffect(
+            () => {
+                if(!!hubPort && status === SubmissionStatus.Clear){
+                    dispatch(thunk({port: hubPort, payload: submissionData}))
+                }
+            }
+            ,
+            [hubPort, status, dispatch, thunk]
+        )
+
+        return data
+}
 
 function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     [TState | null, React.Dispatch<React.SetStateAction<TState | null>>]
