@@ -5,18 +5,16 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { sendHubRequest } from "../../util/hubApi"
 import { useAsyncHubFetch } from "../../app/hooks";
 import { addStandardThunkReducers } from "../../util/redux/reduxHelpers";
+import { FetchSliceOf } from "../../util/redux/slices/fetchSlice";
 
-type ProfileSliceState = {
-    isLoggedIn: boolean,
-    isLoggedInLoadState: LoadStatus
-}
+type ProfileSliceState = FetchSliceOf<boolean>
 
 const initialState: ProfileSliceState = {
-    isLoggedIn: false,
-    isLoggedInLoadState: LoadStatus.NotLoaded
+    sliceData: false,
+    loadStatus: LoadStatus.NotLoaded
 }
 
-export const loadLoginState = createAsyncThunk(
+export const fetchLoginState = createAsyncThunk(
     "profile/loadLoginState",
     async (toHubPort: MessagePort) => {
         return await sendHubRequest({label: "requestLoginStatus"}, toHubPort)        
@@ -35,18 +33,19 @@ export const profileSlice = createSlice({
     initialState,
     reducers: {
         setIsLoggedIn: (state: ProfileSliceState, action: PayloadAction<boolean>) => {
-            state.isLoggedIn = action.payload
+            state.sliceData = action.payload
         }
     },
     extraReducers: addStandardThunkReducers(
-        (state, status) => state.isLoggedInLoadState = status,
-        (state, payload) => state.isLoggedIn = payload,
-        loadLoginState),
+        (state, status) => state.loadStatus = status,
+        (state, payload) => state.sliceData = payload,
+        fetchLoginState),
 })
 
-export const selectIsLoggedIn = (state: RootState) => state.profile.isLoggedIn
-export const selectIsLoggedInStatus = (state: RootState) => state.profile.isLoggedInLoadState
+export const selectIsLoggedInSlice = (state: RootState) => state.profile
+export const selectIsLoggedIn = (state: RootState) => state.profile.sliceData ?? false
+export const selectIsLoggedInStatus = (state: RootState) => state.profile.loadStatus
 
-export const useLoginHubFetch = () => useAsyncHubFetch(loadLoginState, selectIsLoggedIn, selectIsLoggedInStatus)  
+export const useLoginHubFetch = () => useAsyncHubFetch(fetchLoginState, selectIsLoggedInSlice)  
 
 export default profileSlice.reducer

@@ -5,6 +5,7 @@ import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
 import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
+import { FetchSliceOf } from '../util/redux/slices/fetchSlice'
 import { HubContext, HubContextType } from './App'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
@@ -262,27 +263,33 @@ export function useMutableIndexed<T>(ts: T[]): [Indexed<T>[], (t: Indexed<T>[]) 
         return [indexed, setIndexed]
 }
 
-export function useAsyncHubFetch<TReturn>(
-    thunk: AsyncThunk<TReturn, MessagePort, {}>,
-    dataSelector: (state: RootState) => TReturn | undefined,
-    statusSelector: (state: RootState) => LoadStatus) : [TReturn | undefined, LoadStatus]{        
-        const status = useAppSelector(statusSelector)
-        const data = useAppSelector(dataSelector)
+/**
+ * Gets the fetch slice defined by the given selector, and, if the slice is not loaded, dispatches the thunk.
+ * @param thunk Encapsulates the logic for asynchronously fetching the object.
+ * @param selector Maps the root state to the slice of state we are fetching.
+ * @returns The fetch slice's state. Note, if the given thunk was dispatched, the fetch slice will change as the thunk progresses.
+ */
+export function useAsyncHubFetch<T>(
+    thunk: AsyncThunk<T, MessagePort, {}>,
+    selector: (state: RootState) => FetchSliceOf<T>) : FetchSliceOf<T>{        
+        const data = useAppSelector(selector)
+        const { loadStatus } = data
         const { port: hubPort } = useContext(HubContext)
         const dispatch = useAppDispatch()
 
         useEffect(
             () => {
-                if(!!hubPort && status === LoadStatus.NotLoaded){
+                if(!!hubPort && loadStatus === LoadStatus.NotLoaded){
                     dispatch(thunk(hubPort))
                 }
             }
             ,
-            [hubPort, status, dispatch, thunk]
+            [hubPort, loadStatus, dispatch, thunk]
         )
 
-        return [data, status]
+        return data
 }
+
 
 function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     [TState | null, React.Dispatch<React.SetStateAction<TState | null>>]

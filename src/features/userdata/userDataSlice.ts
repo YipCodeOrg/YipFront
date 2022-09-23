@@ -11,11 +11,12 @@ export const userDataSliceGenerator = fetchSliceGenerator<UserData>("userData", 
 
 export const userDataSlice = userDataSliceGenerator(fetchUserData)
 
-export const selectUserData = (state: RootState) => state.userData.sliceData
-export const selectUserDataStatus = (state: RootState) => state.userData.loadStatus
+export const selectUserDataSlice = (state: RootState) => state.userData
+export const selectUserData = (state: RootState) => selectUserDataSlice(state).sliceData
+export const selectUserDataStatus = (state: RootState) => selectUserDataSlice(state).loadStatus
 
 export const selectYipCodes = (state: RootState) => selectUserData(state)?.data.yipCodes
 
-export const useUserDataHubFetch = (thunk: AsyncThunk<UserData, MessagePort, {}>) => useAsyncHubFetch(thunk, selectUserData, selectUserDataStatus)  
+export const useUserDataHubFetch = (thunk: AsyncThunk<UserData, MessagePort, {}>) => useAsyncHubFetch(thunk, selectUserDataSlice)  
 
 export default userDataSlice.reducer

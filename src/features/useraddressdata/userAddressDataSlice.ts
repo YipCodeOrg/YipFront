@@ -2,7 +2,7 @@ import { AsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
-import { fetchSliceGenerator } from "../../util/redux/slices/fetchSlice";
+import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
 import { createApiGetThunk } from "../../util/redux/thunks";
 import { useUserDataHubFetch } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
@@ -17,18 +17,19 @@ export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData
 
 export const userAddressDataSlice = userAddressDataSliceGenerator(fetchUserAddressData)
 
+export const selectUserAddressDataSlice = (state: RootState) => state.userAddressData
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData
 export const selectUserAddressDataStatus = (state: RootState) => state.userAddressData.loadStatus
 
 export function useUserAddressDataHubFetch(thunk: AsyncThunk<UserAddressData[], MessagePort, {}>)
-: [UserAddressData[] | undefined, LoadStatus]{
-    return useAsyncHubFetch(thunk, selectUserAddressData, selectUserAddressDataStatus)  
+: FetchSliceOf<UserAddressData[]>{
+    return useAsyncHubFetch(thunk, selectUserAddressDataSlice)  
 }    
 
 export function useSortedAddressDataHubFetch(userAddressDataThunk: AsyncThunk<UserAddressData[], MessagePort, {}>,
     userDataThunk: AsyncThunk<UserData, MessagePort, {}>): [UserAddressData[] | undefined, LoadStatus]{
-    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubFetch(userAddressDataThunk)
-    const [userData, userDataStatus] = useUserDataHubFetch(userDataThunk)
+    const { sliceData: userAddressData, loadStatus: userAddressDataStatus } = useUserAddressDataHubFetch(userAddressDataThunk)
+    const { sliceData: userData, loadStatus: userDataStatus} = useUserDataHubFetch(userDataThunk)
 
     const status = getLowestLoadStatus(userAddressDataStatus, [userDataStatus])
     let sortedDataOrUndefined: UserAddressData[] | undefined = undefined
@@ -41,7 +42,7 @@ export function useSortedAddressDataHubFetch(userAddressDataThunk: AsyncThunk<Us
 
 export function useYipCodeToUserAddressMap(thunk: AsyncThunk<UserAddressData[], MessagePort, {}>)
 :[Map<string, UserAddressData>, LoadStatus]{
-    const [userAddressData, userAddressDataStatus] = useUserAddressDataHubFetch(thunk)
+    const { sliceData: userAddressData, loadStatus: userAddressDataStatus} = useUserAddressDataHubFetch(thunk)
     const map = useMemoisedYipCodeToAddressMap(userAddressData)
     return [map, userAddressDataStatus]
 }
