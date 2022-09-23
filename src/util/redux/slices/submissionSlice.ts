@@ -37,11 +37,11 @@ function isSubmitted<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>)
     return s.status === SubmissionStatus.Submitted && s.submitted !== null && s.response === null
 }
 
-export function submissionSliceGenerator<TSubmit extends string, TResponse>(name: string,    
+export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,    
     boilerplateResponseCastFunction: (t: TResponse) => Draft<TResponse>){
     return (submissionThunk: AsyncThunk<TResponse, ThunkSubmission<TSubmit>, {}>) => {
         return createSlice({
-            name,
+            name: `${objectType}/submit`,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
             reducers: {},
             extraReducers: addStandardThunkReducers<SubmissionState<TSubmit, TResponse>, ThunkSubmission<TSubmit>, TResponse>(
