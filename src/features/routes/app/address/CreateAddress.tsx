@@ -28,7 +28,7 @@ import {
     StackProps,
     useToast
   } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { BiHide } from 'react-icons/bi';
 import { FaPlusCircle } from 'react-icons/fa';
 import { ImBin } from 'react-icons/im';
@@ -46,14 +46,16 @@ import { CreateAddressData } from '../../../../packages/YipStackLib/types/addres
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
-import { CreateAddressSubmissionThunk } from './createAddressSubmissionSlice';
+import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit } from './createAddressSubmissionSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined,
   submissionThunk: CreateAddressSubmissionThunk
 }
 
-export default function CreateAddressWrapper({initialRawAddress}: CreateAddressWrapperProps) {
+export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
+
+  const { initialRawAddress, submissionThunk } = props
   
   const [rawAddress, setRawAddress] = useRawAddress()
   const currentCreateAddress = useCurrentCreateAddress()  
@@ -88,6 +90,8 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
     return data
   }
 
+  const createAddressDataCallback = useCallback(getCreateAddressData, [effectiveStructuredAddress])
+
   // If user enters a name and then afterwards blanks it out completely, then remove the name altogether
   function effectiveSetName(n: string){
     if(!n){
@@ -116,8 +120,11 @@ export default function CreateAddressWrapper({initialRawAddress}: CreateAddressW
   const { validation, updateValidation } = useValidation(getCreateAddressData,
       validateCreateAddress, v => v.topValidationResult, [name, effectiveStructuredAddress])
 
+  const submitCallback = useCreateAddressHubSubmit(submissionThunk)
+
   function submitChanges(){
-    // TODO - add logic to actually submit the changes
+    const createAddressData = createAddressDataCallback()
+    submitCallback(createAddressData)
   }
   
   return <CreateAddress {...{

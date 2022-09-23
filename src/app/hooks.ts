@@ -292,27 +292,23 @@ export function useAsyncHubFetch<T>(
         return data
 }
 
-
-export function useAsyncHubSubmit<TSubmit, TResponse>(
+export function useSubmissionThunkDispatch<TSubmit, TResponse>(
     thunk: AsyncThunk<TResponse, PortBodyThunkInput<TSubmit>, {}>,
-    submissionData: TSubmit,
-    selector: (state: RootState) => SubmissionState<TSubmit, TResponse>) : SubmissionState<TSubmit, TResponse>{        
+    selector: (state: RootState) => SubmissionState<TSubmit, TResponse>){
+        const dispatch = useAppDispatch()      
         const data = useAppSelector(selector)
         const { status } = data
         const { port: hubPort } = useContext(HubContext)
-        const dispatch = useAppDispatch()
 
-        useEffect(
-            () => {
-                if(!!hubPort && status === SubmissionStatus.Clear){
-                    dispatch(thunk({port: hubPort, body: submissionData}))
-                }
+        const submitCallback = useCallback(function(data: TSubmit){
+            if(!!hubPort && status === SubmissionStatus.Clear){
+                dispatch(thunk({port: hubPort, body: data}))
             }
-            ,
+        },
             [hubPort, status, dispatch, thunk]
         )
 
-        return data
+        return submitCallback
 }
 
 function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :

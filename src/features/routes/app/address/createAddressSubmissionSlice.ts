@@ -1,4 +1,4 @@
-import { useAsyncHubSubmit } from "../../../../app/hooks"
+import { useSubmissionThunkDispatch } from "../../../../app/hooks"
 import { RootState } from "../../../../app/store"
 import { AddressItem, CreateAddressData, isAddressItem } from "../../../../packages/YipStackLib/types/address/address"
 import { submissionSliceGenerator, SubmissionState } from "../../../../util/redux/slices/submissionSlice"
@@ -17,7 +17,6 @@ export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerato
 
 export const selectCreateAddressSubmissionSlice = (state: RootState) => state.createAddressSubmission
 
-export const useCreateAddressHubSubmit = (thunk: CreateAddressSubmissionThunk,
-    data: CreateAddressData) => useAsyncHubSubmit(thunk, data, selectCreateAddressSubmissionSlice)  
+export const useCreateAddressHubSubmit = (thunk: CreateAddressSubmissionThunk) => useSubmissionThunkDispatch(thunk, selectCreateAddressSubmissionSlice)  
 
 export default createAddressSubmissionSlice.reducer
