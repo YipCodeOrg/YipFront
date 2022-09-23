@@ -7,13 +7,15 @@ type ThunkInputWithPort = {
     port: MessagePort
 }
 
-type PostThunkInput<TBody> = {
+export type PortBodyThunkInput<TBody> = {
     body: TBody
 } & ThunkInputWithPort
 
+export type PortBodyThunk<TBody, TResponse> = AsyncThunk<TResponse, PortBodyThunkInput<TBody>, {}>
+
 export function createApiPostThunk<TBody, TResponse>(path: string,
-    isCorrectType: (obj: any) => obj is TResponse) {
-    return createApiRequestThunk<PostThunkInput<TBody>, TResponse, TBody>
+    isCorrectType: (obj: any) => obj is TResponse): PortBodyThunk<TBody, TResponse> {
+    return createApiRequestThunk<PortBodyThunkInput<TBody>, TResponse, TBody>
         (p => p.port, isCorrectType, HttpStatusOk, "POST", path, i => i.body)
 }
 

@@ -66,7 +66,7 @@ export const createAddressEditSlice = createSlice({
 export const { setAddressLines, setAliasMap, setAddressName,
     deleteAddressName, clearAddress, setRawAddress } = createAddressEditSlice.actions
 
-export const selectCreateAddress = (state: RootState) => state.createAddress
+export const selectCreateAddress = (state: RootState) => state.createAddressEdit
 
 export const useCreateAddressState = () : CreateAddressEditState => {
     const addressState = useAppSelector(selectCreateAddress)

@@ -6,7 +6,8 @@ import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/Yi
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { FetchSliceOf } from '../util/redux/slices/fetchSlice'
-import { SubmissionState, SubmissionStatus, ThunkSubmission } from '../util/redux/slices/submissionSlice'
+import { SubmissionState, SubmissionStatus } from '../util/redux/slices/submissionSlice'
+import { PortBodyThunkInput } from '../util/redux/thunks'
 import { HubContext, HubContextType } from './App'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
@@ -293,7 +294,7 @@ export function useAsyncHubFetch<T>(
 
 
 export function useAsyncHubSubmit<TSubmit, TResponse>(
-    thunk: AsyncThunk<TResponse, ThunkSubmission<TSubmit>, {}>,
+    thunk: AsyncThunk<TResponse, PortBodyThunkInput<TSubmit>, {}>,
     submissionData: TSubmit,
     selector: (state: RootState) => SubmissionState<TSubmit, TResponse>) : SubmissionState<TSubmit, TResponse>{        
         const data = useAppSelector(selector)
@@ -304,7 +305,7 @@ export function useAsyncHubSubmit<TSubmit, TResponse>(
         useEffect(
             () => {
                 if(!!hubPort && status === SubmissionStatus.Clear){
-                    dispatch(thunk({port: hubPort, payload: submissionData}))
+                    dispatch(thunk({port: hubPort, body: submissionData}))
                 }
             }
             ,

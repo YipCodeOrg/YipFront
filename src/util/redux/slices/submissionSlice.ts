@@ -1,12 +1,7 @@
-import { AsyncThunk, createSlice, Draft } from "@reduxjs/toolkit"
+import { createSlice, Draft } from "@reduxjs/toolkit"
 import { LoadStatus } from "../../../app/types"
 import { addStandardThunkReducers } from "../reduxHelpers"
-
-
-export type ThunkSubmission<T> = {
-    payload: T,
-    port: MessagePort
-}
+import { PortBodyThunk, PortBodyThunkInput } from "../thunks"
 
 export enum SubmissionStatus{
     Clear,
@@ -39,12 +34,12 @@ function isSubmitted<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>)
 
 export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,    
     boilerplateResponseCastFunction: (t: TResponse) => Draft<TResponse>){
-    return (submissionThunk: AsyncThunk<TResponse, ThunkSubmission<TSubmit>, {}>) => {
+    return (submissionThunk: PortBodyThunk<TSubmit, TResponse>) => {
         return createSlice({
             name: `${objectType}/submit`,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
             reducers: {},
-            extraReducers: addStandardThunkReducers<SubmissionState<TSubmit, TResponse>, ThunkSubmission<TSubmit>, TResponse>(
+            extraReducers: addStandardThunkReducers<SubmissionState<TSubmit, TResponse>, PortBodyThunkInput<TSubmit>, TResponse>(
                 handleThunkStatus,
                 (state, payload) => state.response = boilerplateResponseCastFunction(payload),
                 submissionThunk),
