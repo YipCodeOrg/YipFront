@@ -40,8 +40,7 @@ function StoryWrapper(props: StoryWrapperProps){
 
   const { selectedYipCode, userAddressData, delayMilis } = props
 
-  const mockAddressDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserAddressData[]>
-    ("mockUserAddressData", userAddressData, d => d, delayMilis)
+  const mockAddressDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserAddressData[]>("mockUserAddressData", userAddressData, d => d, delayMilis)
   const userAddressDataReducer = userAddressDataSliceGenerator(mockAddressDataThunk).reducer
   
   const mockUserDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserData>

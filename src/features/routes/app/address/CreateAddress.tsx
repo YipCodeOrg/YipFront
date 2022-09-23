@@ -46,9 +46,11 @@ import { CreateAddressData } from '../../../../packages/YipStackLib/types/addres
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
+import { CreateAddressSubmissionThunk } from './createAddressSubmissionSlice';
 
 export type CreateAddressWrapperProps = {
-  initialRawAddress?: string | undefined
+  initialRawAddress?: string | undefined,
+  submissionThunk: CreateAddressSubmissionThunk
 }
 
 export default function CreateAddressWrapper({initialRawAddress}: CreateAddressWrapperProps) {
