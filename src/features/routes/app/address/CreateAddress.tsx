@@ -148,8 +148,12 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       submitChanges,
       revalidate: updateValidation
     }}/>
+  } else if(submissionStatus === SubmissionStatus.Submitted){
+    return <>POC: SUBMITTED</>
+  } else if(submissionStatus === SubmissionStatus.Responded){
+    return <>POC: RESPONDED</>
   } else {
-    return <>POC: SUBMISSION STATE IS NOT CLEAR</>
+    return <>POC: FAILED</>
   }
 }
 
