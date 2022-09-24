@@ -149,12 +149,36 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       revalidate: updateValidation
     }}/>
   } else if(submissionStatus === SubmissionStatus.Submitted){
-    return <>POC: SUBMITTED</>
+    return <SubmittedComponent/>
   } else if(submissionStatus === SubmissionStatus.Responded){
-    return <>POC: RESPONDED</>
+    return <RespondedComponent/>
   } else {
-    return <>POC: FAILED</>
+    return <FailedComponent/>
   }
+}
+
+type SubmittedComponentProps = {
+
+}
+
+function SubmittedComponent(props: SubmittedComponentProps){
+  return <>POC: SUBMITTED</>
+}
+
+type RespondedComponentProps = {
+  
+}
+
+function RespondedComponent(props: RespondedComponentProps){
+  return <>POC: RESPONDED</>
+}
+
+type FailedComponentProps = {
+  
+}
+
+function FailedComponent(props: FailedComponentProps){
+  return <>POC: FAILED</>
 }
 
 type CreateAddressProps = {
