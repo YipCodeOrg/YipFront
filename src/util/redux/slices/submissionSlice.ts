@@ -1,7 +1,5 @@
-import { createSlice, Draft } from "@reduxjs/toolkit"
-import { LoadStatus } from "../../../app/types"
-import { addFetchThunkReducers } from "../reduxHelpers"
-import { PortBodyThunk, PortBodyThunkInput } from "../thunks"
+import { ActionReducerMapBuilder, createSlice, Draft } from "@reduxjs/toolkit"
+import { PortBodyThunk } from "../thunks"
 
 export enum SubmissionStatus{
     Clear,
@@ -32,35 +30,39 @@ function isSubmitted<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>)
     return s.status === SubmissionStatus.Submitted && s.submitted !== null && s.response === null
 }
 
-export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,    
-    boilerplateResponseCastFunction: (t: TResponse) => Draft<TResponse>){
+export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,
+    boilerplateCaseFunction: (t: TResponse) => Draft<TResponse> ){
     return (submissionThunk: PortBodyThunk<TSubmit, TResponse>) => {
         return createSlice({
             name: `${objectType}/submit`,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
             reducers: {},
-            extraReducers: addFetchThunkReducers<SubmissionState<TSubmit, TResponse>, PortBodyThunkInput<TSubmit>, TResponse>(
-                handleThunkStatus,
-                (state, payload) => state.response = boilerplateResponseCastFunction(payload),
-                submissionThunk),
+            extraReducers: submissionThunkReducersGenerator(submissionThunk,
+                boilerplateCaseFunction)
         })
     }
 }
 
-function handleThunkStatus<TSubmit, TResponse>(state: SubmissionState<TSubmit, TResponse>, loadStatus: LoadStatus){
-    if(loadStatus === LoadStatus.Pending){
-        if(isClear(state)){
-            state.status = SubmissionStatus.Submitted
-        } else {
-            throw new Error("Unexpected pending status encountered - not in a clear state");            
-        }
-    } else if (loadStatus === LoadStatus.Failed) {
-        state.status = SubmissionStatus.Failed
-    } else if (loadStatus === LoadStatus.Loaded) {
-        if(isSubmitted(state)){
-            state.status = SubmissionStatus.Responded
-        } else {
-            throw new Error("Unexpected loaded status encountered - not in a submitted state.");            
-        }
+function submissionThunkReducersGenerator<TSubmit, TResponse>(submissionThunk: PortBodyThunk<TSubmit, TResponse>, boilerplateCaseFunction: (t: TResponse) => Draft<TResponse>){
+    return function(builder: ActionReducerMapBuilder<SubmissionState<TSubmit, TResponse>>){
+        builder.addCase(submissionThunk.pending, (state) => {
+            if(isClear(state)){
+                state.status = SubmissionStatus.Submitted
+            } else {
+                throw new Error("Unexpected pending status encountered - not in a clear state");            
+            }
+        })
+        .addCase(submissionThunk.rejected, (state) => {
+            state.status = SubmissionStatus.Failed
+        })
+        .addCase(submissionThunk.fulfilled, (state, action) => {
+            if(isSubmitted(state)){
+                state.status = SubmissionStatus.Responded
+                state.response = boilerplateCaseFunction(action.payload)
+            } else {
+                throw new Error("Unexpected loaded status encountered - not in a submitted state.");            
+            }
+        })
+        return builder
     }
 }
