@@ -1,5 +1,5 @@
 import { LoadStatus } from "../../../app/types"
-import { addStandardThunkReducers } from "../reduxHelpers"
+import { addFetchThunkReducers } from "../reduxHelpers"
 import { AsyncThunk, createSlice, Draft } from "@reduxjs/toolkit";
 
 export type FetchSliceOf<T> = {
@@ -17,7 +17,7 @@ export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFuncti
             name: `${objectType}/fetch`,
             initialState: initialSlice<T>(),
             reducers: {},
-            extraReducers: addStandardThunkReducers<FetchSliceOf<T>, MessagePort, T>(
+            extraReducers: addFetchThunkReducers<FetchSliceOf<T>, MessagePort, T>(
                 (state, status) => state.loadStatus = status,
                 (state, payload) => state.sliceData = boilerplateCastFunction(payload),
                 fetchThunk),

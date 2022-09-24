@@ -1,20 +1,20 @@
 import { ActionReducerMapBuilder, AsyncThunk, Draft } from "@reduxjs/toolkit"
-import { LoadStatus } from "../../app/types"
+import { LoadStatus as FetchStatus } from "../../app/types"
 
-export function addStandardThunkReducers<TState, TThunkInput, TResponse>
-    (statusSetter: (state: Draft<TState>, status: LoadStatus) => void,
+export function addFetchThunkReducers<TState, TThunkInput, TResponse>
+    (statusSetter: (state: Draft<TState>, status: FetchStatus) => void,
     payloadSetter: (state: Draft<TState>, p: TResponse) => void,
     thunk: AsyncThunk<TResponse, TThunkInput, {}>){
                 
     return function(builder: ActionReducerMapBuilder<TState>){
         builder.addCase(thunk.pending, (state) => {
-            statusSetter(state, LoadStatus.Pending)
+            statusSetter(state, FetchStatus.Pending)
         })
         .addCase(thunk.rejected, (state) => {
-            statusSetter(state, LoadStatus.Failed)
+            statusSetter(state, FetchStatus.Failed)
         })
         .addCase(thunk.fulfilled, (state, action) => {
-            statusSetter(state, LoadStatus.Loaded)
+            statusSetter(state, FetchStatus.Loaded)
             payloadSetter(state, action.payload)
         })
         return builder

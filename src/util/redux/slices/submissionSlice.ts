@@ -1,6 +1,6 @@
 import { createSlice, Draft } from "@reduxjs/toolkit"
 import { LoadStatus } from "../../../app/types"
-import { addStandardThunkReducers } from "../reduxHelpers"
+import { addFetchThunkReducers } from "../reduxHelpers"
 import { PortBodyThunk, PortBodyThunkInput } from "../thunks"
 
 export enum SubmissionStatus{
@@ -39,7 +39,7 @@ export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,
             name: `${objectType}/submit`,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
             reducers: {},
-            extraReducers: addStandardThunkReducers<SubmissionState<TSubmit, TResponse>, PortBodyThunkInput<TSubmit>, TResponse>(
+            extraReducers: addFetchThunkReducers<SubmissionState<TSubmit, TResponse>, PortBodyThunkInput<TSubmit>, TResponse>(
                 handleThunkStatus,
                 (state, payload) => state.response = boilerplateResponseCastFunction(payload),
                 submissionThunk),
@@ -60,7 +60,7 @@ function handleThunkStatus<TSubmit, TResponse>(state: SubmissionState<TSubmit, T
         if(isSubmitted(state)){
             state.status = SubmissionStatus.Responded
         } else {
-            throw new Error("Unexpected loaded status encountered - not in a submitted state");            
+            throw new Error("Unexpected loaded status encountered - not in a submitted state.");            
         }
     }
 }

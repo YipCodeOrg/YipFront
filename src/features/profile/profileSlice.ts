@@ -4,7 +4,7 @@ import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { sendHubRequest } from "../../util/hubApi"
 import { useAsyncHubFetch } from "../../app/hooks";
-import { addStandardThunkReducers } from "../../util/redux/reduxHelpers";
+import { addFetchThunkReducers } from "../../util/redux/reduxHelpers";
 import { FetchSliceOf } from "../../util/redux/slices/fetchSlice";
 
 type ProfileSliceState = FetchSliceOf<boolean>
@@ -36,7 +36,7 @@ export const profileSlice = createSlice({
             state.sliceData = action.payload
         }
     },
-    extraReducers: addStandardThunkReducers(
+    extraReducers: addFetchThunkReducers(
         (state, status) => state.loadStatus = status,
         (state, payload) => state.sliceData = payload,
         fetchLoginState),
