@@ -66,7 +66,7 @@ function StoryWrapper(props: StoryWrapperProps){
 
 export const Standard = Template.bind({})
 Standard.args = {
-    delayMilis: 100
+    delayMilis: 1500
 }
 
 export const RawFilled = Template.bind({})
