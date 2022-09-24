@@ -44,9 +44,10 @@ import { handleKeyPress, handleValueChange } from '../../../../packages/YipStack
 import { ValidationResult } from '../../../../packages/YipStackLib/packages/YipAddress/validate/validation';
 import { CreateAddressData } from '../../../../packages/YipStackLib/types/address/address';
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../packages/YipStackLib/types/address/validateAddress';
+import { SubmissionStatus } from '../../../../util/redux/slices/submissionSlice';
 import { createAction, UndoActionType } from '../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
-import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit } from './createAddressSubmissionSlice';
+import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit, useCreateAddressSubmissionState } from './createAddressSubmissionSlice';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined,
@@ -126,24 +127,30 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
     const createAddressData = createAddressDataCallback()
     submitCallback(createAddressData)
   }
+
+  const { status: submissionStatus } = useCreateAddressSubmissionState()
   
-  return <CreateAddress {...{
-    rawAddress,
-    setRawAddress,
-    structuredAddress: effectiveStructuredAddress,
-    isAddressCleared,
-    areThereChanges,
-    updateCreateAddressLines,
-    handleRawAddressChange,
-    undo,
-    clearStructuredAddress,
-    updateAliasMap,
-    addressName: effectiveName,
-    setAddressName: effectiveSetName,
-    validation,
-    submitChanges,
-    revalidate: updateValidation
-  }}/>
+  if(submissionStatus === SubmissionStatus.Clear){
+    return <CreateAddress {...{
+      rawAddress,
+      setRawAddress,
+      structuredAddress: effectiveStructuredAddress,
+      isAddressCleared,
+      areThereChanges,
+      updateCreateAddressLines,
+      handleRawAddressChange,
+      undo,
+      clearStructuredAddress,
+      updateAliasMap,
+      addressName: effectiveName,
+      setAddressName: effectiveSetName,
+      validation,
+      submitChanges,
+      revalidate: updateValidation
+    }}/>
+  } else {
+    return <>POC: SUBMISSION STATE IS NOT CLEAR</>
+  }
 }
 
 type CreateAddressProps = {
