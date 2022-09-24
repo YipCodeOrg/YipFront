@@ -31,23 +31,26 @@ function isSubmitted<TSubmit, TResponse>(s: SubmissionState<TSubmit, TResponse>)
 }
 
 export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,
-    boilerplateCaseFunction: (t: TResponse) => Draft<TResponse> ){
+    responseCastFunction: (t: TResponse) => Draft<TResponse>,
+    submittedCastFunction: (t: TSubmit) => Draft<TSubmit> ){
     return (submissionThunk: PortBodyThunk<TSubmit, TResponse>) => {
         return createSlice({
             name: `${objectType}/submit`,
             initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
             reducers: {},
             extraReducers: submissionThunkReducersGenerator(submissionThunk,
-                boilerplateCaseFunction)
+                responseCastFunction, submittedCastFunction)
         })
     }
 }
 
-function submissionThunkReducersGenerator<TSubmit, TResponse>(submissionThunk: PortBodyThunk<TSubmit, TResponse>, boilerplateCaseFunction: (t: TResponse) => Draft<TResponse>){
+function submissionThunkReducersGenerator<TSubmit, TResponse>(submissionThunk: PortBodyThunk<TSubmit, TResponse>, responseCastFunction: (t: TResponse) => Draft<TResponse>, submittedCastFunction: (t: TSubmit) => Draft<TSubmit>){
     return function(builder: ActionReducerMapBuilder<SubmissionState<TSubmit, TResponse>>){
-        builder.addCase(submissionThunk.pending, (state) => {
+        builder.addCase(submissionThunk.pending, (state, action) => {
             if(isClear(state)){
                 state.status = SubmissionStatus.Submitted
+                const submittedValue = action.meta.arg.body
+                state.submitted = submittedCastFunction(submittedValue)
             } else {
                 throw new Error("Unexpected pending status encountered - not in a clear state");            
             }
@@ -58,7 +61,7 @@ function submissionThunkReducersGenerator<TSubmit, TResponse>(submissionThunk: P
         .addCase(submissionThunk.fulfilled, (state, action) => {
             if(isSubmitted(state)){
                 state.status = SubmissionStatus.Responded
-                state.response = boilerplateCaseFunction(action.payload)
+                state.response = responseCastFunction(action.payload)
             } else {
                 throw new Error("Unexpected loaded status encountered - not in a submitted state.");            
             }

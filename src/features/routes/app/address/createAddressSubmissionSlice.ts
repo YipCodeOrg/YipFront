@@ -11,7 +11,8 @@ export const submitCreateAddress: CreateAddressSubmissionThunk =
     createApiPostThunk<CreateAddressData, AddressItem>("/createAddressData", isAddressItem)
 
 export const createAddressSubmissionSliceGenerator = 
-    submissionSliceGenerator<CreateAddressData, AddressItem>("createAddress", a => a)
+    submissionSliceGenerator<CreateAddressData, AddressItem>("createAddress",
+        a => a, a => a)
 
 export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerator(submitCreateAddress)
 
