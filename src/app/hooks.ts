@@ -15,6 +15,22 @@ import { LoadStatus } from './types'
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
+export function useSubmissionRetry<TSubmit, TResponse>(useSubmissionHook: () => SubmissionState<TSubmit, TResponse>,
+useClearSubmissionHook: () => () => void, submit: (s: TSubmit) => void): () => void{
+    const state = useSubmissionHook()    
+    const clear = useClearSubmissionHook()
+
+    const retrySubmission = useCallback(function (){
+        const { submitted } = state
+        if(submitted !== null){
+            clear()
+            submit(submitted)
+        }
+    }, [state, clear, submit])
+
+    return retrySubmission
+}
+
 export function useActionWithoutPayload<T extends string>(creator: ActionCreatorWithoutPayload<T>){
     const dispatch = useAppDispatch()
     const callback = useCallback(function(){
