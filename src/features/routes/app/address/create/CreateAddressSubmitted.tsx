@@ -15,9 +15,12 @@ export function CreateAddressSubmitted(props: CreateAddressSubmittedProps) {
         return <CreateAddressSubmittedNullData/>
     }
 
-    const addressLines = data.address.addressLines
+    const address = data.address
+    const addressLines = address.addressLines
+    const name = data.name
+    const heading = name === undefined ? "Creating Address... " : `Creating Address: ${name}...`
 
-    return <PageWithHeading heading="Creating Address... " icon={AiFillClockCircle}>
+    return <PageWithHeading {...{heading}} icon={AiFillClockCircle}>
         <List boxShadow='outline' borderRadius="lg" p={2}>
             {addressLines.map(l => <ListItem>{l}</ListItem>)}
         </List>
