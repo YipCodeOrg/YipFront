@@ -19,7 +19,8 @@ const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryW
 
 type StoryWrapperProps = {
     initialRawAddress?: string,
-    delayMilis: number   
+    delayMilis: number,
+    initialName: string
 }
 
 const arbitraryDate1 = new Date(2020, 12)
@@ -75,5 +76,6 @@ RawFilled.args = {
 Viking City
 Illinois
 60651`,
-    delayMilis: 1500
+    delayMilis: 1500,
+    initialName: "Raw Filled"
 }

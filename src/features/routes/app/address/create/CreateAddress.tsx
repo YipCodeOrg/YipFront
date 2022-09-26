@@ -48,15 +48,17 @@ import { SubmissionStatus } from '../../../../../util/redux/slices/submissionSli
 import { createAction, UndoActionType } from '../../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
 import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit, useCreateAddressSubmissionState } from './createAddressSubmissionSlice';
+import { CreateAddressSubmitted } from './CreateAddressSubmitted';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined,
-  submissionThunk: CreateAddressSubmissionThunk
+  submissionThunk: CreateAddressSubmissionThunk,
+  initialName?: string
 }
 
 export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
 
-  const { initialRawAddress, submissionThunk } = props
+  const { initialRawAddress, submissionThunk, initialName } = props
   
   const [rawAddress, setRawAddress] = useRawAddress()
   const currentCreateAddress = useCurrentCreateAddress()  
@@ -76,6 +78,12 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       setRawAddress(initialRawAddress)
     }    
   }, [initialRawAddress, setRawAddress])
+
+  useEffect(() => {
+    if(initialName !== undefined){
+      setName(initialName)
+    }    
+  }, [initialName, setName])
 
   const effectiveName: string = name ?? ""
 
@@ -149,20 +157,12 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       revalidate: updateValidation
     }}/>
   } else if(submissionStatus === SubmissionStatus.Submitted){
-    return <SubmittedComponent/>
+    return <CreateAddressSubmitted/>
   } else if(submissionStatus === SubmissionStatus.Responded){
     return <RespondedComponent/>
   } else {
     return <FailedComponent/>
   }
-}
-
-type SubmittedComponentProps = {
-
-}
-
-function SubmittedComponent(_: SubmittedComponentProps){
-  return <>POC: SUBMITTED</>
 }
 
 type RespondedComponentProps = {
