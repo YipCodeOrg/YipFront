@@ -69,7 +69,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
   const effectiveStructuredAddress = useMemo(computeEffectiveStructuredAddress, [rawAddress, currentCreateAddress])
   const updateCreateAddressLines = useUpdateCreateAddressLines(effectiveStructuredAddress)
   const updateAliasMap = useUpdateCreateAddressAliasMap(effectiveStructuredAddress)
-  const dispatch = useAppDispatch()  
+  const dispatch = useAppDispatch()
 
   const handleRawAddressChange = handleValueChange(setRawAddress)
 
@@ -136,7 +136,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
     submitCallback(createAddressData)
   }
 
-  const { status: submissionStatus } = useCreateAddressSubmissionState()
+  const { status: submissionStatus, submitted } = useCreateAddressSubmissionState()
   
   if(submissionStatus === SubmissionStatus.Clear){
     return <CreateAddress {...{
@@ -157,7 +157,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       revalidate: updateValidation
     }}/>
   } else if(submissionStatus === SubmissionStatus.Submitted){
-    return <CreateAddressSubmitted/>
+    return <CreateAddressSubmitted data={submitted}/>
   } else if(submissionStatus === SubmissionStatus.Responded){
     return <RespondedComponent/>
   } else {

@@ -79,3 +79,14 @@ Illinois
     delayMilis: 1500,
     initialName: "Raw Filled"
 }
+
+export const VeryLongDelay = Template.bind({})
+VeryLongDelay.args = {
+    initialRawAddress: `952 Soupdale Kitchens
+Viking City
+Illinois
+60651`,
+    // 10 min
+    delayMilis: 600000,
+    initialName: "Raw Filled"
+}
