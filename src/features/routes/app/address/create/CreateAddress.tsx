@@ -50,6 +50,7 @@ import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAd
 import { CreateAddressFailed } from './CreateAddressFailed';
 import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit, useCreateAddressSubmissionState } from './createAddressSubmissionSlice';
 import { CreateAddressSubmitted } from './CreateAddressSubmitted';
+import { CreateAddressSuccess } from './CreateAddressSuccess';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined,
@@ -160,18 +161,10 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
   } else if(submissionStatus === SubmissionStatus.Submitted){
     return <CreateAddressSubmitted data={submitted}/>
   } else if(submissionStatus === SubmissionStatus.Responded){
-    return <RespondedComponent/>
+    return <CreateAddressSuccess data={submitted}/>
   } else {
     return <CreateAddressFailed data={submitted}/>
   }
-}
-
-type RespondedComponentProps = {
-  
-}
-
-function RespondedComponent(_: RespondedComponentProps){
-  return <>POC: RESPONDED</>
 }
 
 type CreateAddressProps = {

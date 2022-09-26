@@ -1,19 +1,19 @@
-import { MdError } from "react-icons/md"
+import { MdCloudDone } from "react-icons/md"
 import { CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
 import { CreateAddressSubmissionState } from "./CreateAddressSubmissionState"
 
-export type CreateAddressFailedProps = {
+export type CreateAddressSuccessProps = {
     data: CreateAddressData | null
 }
 
-export function CreateAddressFailed(props: CreateAddressFailedProps) {
+export function CreateAddressSuccess(props: CreateAddressSuccessProps) {
 
     const { data } = props
 
     function makeHeading(data: CreateAddressData){
         const name = data.name
-        return name === undefined ? "Error Creating Adddress" : `Error Creating Adddress: ${name}  `
+        return name === undefined ? "Address Created" : `Address Created: ${name}  `
     }        
 
-    return <CreateAddressSubmissionState {...{data, makeHeading, icon: MdError}}/>
+    return <CreateAddressSubmissionState {...{data, makeHeading, icon: MdCloudDone}}/>
 }
