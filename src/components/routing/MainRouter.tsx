@@ -4,7 +4,7 @@ import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
 import { selectIsLoggedIn } from "../../features/profile/profileSlice";
 import { useAppSelector } from "../../app/hooks";
-import { submitCreateAddress } from "../../features/routes/app/address/createAddressSubmissionSlice";
+import { submitCreateAddress } from "../../features/routes/app/address/create/createAddressSubmissionSlice";
 
 // Routes: lazy-loaded for performance
 const Home = lazy(() => import("../../features/routes/Home"))
@@ -19,7 +19,7 @@ const Privacy = lazy(() => import("../../features/routes/site/Privacy"))
 const Legal = lazy(() => import("../../features/routes/site/Legal"))
 const Terms = lazy(() => import("../../features/routes/site/Terms"))
 const Dashboard = lazy(() => import("../../features/routes/app/Dashboard"));
-const CreateAddress = lazy(() => import("../../features/routes/app/address/CreateAddress"));
+const CreateAddress = lazy(() => import("../../features/routes/app/address/create/CreateAddress"));
 
 type LoadingWrapperProps = {
   children?: React.ReactNode

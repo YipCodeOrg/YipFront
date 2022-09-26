@@ -3,8 +3,8 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
 import createAddressEditReducer from "./createAddressEditSlice"
 import { Provider } from "react-redux"
-import { createMockTransformedPortBodyThunk } from "../../../../util/storybook/mockThunks"
-import { AddressItem, CreateAddressData } from "../../../../packages/YipStackLib/types/address/address"
+import { createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
+import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
 import { createAddressSubmissionSliceGenerator } from "./createAddressSubmissionSlice"
 
 
