@@ -3,7 +3,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
 import createAddressEditReducer from "./createAddressEditSlice"
 import { Provider } from "react-redux"
-import { createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
+import { createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
 import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
 import { createAddressSubmissionSliceGenerator } from "./createAddressSubmissionSlice"
 
@@ -13,26 +13,27 @@ type StoryType = typeof StoryWrapper
 export default {
     component: CreateAddress,
     title: 'app/address/create'
-  } as ComponentMeta<StoryType>
+} as ComponentMeta<StoryType>
 
-const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryWrapper {...args}/>
+const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryWrapper {...args} />
 
 type StoryWrapperProps = {
     initialRawAddress?: string,
     delayMilis: number,
-    initialName: string
+    initialName: string,
+    shouldFail?: boolean,
 }
 
 const arbitraryDate1 = new Date(2020, 12)
 
-function StoryWrapper(props: StoryWrapperProps){      
+function StoryWrapper(props: StoryWrapperProps) {
 
-    const { delayMilis } = props
+    const { delayMilis, initialRawAddress, initialName, shouldFail } = props
 
-    const mockSubmissionThunk = createMockTransformedPortBodyThunk<CreateAddressData, AddressItem>(
-        "mockCreateAddressData", responseGenerator, delayMilis)
+    const mockSubmissionThunk = createMockTransformedPortBodyOrFailureThunk("mockCreateAddressData", 
+    responseGenerator, delayMilis, !!shouldFail)
 
-    function responseGenerator(d: CreateAddressData): AddressItem{
+    function responseGenerator(d: CreateAddressData): AddressItem {
 
         const response: AddressItem = {
             address: d.address,
@@ -42,26 +43,26 @@ function StoryWrapper(props: StoryWrapperProps){
             }
         }
 
-        if(d.name !== undefined){
+        if (d.name !== undefined) {
             response.name = d.name
         }
 
         return response
-        
+
     }
 
     const mockSubmissionReducer = createAddressSubmissionSliceGenerator(mockSubmissionThunk).reducer
-    
+
     const mockStore = configureStore({
         reducer: {
 
-        createAddressEdit: createAddressEditReducer,
-        createAddressSubmission: mockSubmissionReducer
+            createAddressEdit: createAddressEditReducer,
+            createAddressSubmission: mockSubmissionReducer
         }
     })
-    
+
     return <Provider store={mockStore}>
-        <CreateAddressWrapper {...props} submissionThunk={mockSubmissionThunk}/>
+        <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />
     </Provider>
 }
 
@@ -89,4 +90,15 @@ Illinois
     // 10 min
     delayMilis: 600000,
     initialName: "Raw Filled"
+}
+
+export const Failure = Template.bind({})
+Failure.args = {
+    initialRawAddress: `952 Soupdale Kitchens
+Viking City
+Illinois
+60651`,
+    delayMilis: 0,
+    initialName: "Raw Filled",
+    shouldFail: true
 }

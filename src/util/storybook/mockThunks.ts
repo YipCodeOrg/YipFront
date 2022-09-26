@@ -27,6 +27,15 @@ export function createMockTransformedInputThunk<TThunkInput, TResponse>(typePref
         return thunk
 }
 
+export function createMockTransformedPortBodyOrFailureThunk<TBody, TResponse>(typePrefix: string,
+    responseGenerator: (d: TBody) => TResponse, delayMilis: number, shouldFail: boolean){
+        if(shouldFail){
+            return createMockFailureApiRequestThunk<PortBodyThunkInput<TBody>, TResponse>(typePrefix, delayMilis)
+        } else {
+            return createMockTransformedPortBodyThunk<TBody, TResponse>(typePrefix, responseGenerator, delayMilis)
+        }
+}
+
 export function createMockTransformedPortBodyThunk<TBody, TResponse>(typePrefix: string,
     responseGenerator: (d: TBody) => TResponse, delayMilis: number){        
 

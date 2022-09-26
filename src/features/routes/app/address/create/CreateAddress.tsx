@@ -47,6 +47,7 @@ import { CreateAddressValidationResult, validateCreateAddress } from '../../../.
 import { SubmissionStatus } from '../../../../../util/redux/slices/submissionSlice';
 import { createAction, UndoActionType } from '../../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
+import { CreateAddressFailed } from './CreateAddressFailed';
 import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit, useCreateAddressSubmissionState } from './createAddressSubmissionSlice';
 import { CreateAddressSubmitted } from './CreateAddressSubmitted';
 
@@ -161,7 +162,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
   } else if(submissionStatus === SubmissionStatus.Responded){
     return <RespondedComponent/>
   } else {
-    return <FailedComponent/>
+    return <CreateAddressFailed data={submitted}/>
   }
 }
 
@@ -171,14 +172,6 @@ type RespondedComponentProps = {
 
 function RespondedComponent(_: RespondedComponentProps){
   return <>POC: RESPONDED</>
-}
-
-type FailedComponentProps = {
-  
-}
-
-function FailedComponent(_: FailedComponentProps){
-  return <>POC: FAILED</>
 }
 
 type CreateAddressProps = {
