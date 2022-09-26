@@ -6,12 +6,13 @@ import { CreateAddressData } from "../../../../../packages/YipStackLib/types/add
 export type CreateAddressSubmissionStateProps = {
     data: CreateAddressData | null,
     makeHeading: (d: CreateAddressData) => string,
-    icon: IconType
+    icon: IconType,
+    children?: React.ReactNode
 }
 
 export function CreateAddressSubmissionState(props: CreateAddressSubmissionStateProps) {
 
-    const { data, makeHeading, icon } = props
+    const { data, makeHeading, icon, children } = props
 
     if(data === null){
         return <CreateAddressSubmissionStateNullData/>
@@ -25,6 +26,7 @@ export function CreateAddressSubmissionState(props: CreateAddressSubmissionState
         <List boxShadow='outline' borderRadius="lg" p={2}>
             {addressLines.map(l => <ListItem>{l}</ListItem>)}
         </List>
+        {children}
     </PageWithHeading>
 }
 

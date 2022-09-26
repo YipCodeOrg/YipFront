@@ -2,7 +2,7 @@ import { Center, Heading, Icon, StackProps, VStack } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 
 export type PageWithHeadingProps = {
-    children: JSX.Element | JSX.Element[],
+    children?: React.ReactNode
     heading: string,
     icon?: IconType
 } & StackProps
