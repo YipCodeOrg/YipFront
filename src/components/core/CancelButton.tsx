@@ -1,4 +1,5 @@
-import { Button, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, useColorModeValue, VStack } from "@chakra-ui/react"
+import { Button, useColorModeValue } from "@chakra-ui/react"
+import { ConfirmationPopoverButton } from "./ConfirmationPopoverButton"
 
 type CancelButtonProps = {
     shouldWarn: boolean,
@@ -27,22 +28,7 @@ function CancelButtonWithWarn({warningMessage, cancelAction}: CancelButtonWithWa
     const popoverBodyMessage = warningMessage ?? "You may have unsaved changes. Are you sure you want to cancel?"
     const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
 
-    return <Popover>
-        <PopoverTrigger>
-            <Button>Cancel</Button>
-        </PopoverTrigger>
-        <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader fontWeight={600}>Confirm Cancel</PopoverHeader>
-            <PopoverBody>
-                {popoverBodyMessage}
-            </PopoverBody>
-            <VStack p={4}>
-                <Button bg={confirmButtonBg} onClick={cancelAction}>Yes, I want to cancel</Button>
-            </VStack>    
-        </PopoverContent>
-    </Popover>
+    return <ConfirmationPopoverButton {...{popoverBodyMessage, confirmButtonBg, action: cancelAction, actionName: "Cancel"}}/>
 }
 
 type CancelButtonNoWarnProps = {
