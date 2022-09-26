@@ -1,4 +1,4 @@
-import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Tooltip, useColorModeValue, useDisclosure, VStack } from "@chakra-ui/react"
+import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Tooltip, useColorModeValue, useDisclosure, UseDisclosureReturn, VStack } from "@chakra-ui/react"
 import { useState } from "react"
 import { hasErrors, hasWarnings, printMessages, ValidationResult, ValidationSeverity } from "../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { ValidationComponentProps, ValidationControl } from "../hoc/ValidationControl"
@@ -30,7 +30,7 @@ export function ValidateSubmitButton(props: ValidateSubmitButtonProps) {
     return <ValidationControl {...{ render, validationErrorMessage }} isInvalid={hasValidationErrors} />
 }
 
-type SubmitChangesButtonInnerProps = {
+type ValidateSubmitButtonInnerProps = {
     tooltipLabel: string,
     actionName: string,
     isInvalid: boolean,
@@ -39,10 +39,11 @@ type SubmitChangesButtonInnerProps = {
     submitChanges: () => void
 }
 
-function ValidateSubmitButtonInner(props: SubmitChangesButtonInnerProps) {
+function ValidateSubmitButtonInner(props: ValidateSubmitButtonInnerProps) {
 
     const { actionName, isInvalid, tooltipLabel, submitChanges, validation, revalidate } = props
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const disclosure: UseDisclosureReturn = useDisclosure()
+    const { isOpen, onOpen, onClose } = disclosure
     const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
     const [warningMessages, setWarningMessages] = useState<string>("")
 
@@ -68,6 +69,9 @@ function ValidateSubmitButtonInner(props: SubmitChangesButtonInnerProps) {
         submitChanges()
     }
 
+    const confirmationBodyText = `Are you sure you want to ${actionName}? The following validation warnings were found: ${warningMessages}`
+    const confirmationButtonText = `Yes, I want to ${actionName}`
+
     return <Popover isOpen={isOpen}>
         <PopoverTrigger>
             <Flex w={0} h={0} p={0} m={0} />
@@ -80,11 +84,11 @@ function ValidateSubmitButtonInner(props: SubmitChangesButtonInnerProps) {
             <PopoverCloseButton onClick={onClose} />
             <PopoverHeader fontWeight={600}>{`Confirm ${actionName}`}</PopoverHeader>
             <PopoverBody>
-                {`Are you sure you want to ${actionName}? The following validation warnings were found: ${warningMessages}`}
+                {confirmationBodyText}
             </PopoverBody>
             <VStack p={4}>
-                <Button bg={confirmButtonBg} onClick={confirmAction}>{`Yes, I want to ${actionName}`}</Button>
+                <Button bg={confirmButtonBg} onClick={confirmAction}>{confirmationButtonText}</Button>
             </VStack>
         </PopoverContent>
     </Popover>
-}  
+}
