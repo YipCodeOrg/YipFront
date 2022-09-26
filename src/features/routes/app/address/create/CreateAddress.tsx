@@ -48,7 +48,7 @@ import { SubmissionStatus } from '../../../../../util/redux/slices/submissionSli
 import { createAction, UndoActionType } from '../../../../../util/undo/undoActions';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
 import { CreateAddressFailed } from './CreateAddressFailed';
-import { CreateAddressSubmissionThunk, useCreateAddressHubSubmit, useCreateAddressSubmissionState } from './createAddressSubmissionSlice';
+import { CreateAddressSubmissionThunk, useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './createAddressSubmissionSlice';
 import { CreateAddressSubmitted } from './CreateAddressSubmitted';
 import { CreateAddressSuccess } from './CreateAddressSuccess';
 
@@ -139,6 +139,8 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
   }
 
   const { status: submissionStatus, submitted } = useCreateAddressSubmissionState()
+  const retrySubmission = useCreateAddressSubmitRetry(submissionThunk)
+  const clearSubmissionState = useClearCreateAddressSubmission()
   
   if(submissionStatus === SubmissionStatus.Clear){
     return <CreateAddress {...{
@@ -159,7 +161,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       revalidate: updateValidation
     }}/>
   } else if(submissionStatus === SubmissionStatus.Submitted){
-    return <CreateAddressSubmitted data={submitted}/>
+    return <CreateAddressSubmitted data={submitted} {...{retrySubmission, clearSubmissionState}}/>
   } else if(submissionStatus === SubmissionStatus.Responded){
     return <CreateAddressSuccess data={submitted}/>
   } else {

@@ -19,7 +19,7 @@ export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerato
 export const useClearCreateAddressSubmission = () => useActionWithoutPayload(createAddressSubmissionSlice.actions.clearState)
 
 export function useCreateAddressSubmitRetry(thunk: CreateAddressSubmissionThunk){
-    useSubmissionRetry(useCreateAddressSubmissionState, useClearCreateAddressSubmission, useCreateAddressHubSubmit(thunk))
+    return useSubmissionRetry(useCreateAddressSubmissionState, useClearCreateAddressSubmission, useCreateAddressHubSubmit(thunk))
 }
 
 export const selectCreateAddressSubmissionSlice = (state: RootState) => state.createAddressSubmission
