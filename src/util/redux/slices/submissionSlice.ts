@@ -14,7 +14,7 @@ export type SubmissionState<TSubmit, TResponse> = {
     status: SubmissionStatus
 }
 
-function newClearSubmissionSlice<TSubmit, TResponse>() : SubmissionState<TSubmit, TResponse>{
+function newClearSubmissionState<TSubmit, TResponse>() : SubmissionState<TSubmit, TResponse>{
     return {
         submitted: null,
         response: null,
@@ -36,8 +36,14 @@ export function submissionSliceGenerator<TSubmit, TResponse>(objectType: string,
     return (submissionThunk: PortBodyThunk<TSubmit, TResponse>) => {
         return createSlice({
             name: `${objectType}/submit`,
-            initialState: newClearSubmissionSlice<TSubmit, TResponse>(),
-            reducers: {},
+            initialState: newClearSubmissionState<TSubmit, TResponse>(),
+            reducers: {
+                clearState(state: Draft<SubmissionState<TSubmit, TResponse>>){
+                    state.response = null
+                    state.submitted = null
+                    state.status = SubmissionStatus.Clear
+                },
+            },
             extraReducers: submissionThunkReducersGenerator(submissionThunk,
                 responseCastFunction, submittedCastFunction)
         })

@@ -1,4 +1,4 @@
-import { useAppSelector, useSubmissionThunkDispatch } from "../../../../../app/hooks"
+import { useActionWithoutPayload, useAppSelector, useSubmissionThunkDispatch } from "../../../../../app/hooks"
 import { RootState } from "../../../../../app/store"
 import { AddressItem, CreateAddressData, isAddressItem } from "../../../../../packages/YipStackLib/types/address/address"
 import { submissionSliceGenerator, SubmissionState } from "../../../../../util/redux/slices/submissionSlice"
@@ -15,6 +15,8 @@ export const createAddressSubmissionSliceGenerator =
         a => a, a => a)
 
 export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerator(submitCreateAddress)
+
+export const useClearCreateAddressSubmission = () => useActionWithoutPayload(createAddressSubmissionSlice.actions.clearState)
 
 export const selectCreateAddressSubmissionSlice = (state: RootState) => state.createAddressSubmission
 

@@ -1,4 +1,4 @@
-import { AsyncThunk } from '@reduxjs/toolkit'
+import { ActionCreatorWithoutPayload, AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
@@ -14,6 +14,14 @@ import { LoadStatus } from './types'
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+export function useActionWithoutPayload<T extends string>(creator: ActionCreatorWithoutPayload<T>){
+    const dispatch = useAppDispatch()
+    const callback = useCallback(function(){
+        dispatch(creator())
+    }, [dispatch, creator])
+    return callback
+}
 
 export function useLazyMemo<T>(init: () => T): () => T{
     const [cached, setCached] = useState<T | null>(null)
