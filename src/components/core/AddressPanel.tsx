@@ -1,5 +1,6 @@
 import { HStack, VStack, Text, useColorModeValue, List, ListItem, StackProps, Spacer } from "@chakra-ui/react"    
 import { printAddress } from "../../packages/YipStackLib/packages/YipAddress/types/address/address"
+import { simpleDateToDate } from "../../packages/YipStackLib/packages/YipAddress/util/date"
 import { AddressItem } from "../../packages/YipStackLib/types/address/address"
 import { CopyTextButton } from "./CopyTextButton"
 import { InfoButton } from "./InfoButton"
@@ -16,7 +17,7 @@ export const AddressPanel: React.FC<AddressPanelProps> = ({addressItem, displayY
     const addressLines = address.addressLines
     const addressString = printAddress(address, "\n")    
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
-    const addressLastUpdatedString = addressItem.addressMetadata.lastUpdated.toDateString()
+    const addressLastUpdatedString = simpleDateToDate(addressItem.addressMetadata.lastUpdated).toDateString()
 
     return <VStack>
         <HStack justify="left" w="100%">

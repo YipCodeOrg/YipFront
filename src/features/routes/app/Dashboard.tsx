@@ -19,6 +19,7 @@ import { PageWithHeading } from "../../../components/hoc/PageWithHeading"
 import { AsyncThunk } from "@reduxjs/toolkit"
 import { UserData } from "../../../packages/YipStackLib/types/userData"
 import { fetchUserData } from "../../userdata/userDataSlice"
+import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date"
 
 export default function DashboardWrapper(){
     
@@ -122,7 +123,7 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
     const {selectedAddressData} = props
     const addressName = getDisplayLabelForAddress(selectedAddressData)
-    const addressLastUpdated = selectedAddressData.address.addressMetadata.lastUpdated    
+    const addressLastUpdated = simpleDateToDate(selectedAddressData.address.addressMetadata.lastUpdated)
     return <PageWithHeading heading={`${addressName}    `} icon={getIconFromName(addressName)}>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>

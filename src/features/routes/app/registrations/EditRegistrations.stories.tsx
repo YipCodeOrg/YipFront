@@ -1,4 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { dateToSimpleDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date";
 import { Registration, RegistrationsValidationResult, validateRegistrations } from "../../../../packages/YipStackLib/types/registrations";
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers";
 import { ListUpdateValidateRenderProps, ListUpdateValidateWrapper } from "../../../../util/storybook/ValidateWrapper";
@@ -13,8 +14,10 @@ export default {
 
 
 const arbitraryDate1 = new Date(2021, 8)
+const arbitrarySimpleDate1 = dateToSimpleDate(arbitraryDate1)
 const arbitraryDate2 = new Date(2021, 12)
-const arbitraryDate3 = new Date(2022, 12)
+const arbitrarySimpleDate2 = dateToSimpleDate(arbitraryDate2)
+const arbitrarySimpleDate3 = dateToSimpleDate(new Date(2022, 12))
 
 type EditRegistrationsStoryProps = {
     initialRegistrations: Registration[],
@@ -48,13 +51,13 @@ const Template: ComponentStory<StoryType> = (args: EditRegistrationsStoryProps) 
 
 export const Standard = Template.bind({})
 Standard.args = {
-    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitraryDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitraryDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitraryDate2}, {name: "OWASP", addressLastUpdated: arbitraryDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitraryDate3}],
+    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitrarySimpleDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitrarySimpleDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitrarySimpleDate2}, {name: "OWASP", addressLastUpdated: arbitrarySimpleDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitrarySimpleDate3}],
     addressLabel: "Work"
 }
 
 export const DupeName = Template.bind({})
 DupeName.args = {
-    initialRegistrations: [{name: "Dupey McDuperson", addressLastUpdated: arbitraryDate1}, {name: "Dupey McDuperson", addressLastUpdated: arbitraryDate2}, {name: "", addressLastUpdated: arbitraryDate3}, {name: "", addressLastUpdated: arbitraryDate1}],
+    initialRegistrations: [{name: "Dupey McDuperson", addressLastUpdated: arbitrarySimpleDate1}, {name: "Dupey McDuperson", addressLastUpdated: arbitrarySimpleDate2}, {name: "", addressLastUpdated: arbitrarySimpleDate3}, {name: "", addressLastUpdated: arbitrarySimpleDate1}],
     addressLabel: "Father Ted's House"
 }
 
@@ -75,7 +78,8 @@ VeryLong.args = {
 }
 
 function longRepeatedRegistration(i: number): Registration{
-    return {name: `${numberToAlpha(i, 3)}-NAME-${i}`, addressLastUpdated: new Date(arbitraryDate1.getTime() + 86400000*i),
+    const addressLastUpdated = dateToSimpleDate(new Date(arbitraryDate1.getTime() + 86400000*i))
+    return {name: `${numberToAlpha(i, 3)}-NAME-${i}`, addressLastUpdated,
         hyperlink: `https://${numberToAlpha(i, 3)}-${i}.com`}    
 }
 

@@ -1,12 +1,13 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { LoadStatus } from "../../../../app/types"
 import { inverseIndexMap } from "../../../../packages/YipStackLib/packages/YipAddress/util/arrayUtil"
+import { dateToSimpleDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
 import { LoadedFriend } from "./friends"
 import { FriendCard, FriendCardProps, FriendCardWrapperProps, ViewFriends, ViewFriendsProps } from "./ViewFriends"
 
 type ViewFriendsType = typeof ViewFriends
-const arbitraryDate = new Date(2021, 12)
+const arbitraryDate = dateToSimpleDate(new Date(2021, 12))
 
 export default {
     component: ViewFriends,

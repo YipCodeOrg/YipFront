@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
+import { dateToSimpleDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date";
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
 import { UserData } from "../../../packages/YipStackLib/types/userData";
 import { createMockThunkOrFailureThunk } from "../../../util/storybook/mockThunks";
@@ -74,9 +75,9 @@ function StoryWrapper(props: StoryWrapperProps){
   </Provider>
 }
 
-const arbitraryDate1 = new Date(2020, 12)
-const arbitraryDate2 = new Date(2021, 12)
-const arbitraryDate3 = new Date(2022, 12)
+const arbitraryDate1 = dateToSimpleDate(new Date(2020, 12))
+const arbitraryDate2 = dateToSimpleDate(new Date(2021, 12))
+const arbitraryDate3 = dateToSimpleDate(new Date(2022, 12))
 
 
 const homeAddress: UserAddressData = {

@@ -17,6 +17,7 @@ import { standardValidationControlDataFromArray, ValidationComponentProps, Valid
 import { CancelButton } from "../../../../components/core/CancelButton"
 import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../../../app/hooks"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
+import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
@@ -39,7 +40,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
         usePagination(itemsPerPage, indexedRegistrations, false)
 
     function addNewRegistration(){
-        const addressLastUpdated = new Date()
+        const addressLastUpdated = newSimpleDate()
         registrations.splice(itemOffset, 0, {name: "", addressLastUpdated})
         setRegistrations([...registrations])
     }
@@ -187,7 +188,7 @@ const ItemTypes = {
 }
 
 function updateDate(r: Registration){
-    r.addressLastUpdated = new Date()
+    r.addressLastUpdated = newSimpleDate()
     return r
 }
 
@@ -279,7 +280,7 @@ const EditRegistrationRow: React.FC<EditRegistrationRowProps> = ({registrations,
         <HyperLinkCell {...{hyperlink: hyperlink ?? "", handleInputRegistrationChange}} bg={inputBg}/>
         <GridItem bg="inherit">
             <HStack bg={inputBg} borderRadius="lg" justify="center" paddingRight={2} paddingLeft={2}>
-                <label>{registration.addressLastUpdated.toDateString()}</label>
+                <label>{simpleDateToDate(registration.addressLastUpdated).toDateString()}</label>
                 <HStack flexGrow={1}/>
                 <Tooltip label={updateButtonlLabel} placement="top" openDelay={1500}>
                     <IconButton aria-label={updateButtonlLabel} bg="inherit"

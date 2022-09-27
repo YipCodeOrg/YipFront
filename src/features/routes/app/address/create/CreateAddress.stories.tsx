@@ -6,6 +6,7 @@ import { Provider } from "react-redux"
 import { createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
 import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
 import { createAddressSubmissionSliceGenerator } from "./createAddressSubmissionSlice"
+import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
 
 
 type StoryType = typeof StoryWrapper
@@ -24,7 +25,7 @@ type StoryWrapperProps = {
     shouldFail?: boolean,
 }
 
-const arbitraryDate1 = new Date(2020, 12)
+const arbitraryDate1 = dateToSimpleDate(new Date(2020, 12))
 
 function StoryWrapper(props: StoryWrapperProps) {
 
