@@ -102,3 +102,14 @@ Illinois
     initialName: "Raw Filled",
     shouldFail: true
 }
+
+export const FailureMediumDelay = Template.bind({})
+FailureMediumDelay.args = {
+    initialRawAddress: `952 Soupdale Kitchens
+Viking City
+Illinois
+60651`,
+    delayMilis: 1500,
+    initialName: "Raw Filled",
+    shouldFail: true
+}
