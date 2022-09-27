@@ -19,13 +19,14 @@ export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerato
 export const useClearCreateAddressSubmission = () => useActionWithoutPayload(createAddressSubmissionSlice.actions.clearState)
 
 export function useCreateAddressSubmitRetry(thunk: CreateAddressSubmissionThunk){
-    return useSubmissionRetry(useCreateAddressSubmissionState, useClearCreateAddressSubmission, useCreateAddressHubSubmit(thunk))
+    return useSubmissionRetry(useCreateAddressSubmissionState, useClearCreateAddressSubmission, () => useCreateAddressHubSubmit(thunk, false))
 }
 
 export const selectCreateAddressSubmissionSlice = (state: RootState) => state.createAddressSubmission
 
 export const useCreateAddressSubmissionState = () => useAppSelector(selectCreateAddressSubmissionSlice)
 
-export const useCreateAddressHubSubmit = (thunk: CreateAddressSubmissionThunk) => useSubmissionThunkDispatch(thunk, selectCreateAddressSubmissionSlice)  
+export const useCreateAddressHubSubmit = (thunk: CreateAddressSubmissionThunk, 
+    shouldCheckClear:boolean=true) => useSubmissionThunkDispatch(thunk, selectCreateAddressSubmissionSlice, shouldCheckClear)
 
 export default createAddressSubmissionSlice.reducer

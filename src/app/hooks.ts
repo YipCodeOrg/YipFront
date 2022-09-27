@@ -16,9 +16,10 @@ export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export function useSubmissionRetry<TSubmit, TResponse>(useSubmissionHook: () => SubmissionState<TSubmit, TResponse>,
-useClearSubmissionHook: () => () => void, submit: (s: TSubmit) => void): () => void{
+useClearSubmissionHook: () => () => void, useSubmit: () => (s: TSubmit) => void): () => void{
     const state = useSubmissionHook()    
     const clear = useClearSubmissionHook()
+    const submit = useSubmit()
 
     const retrySubmission = useCallback(function (){
         const { submitted } = state
@@ -318,14 +319,15 @@ export function useAsyncHubFetch<T>(
 
 export function useSubmissionThunkDispatch<TSubmit, TResponse>(
     thunk: AsyncThunk<TResponse, PortBodyThunkInput<TSubmit>, {}>,
-    selector: (state: RootState) => SubmissionState<TSubmit, TResponse>){
+    selector: (state: RootState) => SubmissionState<TSubmit, TResponse>,
+    shouldCheckClear: boolean = true){
         const dispatch = useAppDispatch()      
         const data = useAppSelector(selector)
         const { status } = data
         const { port: hubPort } = useContext(HubContext)
 
         const submitCallback = useCallback(function(data: TSubmit){
-            if(!!hubPort && status === SubmissionStatus.Clear){
+            if(!!hubPort && (!shouldCheckClear || status === SubmissionStatus.Clear)){
                 dispatch(thunk({port: hubPort, body: data}))
             }
         },
