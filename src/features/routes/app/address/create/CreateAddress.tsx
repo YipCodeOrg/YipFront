@@ -163,7 +163,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
   } else if(submissionStatus === SubmissionStatus.Submitted){
     return <CreateAddressSubmitted data={submitted}/>
   } else if(submissionStatus === SubmissionStatus.Responded){
-    return <CreateAddressSuccess data={submitted}/>
+    return <CreateAddressSuccess data={submitted} {...{clearSubmissionState}}/>
   } else {
     return <CreateAddressFailed data={submitted} {...{retrySubmission, clearSubmissionState}}/>
   }
