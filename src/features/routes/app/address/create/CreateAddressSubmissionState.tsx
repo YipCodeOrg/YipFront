@@ -24,7 +24,7 @@ export function CreateAddressSubmissionState(props: CreateAddressSubmissionState
 
     return <PageWithHeading {...{heading}} icon={icon}>
         <List boxShadow='outline' borderRadius="lg" p={2}>
-            {addressLines.map(l => <ListItem>{l}</ListItem>)}
+            {addressLines.map((l, i) => <ListItem key={i}>{l}</ListItem>)}
         </List>
         {children}
     </PageWithHeading>
