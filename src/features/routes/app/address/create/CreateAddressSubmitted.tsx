@@ -3,9 +3,7 @@ import { CreateAddressData } from "../../../../../packages/YipStackLib/types/add
 import { CreateAddressSubmissionState } from "./CreateAddressSubmissionState"
 
 export type CreateAddressSubmittedProps = {
-    data: CreateAddressData | null,
-    clearSubmissionState: () => void,
-    retrySubmission: () => void
+    data: CreateAddressData | null
 }
 
 export function CreateAddressSubmitted(props: CreateAddressSubmittedProps) {
@@ -18,6 +16,5 @@ export function CreateAddressSubmitted(props: CreateAddressSubmittedProps) {
     }        
 
     return <CreateAddressSubmissionState {...{data, makeHeading, icon: AiFillClockCircle}}>
-        
     </CreateAddressSubmissionState>
 }

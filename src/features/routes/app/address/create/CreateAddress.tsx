@@ -161,11 +161,11 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
       revalidate: updateValidation
     }}/>
   } else if(submissionStatus === SubmissionStatus.Submitted){
-    return <CreateAddressSubmitted data={submitted} {...{retrySubmission, clearSubmissionState}}/>
+    return <CreateAddressSubmitted data={submitted}/>
   } else if(submissionStatus === SubmissionStatus.Responded){
     return <CreateAddressSuccess data={submitted}/>
   } else {
-    return <CreateAddressFailed data={submitted}/>
+    return <CreateAddressFailed data={submitted} {...{retrySubmission, clearSubmissionState}}/>
   }
 }
 
