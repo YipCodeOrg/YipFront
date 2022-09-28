@@ -3,12 +3,13 @@ import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
 import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
-import { createApiGetThunk, PortBodyThunkInput } from "../../util/redux/thunks";
+import { createApiDeleteThunk, createApiGetThunk, PortBodyThunkInput } from "../../util/redux/thunks";
 import { useUserDataHubFetch } from "../userdata/userDataSlice";
 import { getLowestLoadStatus, LoadStatus } from "../../app/types";
 import { useMemo } from "react";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/packages/YipAddress/util/arrayUtil";
+import { isString } from "../../packages/YipStackLib/util/typePredicates";
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressData[], MessagePort, {}>
 export type FetchUserDataThunk = AsyncThunk<UserData, MessagePort, {}>
@@ -17,7 +18,14 @@ export type DeleteAddressData = {
     yipCode: string
 }
 
+export function isDeleteAddressData(obj: any): obj is DeleteAddressData{
+    return isString(obj.yipCode)
+}
+
 export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyThunkInput<DeleteAddressData>, {}>
+
+export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
+    "/address", isDeleteAddressData)
 
 export const fetchUserAddressData: FetchUserAddressDataThunk = createApiGetThunk(
     "/addresses", isUserAddressDataArray)
