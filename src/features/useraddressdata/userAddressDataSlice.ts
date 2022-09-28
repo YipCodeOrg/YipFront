@@ -27,12 +27,10 @@ export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyThunkInpu
 export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
     "/address", isDeleteAddressData)
 
-export const fetchUserAddressData: FetchUserAddressDataThunk = createApiGetThunk(
+export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData[]>("userAddressData", d => d,
     "/addresses", isUserAddressDataArray)
 
-export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData[]>("userAddressData", d => d)
-
-export const userAddressDataSlice = userAddressDataSliceGenerator(fetchUserAddressData)
+export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } = userAddressDataSliceGenerator(createApiGetThunk)
 
 export const selectUserAddressDataSlice = (state: RootState) => state.userAddressData
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData

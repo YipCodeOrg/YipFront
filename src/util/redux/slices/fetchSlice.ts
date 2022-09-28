@@ -11,9 +11,17 @@ export function initialSlice<T>(): FetchSliceOf<T> {
     return { loadStatus: LoadStatus.NotLoaded }
 }
 
-export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFunction: (t: T) => Draft<T>) {
-    return (fetchThunk: AsyncThunk<T, MessagePort, {}>) => {
-        return createSlice({
+export type FetchThunk<T> = AsyncThunk<T, MessagePort, {}>
+export type FetchThunkGenerator<T> = (path: string, isCorrectType: (obj: any) => obj is T) => FetchThunk<T>
+
+export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFunction: (t: T) => Draft<T>,
+    path: string, isCorrectType: (obj: any) => obj is T) {
+    return (thunkGenerator: FetchThunkGenerator<T>) => {
+
+        const fetchThunk: FetchThunk<T> = thunkGenerator(path, isCorrectType)
+
+        return {
+            slice: createSlice({
             name: `${objectType}/fetch`,
             initialState: initialSlice<T>(),
             reducers: {},
@@ -21,6 +29,8 @@ export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFuncti
                 (state, status) => state.loadStatus = status,
                 (state, payload) => state.sliceData = boilerplateCastFunction(payload),
                 fetchThunk),
-        })
+            }),
+            thunk: fetchThunk            
+        }
     }
 }
