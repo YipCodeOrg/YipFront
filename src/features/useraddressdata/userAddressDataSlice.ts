@@ -9,7 +9,7 @@ import { getLowestLoadStatus, LoadStatus } from "../../app/types";
 import { useMemo } from "react";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { inverseDataMap, sortByKeyFunction } from "../../packages/YipStackLib/packages/YipAddress/util/arrayUtil";
-import { isString } from "../../packages/YipStackLib/util/typePredicates";
+import { isString } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressData[], MessagePort, {}>
 export type FetchUserDataThunk = AsyncThunk<UserData, MessagePort, {}>
