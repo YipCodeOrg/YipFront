@@ -30,7 +30,23 @@ export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
 export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData[]>("userAddressData", d => d,
     "/addresses", isUserAddressDataArray)
 
-export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } = userAddressDataSliceGenerator(createApiGetThunk)
+type UserAddressSliceData = {
+    addressData: UserAddressData,
+    isDeleting: boolean
+}
+
+function newUserAddressSliceData(addressData: UserAddressData): UserAddressSliceData{
+    return {
+        addressData,
+        isDeleting: false
+    }
+}
+
+function generateThunk(path: string, predicate: (obj: any) => obj is UserAddressData[]){
+    return createApiGetThunk(path, predicate)
+}
+
+export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } = userAddressDataSliceGenerator(generateThunk)
 
 export const selectUserAddressDataSlice = (state: RootState) => state.userAddressData
 export const selectUserAddressData = (state: RootState) => state.userAddressData.sliceData
