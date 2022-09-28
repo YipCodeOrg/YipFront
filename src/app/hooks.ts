@@ -16,10 +16,9 @@ export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export function useSubmissionRetry<TSubmit, TResponse>(useSubmissionHook: () => SubmissionState<TSubmit, TResponse>,
-useClearSubmissionHook: () => () => void, useSubmit: () => (s: TSubmit) => void): () => void{
+useClearSubmissionHook: () => () => void, submit: (s: TSubmit) => void): () => void{
     const state = useSubmissionHook()    
     const clear = useClearSubmissionHook()
-    const submit = useSubmit()
 
     const retrySubmission = useCallback(function (){
         const { submitted } = state
