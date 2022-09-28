@@ -13,18 +13,19 @@ export function initialSlice<T>(): FetchSliceOf<T> {
 }
 
 export type FetchThunk<T> = AsyncThunk<T, MessagePort, {}>
-export type FetchThunkGenerator<T> = (path: string, isCorrectType: (obj: any) => obj is T) => FetchThunk<T>
+export type FetchThunkGenerator<TResponse, TReturn> = (path: string, isCorrectType: (obj: any) => obj is TResponse) => FetchThunk<TReturn>
 
-export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFunction: (t: T) => Draft<T>,
-    path: string, isCorrectType: (obj: any) => obj is T,
-    extraReducersBuilder?: (b: ActionReducerMapBuilder<FetchSliceOf<T>>) => ActionReducerMapBuilder<FetchSliceOf<T>>) {
-    return (thunkGenerator: FetchThunkGenerator<T>) => {
+export function fetchSliceGenerator<TResponse, TReturn>(objectType: string,
+    boilerplateCastFunction: (t: TReturn) => Draft<TReturn>,
+    path: string, isCorrectType: (obj: any) => obj is TResponse,
+    extraReducersBuilder?: (b: ActionReducerMapBuilder<FetchSliceOf<TReturn>>) => ActionReducerMapBuilder<FetchSliceOf<TReturn>>) {
+    return (thunkGenerator: FetchThunkGenerator<TResponse, TReturn>) => {
 
-        const fetchThunk: FetchThunk<T> = thunkGenerator(path, isCorrectType)
+        const fetchThunk: FetchThunk<TReturn> = thunkGenerator(path, isCorrectType)
 
         const effectiveExtraReducersBuilder = liftUndefinedToNoOp(extraReducersBuilder)
 
-        const extraReducers = compose2(addFetchThunkReducers<FetchSliceOf<T>, MessagePort, T>(
+        const extraReducers = compose2(addFetchThunkReducers<FetchSliceOf<TReturn>, MessagePort, TReturn>(
             (state, status) => state.loadStatus = status,
             (state, payload) => state.sliceData = boilerplateCastFunction(payload),
             fetchThunk), effectiveExtraReducersBuilder)
@@ -32,7 +33,7 @@ export function fetchSliceGenerator<T>(objectType: string, boilerplateCastFuncti
         return {
             slice: createSlice({
             name: `${objectType}/fetch`,
-            initialState: initialSlice<T>(),
+            initialState: initialSlice<TReturn>(),
             reducers: {},
             extraReducers
             }),

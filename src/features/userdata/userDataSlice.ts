@@ -3,11 +3,11 @@ import { RootState } from "../../app/store";
 import { useAsyncHubFetch } from "../../app/hooks";
 import { isUserData, UserData } from "../../packages/YipStackLib/types/userData";
 import { fetchSliceGenerator } from "../../util/redux/slices/fetchSlice";
-import { createApiGetThunk } from "../../util/redux/thunks";
+import { createSimpleApiGetThunk } from "../../util/redux/thunks";
 
-export const userDataSliceGenerator = fetchSliceGenerator<UserData>("userData", d => d, "/userdata", isUserData)
+export const userDataSliceGenerator = fetchSliceGenerator<UserData, UserData>("userData", d => d, "/userdata", isUserData)
 
-export const { slice: userDataSlice, thunk: fetchUserData } = userDataSliceGenerator(createApiGetThunk)
+export const { slice: userDataSlice, thunk: fetchUserData } = userDataSliceGenerator(createSimpleApiGetThunk)
 
 export const selectUserDataSlice = (state: RootState) => state.userData
 export const selectUserData = (state: RootState) => selectUserDataSlice(state).sliceData

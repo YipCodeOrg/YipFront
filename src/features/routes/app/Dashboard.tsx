@@ -10,7 +10,7 @@ import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
 import { shrinkToParent } from "../../../util/cssHelpers"
-import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
+import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, UserAddressSliceData, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
@@ -31,7 +31,7 @@ export default function DashboardWrapper(){
 
 export type ConnectedDashboardProps = {
     selectedYipCode: string | null,
-    userAddressDataThunk: AsyncThunk<UserAddressData[], MessagePort, {}>,
+    userAddressDataThunk: AsyncThunk<UserAddressSliceData[], MessagePort, {}>,
     userDataThunk: AsyncThunk<UserData, MessagePort, {}>
 }
 
@@ -44,7 +44,7 @@ export function ConnectedDashboard(props: ConnectedDashboardProps){
 }
 
 export type DashboardProps = {
-    userAddressData: UserAddressData[] | undefined,
+    userAddressData: UserAddressSliceData[] | undefined,
     userAddressDataStatus: LoadStatus,
     selectedYipCode: string | null
 }
@@ -58,7 +58,7 @@ export const Dashboard: React.FC<DashboardProps> = ({userAddressData, userAddres
 }
 
 type LoadedDashboardProps = {
-    userAddressData: UserAddressData[],
+    userAddressData: UserAddressSliceData[],
     selectedYipCode: string | null
 }
 
@@ -78,7 +78,7 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
 
     let selectedAddress: UserAddressData | null = null
     if(selectedYipCode != null && addressMap.has(selectedYipCode)){
-        selectedAddress = addressMap.get(selectedYipCode) ?? null
+        selectedAddress = addressMap.get(selectedYipCode)?.addressData ?? null
     }
 
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
@@ -199,9 +199,9 @@ const RegistrationCard: React.FC<RegistrationCardProps> = (props) => {
     return hyperlink!! ? <Link href={hyperlink} target="_blank"><CardWithoutLink/></Link> : <CardWithoutLink/>
 }
 
-function sideBarItemDataFromUserAddressData(userAddressData: UserAddressData) : SideBarItemData{
-    const yipCode = userAddressData.address.yipCode
-    const name = getDisplayLabelForAddress(userAddressData)
+function sideBarItemDataFromUserAddressData(userAddressData: UserAddressSliceData) : SideBarItemData{
+    const yipCode = userAddressData.addressData.address.yipCode
+    const name = getDisplayLabelForAddress(userAddressData.addressData)
     return {
         key: yipCode,
         name,

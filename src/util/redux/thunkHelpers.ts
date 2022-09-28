@@ -13,11 +13,13 @@ export type PortBodyInput<TBody> = {
 
 export type PortBodyRequest<TBody, TResponse> = ASyncFunction<PortBodyInput<TBody>, TResponse>
 
-export function createApiRequest<TRequestInput, TResponse, TBody={}>(
+export function createApiRequest<TRequestInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TRequestInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
     expectedStatus: number, method: string, path: string,    
-    bodyGenerator?: (i: TRequestInput) => TBody) : (i: TRequestInput) => Promise<TResponse> {
+    responseTransform: (_: TResponse) => TReturn,
+    bodyGenerator?: (i: TRequestInput) => TBody)
+    : (i: TRequestInput) => Promise<TReturn> {
 
     const apiRequest: ApiRequestPayload = {
         method,
@@ -50,6 +52,7 @@ export function createApiRequest<TRequestInput, TResponse, TBody={}>(
                 }
                 return logAndReturnRejectedPromise("Response is not of the correct type")
             })
+            .then(responseTransform)
         return processedResponse
     }
 }

@@ -5,7 +5,7 @@ import { dateToSimpleDate } from "../../../packages/YipStackLib/packages/YipAddr
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
 import { UserData } from "../../../packages/YipStackLib/types/userData";
 import { createMockThunkOrFailureThunk } from "../../../util/storybook/mockThunks";
-import { userAddressDataSliceGenerator } from "../../useraddressdata/userAddressDataSlice";
+import { newUserAddressSliceData, userAddressDataSliceGenerator, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice";
 import { userDataSliceGenerator } from "../../userdata/userDataSlice";
 import { ConnectedDashboard, Dashboard } from "./Dashboard";
 
@@ -41,7 +41,10 @@ function StoryWrapper(props: StoryWrapperProps){
 
   const { selectedYipCode, userAddressData, delayMilis } = props
 
-  const mockAddressDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserAddressData[]>("mockUserAddressData", userAddressData, d => d, delayMilis)
+  const sliceData = userAddressData?.map(newUserAddressSliceData) ?? null
+
+  const mockAddressDataThunk = createMockThunkOrFailureThunk<UserAddressSliceData[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
+    sliceData, d => d, delayMilis)
   const userAddressDataReducer = userAddressDataSliceGenerator(() => mockAddressDataThunk).slice.reducer
   
   const mockUserDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserData>
