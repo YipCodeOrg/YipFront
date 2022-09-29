@@ -1,5 +1,5 @@
 import { Button, Center, Heading, HStack, Icon, IconButton, Stack,
-    Text, Tooltip, VStack, useColorModeValue, Link } from "@chakra-ui/react"
+    Text, Tooltip, VStack, useColorModeValue, Link, Spacer } from "@chakra-ui/react"
 import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
@@ -151,17 +151,17 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
 
     return <VStack id="dashboard-registration" align="left" spacing="5px"
         justify="top">
-        <HStack>
+        <HStack align="flex-start">
             <label>Registrations</label>
-            <HStack flexGrow={1}/>
-            <Tooltip label={editRegistrationsTooltip} placement="top" openDelay={500}>
-                <RouterLink to={"/app/registrations/edit"}>
-                    <IconButton aria-label={editRegistrationsTooltip} bg="inherit">
-                        <Icon as={MdEditNote}/>
-                    </IconButton>
-                </RouterLink>
-            </Tooltip>       
+            <Spacer/>
             <HStack paddingRight="2">
+                <Tooltip label={editRegistrationsTooltip} placement="top" openDelay={500}>
+                    <RouterLink to={"/app/registrations/edit"}>
+                        <IconButton aria-label={editRegistrationsTooltip} bg="inherit">
+                            <Icon as={MdEditNote}/>
+                        </IconButton>
+                    </RouterLink>
+                </Tooltip>       
                 <AggregatedRegistrationUpdateStatusIcon {...props}/>
             </HStack>
         </HStack>
