@@ -17,8 +17,7 @@ const LoadingLogo: FunctionComponent<LoadingLogoProps> = ({lightCol, darkCol, lo
             <Logo size={logoSize}
                     lightCol={lightCol}
                     darkCol={darkCol}/>    
-            <Spinner w={spinnerSize} h={spinnerSize} speed="1.4s">        
-            </Spinner>
+            <Spinner w={spinnerSize} h={spinnerSize} speed="1.4s"/>
         </VStack>        
     )
 }
