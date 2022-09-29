@@ -22,7 +22,7 @@ import { fetchUserData } from "../../userdata/userDataSlice"
 import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { ConfirmationPopoverButton } from "../../../components/core/ConfirmationPopoverButton"
 import { useThunkDispatch } from "../../../app/hooks"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
 export default function DashboardWrapper(){
     
@@ -60,7 +60,9 @@ export type DashboardProps = {
 export const Dashboard: React.FC<DashboardProps> = (props) => {
 
     const {userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress} = props
-    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode, deleteAddress}}/> : <></>    
+
+    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData,
+        selectedYipCode, deleteAddress}}/> : <></>    
 
     return <LogoLoadStateWrapper status = {userAddressDataStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
@@ -77,8 +79,18 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
     const {userAddressData, selectedYipCode, deleteAddress} = props
     const addressMap = useMemoisedYipCodeToAddressMap(userAddressData)
 
+    function getEffectiveSelectedYipcode(){
+        if(selectedYipCode !== null && addressMap.has(selectedYipCode)){
+            return selectedYipCode
+        }
+        const [firstYipCode] = addressMap.keys()
+        return firstYipCode ?? null
+    }
+
+    const effectiveSelectedYipcode = useMemo(getEffectiveSelectedYipcode, [selectedYipCode, addressMap])
+
     const sideBarProps: SidebarProps = {
-        selectedItemKey: selectedYipCode,
+        selectedItemKey: effectiveSelectedYipcode,
         itemData: userAddressData.map(sideBarItemDataFromUserAddressData),
         buttonData: [{
             hoverText: userAddressData.length > 0 ? "Create another address" : "Create an address",
@@ -88,8 +100,8 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
     }
 
     let selectedAddress: UserAddressSliceData | null = null
-    if(selectedYipCode != null && addressMap.has(selectedYipCode)){
-        selectedAddress = addressMap.get(selectedYipCode) ?? null
+    if(effectiveSelectedYipcode != null && addressMap.has(effectiveSelectedYipcode)){
+        selectedAddress = addressMap.get(effectiveSelectedYipcode) ?? null
     }
 
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
