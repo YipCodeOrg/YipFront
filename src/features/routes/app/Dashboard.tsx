@@ -77,9 +77,9 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
         }]
     }
 
-    let selectedAddress: UserAddressData | null = null
+    let selectedAddress: UserAddressSliceData | null = null
     if(selectedYipCode != null && addressMap.has(selectedYipCode)){
-        selectedAddress = addressMap.get(selectedYipCode)?.addressData ?? null
+        selectedAddress = addressMap.get(selectedYipCode) ?? null
     }
 
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
@@ -117,31 +117,36 @@ const EmptyDashboardContent = () => {
 }
 
 type DashboardContentProps = {
-    selectedAddressData: UserAddressData
+    selectedAddressData: UserAddressSliceData
 }
 
 const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
     const {selectedAddressData} = props
-    const addressName = getDisplayLabelForAddress(selectedAddressData)
-    const addressLastUpdated = simpleDateToDate(selectedAddressData.address.addressMetadata.lastUpdated)
+    const { addressData, isDeleting } = selectedAddressData
+    const addressName = getDisplayLabelForAddress(addressData)
+    const addressLastUpdated = simpleDateToDate(addressData.address.addressMetadata.lastUpdated)
     return <PageWithHeading heading={`${addressName}    `} icon={getIconFromName(addressName)}>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>
-            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true} maxW="500px"/>
-            <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
-            <ButtonPanel/>
+            <AddressPanel addressItem={addressData.address} displayYipCode={true} maxW="500px"/>
+            <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <ButtonPanel {...{isDeleting}}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'inherit', md: 'none' }} p={2}>
-            <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
-            <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
-            <ButtonPanel/>
+            <AddressPanel addressItem={addressData.address} displayYipCode={true}/>
+            <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <ButtonPanel {...{isDeleting}}/>
         </VStack>
     </PageWithHeading>
 }
 
-function ButtonPanel(){
+type ButtonPanelProps = {
+    isDeleting: boolean
+}
+
+function ButtonPanel(props: ButtonPanelProps){
     const confirmButtonBg = useColorModeValue('gray.100', 'gray.800')
     const popoverBodyMessage = "Are you sure that you want to delete this address?"
     
