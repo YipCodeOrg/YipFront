@@ -20,6 +20,7 @@ import { AsyncThunk } from "@reduxjs/toolkit"
 import { UserData } from "../../../packages/YipStackLib/types/userData"
 import { fetchUserData } from "../../userdata/userDataSlice"
 import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date"
+import { ConfirmationPopoverButton } from "../../../components/core/ConfirmationPopoverButton"
 
 export default function DashboardWrapper(){
     
@@ -129,13 +130,28 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>
             <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true} maxW="500px"/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <ButtonPanel/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'inherit', md: 'none' }} p={2}>
             <AddressPanel addressItem={selectedAddressData.address} displayYipCode={true}/>
             <RegistrationPanel registrations={selectedAddressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <ButtonPanel/>
         </VStack>
     </PageWithHeading>
+}
+
+function ButtonPanel(){
+    const confirmButtonBg = useColorModeValue('gray.100', 'gray.800')
+    const popoverBodyMessage = "Are you sure that you want to delete this address?"
+    
+    return <VStack align="left" spacing="5px" justify="top">
+        <HStack justify="left" w="100%">
+            <label>Actions</label>
+            <Spacer/>
+        </HStack>
+        <ConfirmationPopoverButton action={() => {}} actionName="Delete" {...{confirmButtonBg, popoverBodyMessage}}/>
+    </VStack>
 }
 
 type RegistrationPanelPrpos = {
