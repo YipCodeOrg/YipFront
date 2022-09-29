@@ -1,20 +1,24 @@
-import { Button, Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
+import { Button, ButtonProps, Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
     PopoverContent, PopoverHeader, PopoverTrigger, VStack } from "@chakra-ui/react"
 
 export type ConfirmationPopoverButtonProps = {
     action: () => void,
     actionName: string,
     popoverBodyMessage: string,
-    confirmButtonBg: string
-}
+    confirmButtonBg: string,
+    buttonLabel?: string
+} & ButtonProps
 
 export function ConfirmationPopoverButton(props: ConfirmationPopoverButtonProps){
 
-    const { action, actionName, popoverBodyMessage, confirmButtonBg } = props
+    const { action, actionName, popoverBodyMessage, 
+        confirmButtonBg, buttonLabel, ...rest } = props
+
+    const effectiveButtonLabel = buttonLabel ?? actionName
 
     return <Popover>
         <PopoverTrigger>
-            <Button>{actionName}</Button>
+            <Button {...rest}>{effectiveButtonLabel}</Button>
         </PopoverTrigger>
         <PopoverContent>
             <PopoverArrow />

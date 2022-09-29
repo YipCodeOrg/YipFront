@@ -147,15 +147,19 @@ type ButtonPanelProps = {
 }
 
 function ButtonPanel(props: ButtonPanelProps){
+    const { isDeleting } = props
     const confirmButtonBg = useColorModeValue('gray.100', 'gray.800')
-    const popoverBodyMessage = "Are you sure that you want to delete this address?"
+    const popoverBodyMessage = "Are you sure that you want to delete this address?"        
+    const buttonLabel = isDeleting ? "Deleting..." : "Delete"
     
     return <VStack align="left" spacing="5px" justify="top">
         <HStack justify="left" w="100%">
             <label>Actions</label>
             <Spacer/>
         </HStack>
-        <ConfirmationPopoverButton action={() => {}} actionName="Delete" {...{confirmButtonBg, popoverBodyMessage}}/>
+        <ConfirmationPopoverButton action={() => {}}
+            {...{confirmButtonBg, popoverBodyMessage, buttonLabel}}
+            isDisabled={isDeleting} actionName="Delete"/>
     </VStack>
 }
 
