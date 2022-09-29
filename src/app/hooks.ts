@@ -336,6 +336,22 @@ export function useSubmissionThunkDispatch<TSubmit, TResponse>(
         return submitCallback
 }
 
+export function useThunkDispatch<TBody, TResponse>(thunk: AsyncThunk<TResponse, PortBodyThunkInput<TBody>, {}>):
+    (t: TBody) => void{
+        const dispatch = useAppDispatch()
+        const { port: hubPort } = useContext(HubContext)
+
+        const callback = useCallback(function(data: TBody){
+            if(!!hubPort){
+                dispatch(thunk({port: hubPort, body: data}))
+            }
+        },
+            [hubPort, dispatch, thunk]
+        )
+
+        return callback
+}
+
 function useTimeoutState<TState>(timeoutAction: () => void, timeoutMs: number) :
     [TState | null, React.Dispatch<React.SetStateAction<TState | null>>]
     {

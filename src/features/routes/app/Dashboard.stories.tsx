@@ -79,7 +79,8 @@ function StoryWrapper(props: StoryWrapperProps){
   return <Provider store={mockStore}>
       <ConnectedDashboard {...{selectedYipCode}}
         userAddressDataThunk={mockAddressDataThunk}
-        userDataThunk={mockUserDataThunk} />
+        userDataThunk={mockUserDataThunk}
+        deleteAddressThunk={mockDeletionThunk} />
   </Provider>
 }
 

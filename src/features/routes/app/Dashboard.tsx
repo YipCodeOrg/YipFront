@@ -10,7 +10,7 @@ import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
 import { shrinkToParent } from "../../../util/cssHelpers"
-import { fetchUserAddressData, useMemoisedYipCodeToAddressMap, UserAddressSliceData, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
+import { deleteAddress, DeleteAddressData, DeleteAddressThunk, fetchUserAddressData, useMemoisedYipCodeToAddressMap, UserAddressSliceData, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
@@ -21,38 +21,46 @@ import { UserData } from "../../../packages/YipStackLib/types/userData"
 import { fetchUserData } from "../../userdata/userDataSlice"
 import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { ConfirmationPopoverButton } from "../../../components/core/ConfirmationPopoverButton"
+import { useThunkDispatch } from "../../../app/hooks"
+import { useCallback } from "react"
 
 export default function DashboardWrapper(){
     
     const selectedYipCode = useYipCodeUrlParam()
     return <ConnectedDashboard {...{selectedYipCode}}
         userAddressDataThunk={fetchUserAddressData}
-        userDataThunk={fetchUserData} />
+        userDataThunk={fetchUserData}
+        deleteAddressThunk={deleteAddress} />
 }
 
 export type ConnectedDashboardProps = {
     selectedYipCode: string | null,
     userAddressDataThunk: AsyncThunk<UserAddressSliceData[], MessagePort, {}>,
     userDataThunk: AsyncThunk<UserData, MessagePort, {}>
+    deleteAddressThunk: DeleteAddressThunk
 }
 
 export function ConnectedDashboard(props: ConnectedDashboardProps){
 
-    const { selectedYipCode, userAddressDataThunk, userDataThunk} = props
-    
+    const { selectedYipCode, userAddressDataThunk, userDataThunk, deleteAddressThunk} = props    
     const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubFetch(userAddressDataThunk, userDataThunk)
-    return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode}}/>    
+
+    const deleteAddress = useThunkDispatch(deleteAddressThunk)
+
+    return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress}}/>    
 }
 
 export type DashboardProps = {
     userAddressData: UserAddressSliceData[] | undefined,
     userAddressDataStatus: LoadStatus,
-    selectedYipCode: string | null
+    selectedYipCode: string | null,
+    deleteAddress: (data: DeleteAddressData) => void
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({userAddressData, userAddressDataStatus, selectedYipCode}) => {
+export const Dashboard: React.FC<DashboardProps> = (props) => {
 
-    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode}}/> : <></>    
+    const {userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress} = props
+    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData, selectedYipCode, deleteAddress}}/> : <></>    
 
     return <LogoLoadStateWrapper status = {userAddressDataStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
@@ -60,11 +68,13 @@ export const Dashboard: React.FC<DashboardProps> = ({userAddressData, userAddres
 
 type LoadedDashboardProps = {
     userAddressData: UserAddressSliceData[],
-    selectedYipCode: string | null
+    selectedYipCode: string | null,
+    deleteAddress: (data: DeleteAddressData) => void
 }
 
-const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selectedYipCode}) =>{
+const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
     
+    const {userAddressData, selectedYipCode, deleteAddress} = props
     const addressMap = useMemoisedYipCodeToAddressMap(userAddressData)
 
     const sideBarProps: SidebarProps = {
@@ -85,7 +95,7 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = ({userAddressData, selec
     return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
         <Sidebar {...sideBarProps}/>
         {!!selectedAddress ?
-            <DashboardContent {...{selectedAddressData: selectedAddress}}/> :
+            <DashboardContent {...{selectedAddressData: selectedAddress, deleteAddress}}/> :
             <EmptyDashboardContent/>
         }        
     </HStack>
@@ -117,37 +127,45 @@ const EmptyDashboardContent = () => {
 }
 
 type DashboardContentProps = {
-    selectedAddressData: UserAddressSliceData
+    selectedAddressData: UserAddressSliceData,
+    deleteAddress: (data: DeleteAddressData) => void
 }
 
 const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
     
-    const {selectedAddressData} = props
+    const { selectedAddressData, deleteAddress } = props
     const { addressData, isDeleting } = selectedAddressData
     const addressName = getDisplayLabelForAddress(addressData)
     const addressLastUpdated = simpleDateToDate(addressData.address.addressMetadata.lastUpdated)
+
+    const deleteThisAddress = useCallback(function(){
+        const yipCode = selectedAddressData.addressData.address.yipCode
+        deleteAddress({yipCode})
+    }, [selectedAddressData, deleteAddress])
+
     return <PageWithHeading heading={`${addressName}    `} icon={getIconFromName(addressName)}>
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>
             <AddressPanel addressItem={addressData.address} displayYipCode={true} maxW="500px"/>
             <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
-            <ButtonPanel {...{isDeleting}}/>
+            <ButtonPanel {...{isDeleting}} deleteAddress={deleteThisAddress}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'inherit', md: 'none' }} p={2}>
             <AddressPanel addressItem={addressData.address} displayYipCode={true}/>
             <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
-            <ButtonPanel {...{isDeleting}}/>
+            <ButtonPanel {...{isDeleting}} deleteAddress={deleteThisAddress}/>
         </VStack>
     </PageWithHeading>
 }
 
 type ButtonPanelProps = {
-    isDeleting: boolean
+    isDeleting: boolean,
+    deleteAddress: () => void
 }
 
 function ButtonPanel(props: ButtonPanelProps){
-    const { isDeleting } = props
+    const { isDeleting, deleteAddress } = props
     const confirmButtonBg = useColorModeValue('gray.100', 'gray.800')
     const popoverBodyMessage = "Are you sure that you want to delete this address?"        
     const buttonLabel = isDeleting ? "Deleting..." : "Delete"
@@ -157,7 +175,7 @@ function ButtonPanel(props: ButtonPanelProps){
             <label>Actions</label>
             <Spacer/>
         </HStack>
-        <ConfirmationPopoverButton action={() => {}}
+        <ConfirmationPopoverButton action={deleteAddress}
             {...{confirmButtonBg, popoverBodyMessage, buttonLabel}}
             isDisabled={isDeleting} actionName="Delete"/>
     </VStack>
