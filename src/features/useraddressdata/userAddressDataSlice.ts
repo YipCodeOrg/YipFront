@@ -28,7 +28,7 @@ export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
     "/address", isDeleteAddressData, r => r)
 
 export const userAddressDataSliceGenerator = fetchSliceGenerator<UserAddressData[], UserAddressSliceData[]>("userAddressData", d => d,
-    "/addresses", isUserAddressDataArray)
+    "/addresses", isUserAddressDataArray)()
 
 export type UserAddressSliceData = {
     addressData: UserAddressData,

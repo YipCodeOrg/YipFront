@@ -5,7 +5,7 @@ import { isUserData, UserData } from "../../packages/YipStackLib/types/userData"
 import { fetchSliceGenerator } from "../../util/redux/slices/fetchSlice";
 import { createSimpleApiGetThunk } from "../../util/redux/thunks";
 
-export const userDataSliceGenerator = fetchSliceGenerator<UserData, UserData>("userData", d => d, "/userdata", isUserData)
+export const userDataSliceGenerator = fetchSliceGenerator<UserData, UserData>("userData", d => d, "/userdata", isUserData)()
 
 export const { slice: userDataSlice, thunk: fetchUserData } = userDataSliceGenerator(createSimpleApiGetThunk)
 
