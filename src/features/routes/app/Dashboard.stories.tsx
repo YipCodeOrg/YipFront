@@ -54,7 +54,7 @@ function StoryWrapper(props: StoryWrapperProps){
   
   const mockUserDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserData>
     ("mockUserData", userAddressData, mockUserDataGenerator, delayMilis)
-  const userDataReducer = userDataSliceGenerator(() => mockUserDataThunk).slice.reducer
+  const userDataReducer = userDataSliceGenerator(mockDeletionThunk)(() => mockUserDataThunk).slice.reducer
 
 
   function mockUserDataGenerator(ads: UserAddressData[]){
