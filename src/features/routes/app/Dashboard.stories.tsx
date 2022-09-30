@@ -5,7 +5,7 @@ import { dateToSimpleDate } from "../../../packages/YipStackLib/packages/YipAddr
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
 import { UserData } from "../../../packages/YipStackLib/types/userData";
 import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../util/storybook/mockThunks";
-import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, userAddressDataSliceGenerator, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice";
+import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice";
 import { userDataSliceGenerator } from "../../userdata/userDataSlice";
 import { ConnectedDashboard, Dashboard } from "./Dashboard";
 
@@ -50,7 +50,12 @@ function StoryWrapper(props: StoryWrapperProps){
       "mockDeleteAddress", d => d, delayMilis
     )
 
-  const userAddressDataReducer = userAddressDataSliceGenerator(mockDeletionThunk)(() => mockAddressDataThunk).slice.reducer
+    const mockUpdateRegistrationsThunk: UpdateRegistrationThunk = createMockTransformedPortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>(
+      "mockUpdateRegistrations", d => d, delayMilis
+    )
+
+  const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk)
+    (() => mockAddressDataThunk).slice.reducer
   
   const mockUserDataThunk = createMockThunkOrFailureThunk<UserAddressData[], MessagePort, UserData>
     ("mockUserData", userAddressData, mockUserDataGenerator, delayMilis)

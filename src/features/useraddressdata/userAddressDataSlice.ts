@@ -4,7 +4,7 @@ import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetch
 import { createApiDeleteThunk, createApiGetThunk, createSimpleApiPutThunk, PortBodyThunk } from "../../util/redux/thunks";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
-import { compose2 } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
+import { compose2Higher, compose2PairDomain } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
 import { isRegistration, Registration } from "../../packages/YipStackLib/types/registrations";
 import { PortBodyInput } from "../../util/redux/thunkHelpers";
 
@@ -25,14 +25,14 @@ export type UserAddressSliceData = {
     isUpdatingRegistrations: boolean
 }
 
-export function isUpdateRegistrationPayload(obj: any): obj is UpdateRegistrationPayload{
-    if(obj === undefined){
+export function isUpdateRegistrationPayload(obj: any): obj is UpdateRegistrationPayload {
+    if (obj === undefined) {
         return false
     }
-    if(!isString(obj.yipCode)){
+    if (!isString(obj.yipCode)) {
         return false
     }
-    if(!isTypedArray(obj.registrations, isRegistration)){
+    if (!isTypedArray(obj.registrations, isRegistration)) {
         return false
     }
     return true
@@ -42,7 +42,7 @@ export type DeleteAddressData = {
     yipCode: string
 }
 
-export function isDeleteAddressData(obj: any): obj is DeleteAddressData{
+export function isDeleteAddressData(obj: any): obj is DeleteAddressData {
     return isString(obj.yipCode)
 }
 
@@ -53,74 +53,100 @@ export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
 
 export const updateRegistrations: UpdateRegistrationThunk = createSimpleApiPutThunk("/address/registrations", isUpdateRegistrationPayload)
 
-export const userAddressDataSliceGenerator = compose2(
-    deletionBuilderUpdater,
+const mainBuilderUpdater = compose2Higher(registrationUpdateBuilderUpdater, deletionBuilderUpdater)
+
+export const userAddressDataSliceGenerator = compose2PairDomain(
+    mainBuilderUpdater,
     fetchSliceGenerator<UserAddressData[], UserAddressSliceData[]>
         ("userAddressData", d => d, "/addresses", isUserAddressDataArray)
 )
 
-function deletionBuilderUpdater(thunk: DeleteAddressThunk){
-    return function(builder: ActionReducerMapBuilder<UserAddressDataState>){
+function registrationUpdateBuilderUpdater(thunk: UpdateRegistrationThunk) {
+    return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
         builder.addCase(thunk.pending, (state, action) => {
             const yipCode = action.meta.arg.body.yipCode
-            handleAddressUpdate(state, yipCode, a => a.isDeleting = true)
+            handleAddressUpdate(state, yipCode, a => a.isUpdatingRegistrations = true)
         })
-        .addCase(thunk.rejected, (state, action) => {
-            const yipCode = action.meta.arg.body.yipCode
-            handleAddressUpdate(state, yipCode, a => a.isDeleting = false)
-        })
-        .addCase(thunk.fulfilled, (state, action) => {
-            const yipCode = action.meta.arg.body.yipCode
-            handleYipCodeUpdate(state, yipCode, function(data, index){
-                data.splice(index, 1)
+            .addCase(thunk.rejected, (state, action) => {
+                const yipCode = action.meta.arg.body.yipCode
+                handleAddressUpdate(state, yipCode, a => a.isUpdatingRegistrations = false)
             })
-        })
+            .addCase(thunk.fulfilled, (state, action) => {
+                const body = action.meta.arg.body
+                const { yipCode, registrations } = body
+                handleYipCodeUpdate(state, yipCode, function (data, index) {
+                    const datum = data[index]
+                    if (datum !== undefined) {
+                        datum.addressData.registrations = registrations
+                    }
+                })
+            })
         return builder
     }
 }
 
-function handleAddressUpdate(state: UserAddressDataState, yipCode: string, handler: (a: UserAddressSliceData) => void){    
-    handleYipCodeUpdate(state, yipCode, function(data, index){
-        const address = data[index]
-        if(address !== undefined){
-            handler(address)
-        }
-    })    
+function deletionBuilderUpdater(thunk: DeleteAddressThunk) {
+    return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
+        builder.addCase(thunk.pending, (state, action) => {
+            const yipCode = action.meta.arg.body.yipCode
+            handleAddressUpdate(state, yipCode, a => a.isDeleting = true)
+        })
+            .addCase(thunk.rejected, (state, action) => {
+                const yipCode = action.meta.arg.body.yipCode
+                handleAddressUpdate(state, yipCode, a => a.isDeleting = false)
+            })
+            .addCase(thunk.fulfilled, (state, action) => {
+                const yipCode = action.meta.arg.body.yipCode
+                handleYipCodeUpdate(state, yipCode, function (data, index) {
+                    data.splice(index, 1)
+                })
+            })
+        return builder
+    }
 }
 
-function handleYipCodeUpdate(state: UserAddressDataState, yipCode: string, 
-    handler: (data: UserAddressSliceData[], index: number) => void){    
+function handleAddressUpdate(state: UserAddressDataState, yipCode: string, handler: (a: UserAddressSliceData) => void) {
+    handleYipCodeUpdate(state, yipCode, function (data, index) {
+        const address = data[index]
+        if (address !== undefined) {
+            handler(address)
+        }
+    })
+}
+
+function handleYipCodeUpdate(state: UserAddressDataState, yipCode: string,
+    handler: (data: UserAddressSliceData[], index: number) => void) {
     const index = findIndexByYipCode(state, yipCode)
-    const data = state.sliceData            
-    if(data !== undefined){
+    const data = state.sliceData
+    if (data !== undefined) {
         handler(data, index)
-    }       
+    }
 }
 
 function findIndexByYipCode(state: UserAddressDataState, yipCode: string): number {
     const addresses = state.sliceData
-    if(addresses === undefined){
+    if (addresses === undefined) {
         return -1
     }
     const index = addresses.findIndex(a => a.addressData.address.yipCode === yipCode)
     return index
 }
 
-function isUserAddressSliceData(obj: any): obj is UserAddressSliceData{
-    if(!isBoolean(obj.isDeleting)){
+function isUserAddressSliceData(obj: any): obj is UserAddressSliceData {
+    if (!isBoolean(obj.isDeleting)) {
         return false
     }
-    if(!isUserAddressData(obj.addressData)){
+    if (!isUserAddressData(obj.addressData)) {
         return false
     }
     return true
 }
 
-export function isUserAddressSliceDataArray(obj: any): obj is UserAddressSliceData[]{
+export function isUserAddressSliceDataArray(obj: any): obj is UserAddressSliceData[] {
     return isTypedArray(obj, isUserAddressSliceData)
 }
 
-export function newUserAddressSliceData(addressData: UserAddressData): UserAddressSliceData{
+export function newUserAddressSliceData(addressData: UserAddressData): UserAddressSliceData {
     return {
         addressData,
         isDeleting: false,
@@ -128,11 +154,11 @@ export function newUserAddressSliceData(addressData: UserAddressData): UserAddre
     }
 }
 
-function generateThunk(path: string, predicate: (obj: any) => obj is UserAddressData[]){
+function generateThunk(path: string, predicate: (obj: any) => obj is UserAddressData[]) {
     return createApiGetThunk<UserAddressData[], UserAddressSliceData[]>(path, predicate, r => r.map(newUserAddressSliceData))
 }
 
-export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } = userAddressDataSliceGenerator(deleteAddress)(generateThunk)
-
+export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } =
+    userAddressDataSliceGenerator(updateRegistrations, deleteAddress)(generateThunk)
 
 export default userAddressDataSlice.reducer
