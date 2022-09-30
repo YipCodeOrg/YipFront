@@ -7,7 +7,7 @@ import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
 import { ColorModeSwitcher } from '../src/components/core/ColorModeSwitcher'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { HubContext } from "../src/app/App"
+import { HubContext } from "../src/app/hubContext"
 
 const LayoutDecorator: DecoratorFunction<ReactFramework, Args> = (Story, context) => {
   
