@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
 import { LoadStatus } from "../../app/types";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { sendHubRequest } from "../../util/hubApi"
-import { useAsyncHubFetch } from "../../app/hooks";
 import { addFetchThunkReducers } from "../../util/redux/reduxHelpers";
 import { FetchSliceOf } from "../../util/redux/slices/fetchSlice";
 
@@ -41,11 +39,5 @@ export const profileSlice = createSlice({
         (state, payload) => state.sliceData = payload,
         fetchLoginState),
 })
-
-export const selectIsLoggedInSlice = (state: RootState) => state.profile
-export const selectIsLoggedIn = (state: RootState) => state.profile.sliceData ?? false
-export const selectIsLoggedInStatus = (state: RootState) => state.profile.loadStatus
-
-export const useLoginHubFetch = () => useAsyncHubFetch(fetchLoginState, selectIsLoggedInSlice)  
 
 export default profileSlice.reducer

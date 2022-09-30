@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { FullSiteRoutingLayout, TopLevelRoutingLayout } from "./routingLayouts"
 import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
-import { selectIsLoggedIn } from "../../features/profile/profileSlice";
+import { selectIsLoggedIn } from "../../features/profile/profileSelectors";
 import { useAppSelector } from "../../app/hooks";
 import { submitCreateAddress } from "../../features/routes/app/address/create/createAddressSubmissionSlice";
 
