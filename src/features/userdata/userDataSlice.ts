@@ -1,6 +1,4 @@
-import { ActionReducerMapBuilder, AsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
-import { useAsyncHubFetch } from "../../app/hooks";
+import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { isUserData, UserData } from "../../packages/YipStackLib/types/userData";
 import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
 import { createSimpleApiGetThunk } from "../../util/redux/thunks";
@@ -45,13 +43,5 @@ function findIndexByYipCode(state: UserDataState, yipCode: string): number {
 }
 
 export const { slice: userDataSlice, thunk: fetchUserData } = userDataSliceGenerator(deleteAddress)(createSimpleApiGetThunk)
-
-export const selectUserDataSlice = (state: RootState) => state.userData
-export const selectUserData = (state: RootState) => selectUserDataSlice(state).sliceData
-export const selectUserDataStatus = (state: RootState) => selectUserDataSlice(state).loadStatus
-
-export const selectYipCodes = (state: RootState) => selectUserData(state)?.data.yipCodes
-
-export const useUserDataHubFetch = (thunk: AsyncThunk<UserData, MessagePort, {}>) => useAsyncHubFetch(thunk, selectUserDataSlice)  
 
 export default userDataSlice.reducer

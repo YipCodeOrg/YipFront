@@ -10,7 +10,7 @@ import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core
 import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
 import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
 import { shrinkToParent } from "../../../util/cssHelpers"
-import { deleteAddress, DeleteAddressData, DeleteAddressThunk, fetchUserAddressData, useMemoisedYipCodeToAddressMap, UserAddressSliceData, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataSlice"
+import { deleteAddress, DeleteAddressData, DeleteAddressThunk, fetchUserAddressData, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
 import { Registration } from "../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
@@ -23,6 +23,7 @@ import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddr
 import { ConfirmationPopoverButton } from "../../../components/core/ConfirmationPopoverButton"
 import { useThunkDispatch } from "../../../app/hooks"
 import { useCallback, useMemo } from "react"
+import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataHooks"
 
 export default function DashboardWrapper(){
     
