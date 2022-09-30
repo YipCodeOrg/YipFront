@@ -1,7 +1,7 @@
 import { Center } from "@chakra-ui/react"
 import { FunctionComponent, useContext } from "react"
 import { useLocation } from "react-router-dom"
-import { HubContext } from "../../app/App"
+import { HubContext } from "../../app/hubContext"
 import { useLoginHubFetch } from "../../features/profile/profileSlice"
 import { EmptyLoadStateWrapper } from "../hoc/LoadStateWrapper"
 import {FullAppRoutingLayout} from "./routingLayouts"
