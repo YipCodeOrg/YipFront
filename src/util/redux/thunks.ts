@@ -19,6 +19,20 @@ export function createApiDeleteThunk<TBody, TResponse, TReturn>(path: string,
         (path, isCorrectType, HttpStatusOk, "DELETE", responseTransform)
 }
 
+export function createSimpleApiPutThunk<TBody, TResponse>(path: string,
+    isCorrectType: (obj: any) => obj is TResponse){
+    return createApiPutThunk<TBody, TResponse, TResponse>(path, isCorrectType, r => r)
+}
+
+/* Note - if PUT creates something, then it should really return a 201 response.
+This assumes the PUT is an overwrite */
+export function createApiPutThunk<TBody, TResponse, TReturn>(path: string,
+    isCorrectType: (obj: any) => obj is TResponse,
+    responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn> {
+    return createPortBodyRequestThunk<TBody, TResponse, TReturn>
+        (path, isCorrectType, HttpStatusOk, "PUT", responseTransform)
+}
+
 export function createSimpleApiPostThunk<TBody, TResponse>(path: string,
     isCorrectType: (obj: any) => obj is TResponse){
     return createApiPostThunk<TBody, TResponse, TResponse>(path, isCorrectType, r => r)

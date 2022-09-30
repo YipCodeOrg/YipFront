@@ -1,11 +1,11 @@
 import { ActionReducerMapBuilder, AsyncThunk } from "@reduxjs/toolkit";
 import { isUserAddressData, isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
 import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
-import { createApiDeleteThunk, createApiGetThunk, PortBodyThunk } from "../../util/redux/thunks";
+import { createApiDeleteThunk, createApiGetThunk, createSimpleApiPutThunk, PortBodyThunk } from "../../util/redux/thunks";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
 import { compose2 } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
-import { Registration } from "../../packages/YipStackLib/types/registrations";
+import { isRegistration, Registration } from "../../packages/YipStackLib/types/registrations";
 import { PortBodyInput } from "../../util/redux/thunkHelpers";
 
 
@@ -17,6 +17,19 @@ export type UserAddressDataState = FetchSliceOf<UserAddressSliceData[]>
 export type UpdateRegistrationPayload = {
     registrations: Registration[],
     yipCode: string
+}
+
+export function isUpdateRegistrationPayload(obj: any): obj is UpdateRegistrationPayload{
+    if(obj === undefined){
+        return false
+    }
+    if(!isString(obj.yipCode)){
+        return false
+    }
+    if(!isTypedArray(obj.registrations, isRegistration)){
+        return false
+    }
+    return true
 }
 
 export type DeleteAddressData = {
@@ -31,6 +44,8 @@ export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyInput<Del
 
 export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
     "/address", isDeleteAddressData, r => r)
+
+export const updateRegistrations: UpdateRegistrationThunk = createSimpleApiPutThunk("/address/registrations", isUpdateRegistrationPayload)
 
 export const userAddressDataSliceGenerator = compose2(
     deletionBuilderUpdater,
