@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import { timeoutPromiseOf, timeoutRejectedPromiseOf } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
-import { PortBodyThunkInput } from "../redux/thunks";
+import { PortBodyInput } from "../redux/thunkHelpers";
 
 export function createMockApiRequestThunk<TThunkInput, TResponse>(mockedResponse: TResponse,
     typePrefix: string, delayMilis: number)
@@ -30,7 +30,7 @@ export function createMockTransformedInputThunk<TThunkInput, TResponse>(typePref
 export function createMockTransformedPortBodyOrFailureThunk<TBody, TResponse>(typePrefix: string,
     responseGenerator: (d: TBody) => TResponse, delayMilis: number, shouldFail: boolean){
         if(shouldFail){
-            return createMockFailureApiRequestThunk<PortBodyThunkInput<TBody>, TResponse>(typePrefix, delayMilis)
+            return createMockFailureApiRequestThunk<PortBodyInput<TBody>, TResponse>(typePrefix, delayMilis)
         } else {
             return createMockTransformedPortBodyThunk<TBody, TResponse>(typePrefix, responseGenerator, delayMilis)
         }
@@ -39,7 +39,7 @@ export function createMockTransformedPortBodyOrFailureThunk<TBody, TResponse>(ty
 export function createMockTransformedPortBodyThunk<TBody, TResponse>(typePrefix: string,
     responseGenerator: (d: TBody) => TResponse, delayMilis: number){        
 
-        function liftedResponseGenerator(i: PortBodyThunkInput<TBody>){
+        function liftedResponseGenerator(i: PortBodyInput<TBody>){
             return responseGenerator(i.body)
         }
     
@@ -49,7 +49,7 @@ export function createMockTransformedPortBodyThunk<TBody, TResponse>(typePrefix:
 export function createMockPortBodyThunkOrFailureThunk<TData, TResponse>(typePrefix: string,
     data: TData | null, responseGenerator: (d: TData) => TResponse, delayMilis: number){
         return createMockThunkOrFailureThunk<TData, 
-            PortBodyThunkInput<TData>, TResponse>(typePrefix, data, responseGenerator, delayMilis)
+        PortBodyInput<TData>, TResponse>(typePrefix, data, responseGenerator, delayMilis)
 }
 
 /**

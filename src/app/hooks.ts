@@ -7,7 +7,7 @@ import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/va
 import { HUB_ORIGIN_URL } from '../util/misc'
 import { FetchSliceOf } from '../util/redux/slices/fetchSlice'
 import { SubmissionState, SubmissionStatus } from '../util/redux/slices/submissionSlice'
-import { PortBodyThunkInput } from '../util/redux/thunks'
+import { PortBodyInput } from '../util/redux/thunkHelpers'
 import { HubContext, HubContextType } from './hubContext'
 import type { RootState, AppDispatch } from './store'
 import { LoadStatus } from './types'
@@ -318,7 +318,7 @@ export function useAsyncHubFetch<T>(
 }
 
 export function useSubmissionThunkDispatch<TSubmit, TResponse>(
-    thunk: AsyncThunk<TResponse, PortBodyThunkInput<TSubmit>, {}>,
+    thunk: AsyncThunk<TResponse, PortBodyInput<TSubmit>, {}>,
     selector: (state: RootState) => SubmissionState<TSubmit, TResponse>,
     shouldCheckClear: boolean = true){
         const dispatch = useAppDispatch()      
@@ -337,7 +337,7 @@ export function useSubmissionThunkDispatch<TSubmit, TResponse>(
         return submitCallback
 }
 
-export function useThunkDispatch<TBody, TResponse>(thunk: AsyncThunk<TResponse, PortBodyThunkInput<TBody>, {}>):
+export function useThunkDispatch<TBody, TResponse>(thunk: AsyncThunk<TResponse, PortBodyInput<TBody>, {}>):
     (t: TBody) => void{
         const dispatch = useAppDispatch()
         const { port: hubPort } = useContext(HubContext)

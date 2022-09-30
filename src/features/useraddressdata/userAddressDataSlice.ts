@@ -1,15 +1,23 @@
 import { ActionReducerMapBuilder, AsyncThunk } from "@reduxjs/toolkit";
 import { isUserAddressData, isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
 import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
-import { createApiDeleteThunk, createApiGetThunk, PortBodyThunkInput } from "../../util/redux/thunks";
+import { createApiDeleteThunk, createApiGetThunk, PortBodyThunk } from "../../util/redux/thunks";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
 import { compose2 } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
+import { Registration } from "../../packages/YipStackLib/types/registrations";
+import { PortBodyInput } from "../../util/redux/thunkHelpers";
 
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressSliceData[], MessagePort, {}>
 export type FetchUserDataThunk = AsyncThunk<UserData, MessagePort, {}>
+export type UpdateRegistrationThunk = PortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>
 export type UserAddressDataState = FetchSliceOf<UserAddressSliceData[]>
+
+export type UpdateRegistrationPayload = {
+    registrations: Registration[],
+    yipCode: string
+}
 
 export type DeleteAddressData = {
     yipCode: string
@@ -19,7 +27,7 @@ export function isDeleteAddressData(obj: any): obj is DeleteAddressData{
     return isString(obj.yipCode)
 }
 
-export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyThunkInput<DeleteAddressData>, {}>
+export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyInput<DeleteAddressData>, {}>
 
 export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
     "/address", isDeleteAddressData, r => r)
@@ -76,7 +84,6 @@ function findIndexByYipCode(state: UserAddressDataState, yipCode: string): numbe
     const index = addresses.findIndex(a => a.addressData.address.yipCode === yipCode)
     return index
 }
-
 
 export type UserAddressSliceData = {
     addressData: UserAddressData,

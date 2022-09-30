@@ -1,16 +1,8 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit"
 import { HttpStatusOk } from "../hubApi"
-import { createApiRequest } from "./thunkHelpers"
+import { createApiRequest, PortBodyInput } from "./thunkHelpers"
 
-type ThunkInputWithPort = {
-    port: MessagePort
-}
-
-export type PortBodyThunkInput<TBody> = {
-    body: TBody
-} & ThunkInputWithPort
-
-export type PortBodyThunk<TBody, TResponse> = AsyncThunk<TResponse, PortBodyThunkInput<TBody>, {}>
+export type PortBodyThunk<TBody, TResponse> = AsyncThunk<TResponse, PortBodyInput<TBody>, {}>
 
 export function createSimpleApiDeleteThunk<TBody, TResponse>(path: string,
     isCorrectType: (obj: any) => obj is TResponse): PortBodyThunk<TBody, TResponse> {
@@ -57,7 +49,7 @@ export function createSimplePortBodyRequestThunk<TBody, TResponse>(path: string,
 export function createPortBodyRequestThunk<TBody, TResponse, TReturn>(path: string,
     isCorrectType: (obj: any) => obj is TResponse, expectedStatus: number, method: string,
     responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn>{
-        return createApiRequestThunk<PortBodyThunkInput<TBody>, TResponse, TReturn, TBody>
+        return createApiRequestThunk<PortBodyInput<TBody>, TResponse, TReturn, TBody>
             (p => p.port, isCorrectType, expectedStatus, method, path, responseTransform, i => i.body)
 }
 
