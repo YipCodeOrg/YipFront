@@ -19,6 +19,12 @@ export type UpdateRegistrationPayload = {
     yipCode: string
 }
 
+export type UserAddressSliceData = {
+    addressData: UserAddressData,
+    isDeleting: boolean,
+    isUpdatingRegistrations: boolean
+}
+
 export function isUpdateRegistrationPayload(obj: any): obj is UpdateRegistrationPayload{
     if(obj === undefined){
         return false
@@ -100,11 +106,6 @@ function findIndexByYipCode(state: UserAddressDataState, yipCode: string): numbe
     return index
 }
 
-export type UserAddressSliceData = {
-    addressData: UserAddressData,
-    isDeleting: boolean
-}
-
 function isUserAddressSliceData(obj: any): obj is UserAddressSliceData{
     if(!isBoolean(obj.isDeleting)){
         return false
@@ -122,7 +123,8 @@ export function isUserAddressSliceDataArray(obj: any): obj is UserAddressSliceDa
 export function newUserAddressSliceData(addressData: UserAddressData): UserAddressSliceData{
     return {
         addressData,
-        isDeleting: false
+        isDeleting: false,
+        isUpdatingRegistrations: false
     }
 }
 
