@@ -4,7 +4,7 @@ import LoginWrapper from "./LoginWrapper";
 import { lazy, Suspense} from "react";
 import { selectIsLoggedIn } from "../../features/profile/profileSelectors";
 import { useAppSelector } from "../../app/hooks";
-import { submitCreateAddress } from "../../features/routes/app/address/create/createAddressSubmissionSlice";
+import { submitCreateAddress } from "../../features/routes/app/address/create/submit/createAddressSubmissionSlice";
 
 // Routes: lazy-loaded for performance
 const Home = lazy(() => import("../../features/routes/Home"))

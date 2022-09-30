@@ -2,8 +2,8 @@ import { configureStore } from "@reduxjs/toolkit"
 import profileReducer from "../features/profile/profileSlice"
 import userDataReducer from "../features/userdata/userDataSlice"
 import userAddressDataReducer from "../features/useraddressdata/userAddressDataSlice"
-import createAddressEditReducer from "../features/routes/app/address/create/createAddressEditSlice"
-import createAddressSubmissionReducer from "../features/routes/app/address/create/createAddressSubmissionSlice"
+import createAddressEditReducer from "../features/routes/app/address/create/edit/createAddressEditSlice"
+import createAddressSubmissionReducer from "../features/routes/app/address/create/submit/createAddressSubmissionSlice"
 
 const store = configureStore({
     reducer: {

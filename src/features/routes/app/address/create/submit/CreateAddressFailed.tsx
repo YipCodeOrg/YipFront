@@ -1,7 +1,7 @@
 import { ButtonGroup, useColorModeValue } from "@chakra-ui/react"
-import { ConfirmationPopoverButton } from "../../../../../components/core/ConfirmationPopoverButton"
+import { ConfirmationPopoverButton } from "../../../../../../components/core/ConfirmationPopoverButton"
 import { MdError } from "react-icons/md"
-import { CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { CreateAddressData } from "../../../../../../packages/YipStackLib/types/address/address"
 import { CreateAddressSubmissionState } from "./CreateAddressSubmissionState"
 
 export type CreateAddressFailedProps = {

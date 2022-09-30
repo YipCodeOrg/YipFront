@@ -46,11 +46,11 @@ import { CreateAddressData } from '../../../../../packages/YipStackLib/types/add
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../../packages/YipStackLib/types/address/validateAddress';
 import { SubmissionStatus } from '../../../../../util/redux/slices/submissionSlice';
 import { createAction, UndoActionType } from '../../../../../util/undo/undoActions';
-import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './createAddressEditSlice';
-import { CreateAddressFailed } from './CreateAddressFailed';
-import { CreateAddressSubmissionThunk, useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './createAddressSubmissionSlice';
-import { CreateAddressSubmitted } from './CreateAddressSubmitted';
-import { CreateAddressSuccess } from './CreateAddressSuccess';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './edit/createAddressEditSlice';
+import { CreateAddressFailed } from './submit/CreateAddressFailed';
+import { CreateAddressSubmissionThunk, useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './submit/createAddressSubmissionSlice';
+import { CreateAddressSubmitted } from './submit/CreateAddressSubmitted';
+import { CreateAddressSuccess } from './submit/CreateAddressSuccess';
 
 export type CreateAddressWrapperProps = {
   initialRawAddress?: string | undefined,

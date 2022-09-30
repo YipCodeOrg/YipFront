@@ -1,5 +1,5 @@
 import { AiFillClockCircle } from "react-icons/ai"
-import { CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { CreateAddressData } from "../../../../../../packages/YipStackLib/types/address/address"
 import { CreateAddressSubmissionState } from "./CreateAddressSubmissionState"
 
 export type CreateAddressSubmittedProps = {

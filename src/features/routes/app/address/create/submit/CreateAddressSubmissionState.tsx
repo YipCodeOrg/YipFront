@@ -1,7 +1,7 @@
 import { List, ListItem } from "@chakra-ui/react"
 import { IconType } from "react-icons"
-import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
-import { CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { PageWithHeading } from "../../../../../../components/hoc/PageWithHeading"
+import { CreateAddressData } from "../../../../../../packages/YipStackLib/types/address/address"
 
 export type CreateAddressSubmissionStateProps = {
     data: CreateAddressData | null,

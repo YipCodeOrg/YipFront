@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
-import createAddressEditReducer from "./createAddressEditSlice"
+import createAddressEditReducer from "./edit/createAddressEditSlice"
 import { Provider } from "react-redux"
 import { createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
 import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
-import { createAddressSubmissionSliceGenerator } from "./createAddressSubmissionSlice"
+import { createAddressSubmissionSliceGenerator } from "./submit/createAddressSubmissionSlice"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
 
 

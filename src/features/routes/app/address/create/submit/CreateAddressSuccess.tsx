@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Tooltip, useColorModeValue } from "@chakra-ui/react"
 import { MdCloudDone } from "react-icons/md"
-import { CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { CreateAddressData } from "../../../../../../packages/YipStackLib/types/address/address"
 import { CreateAddressSubmissionState } from "./CreateAddressSubmissionState"
 
 export type CreateAddressSuccessProps = {
