@@ -1,19 +1,12 @@
-import { createContext } from "react";
 import MainRouter from "../components/routing/MainRouter"
 import { ColorModeScript } from "@chakra-ui/react"
 import { HUB_ORIGIN_URL } from "../util/misc";
 import { useHubHandshake } from "./hooks";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { HubContext } from "./hubContext";
 
 const HUB_API_URL = `${HUB_ORIGIN_URL}/api`
-
-export type HubContextType = {
-    port: MessagePort | null,
-    isHubLoadError: boolean
-}
-
-export const HubContext = createContext<HubContextType>({port: null, isHubLoadError: false})
 
 export default function App(){
 
