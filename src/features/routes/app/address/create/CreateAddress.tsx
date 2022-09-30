@@ -46,7 +46,8 @@ import { CreateAddressData } from '../../../../../packages/YipStackLib/types/add
 import { CreateAddressValidationResult, validateCreateAddress } from '../../../../../packages/YipStackLib/types/address/validateAddress';
 import { SubmissionStatus } from '../../../../../util/redux/slices/submissionSlice';
 import { createAction, UndoActionType } from '../../../../../util/undo/undoActions';
-import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, clearAddress, useCreateAddressHistoryLength, useRawAddress } from './edit/createAddressEditSlice';
+import { clearAddress } from './edit/createAddressEditSlice';
+import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, useCreateAddressHistoryLength, useRawAddress } from './edit/createAddressEditHooks';
 import { CreateAddressFailed } from './submit/CreateAddressFailed';
 import { CreateAddressSubmissionThunk, useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './submit/createAddressSubmissionSlice';
 import { CreateAddressSubmitted } from './submit/CreateAddressSubmitted';
