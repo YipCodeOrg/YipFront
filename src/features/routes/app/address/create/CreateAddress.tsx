@@ -49,7 +49,8 @@ import { createAction, UndoActionType } from '../../../../../util/undo/undoActio
 import { clearAddress } from './edit/createAddressEditSlice';
 import { useCurrentCreateAddress, useUpdateCreateAddressLines, useUpdateCreateAddressAliasMap, useCreateAddressName, useCreateAddressHistoryLength, useRawAddress } from './edit/createAddressEditHooks';
 import { CreateAddressFailed } from './submit/CreateAddressFailed';
-import { CreateAddressSubmissionThunk, useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './submit/createAddressSubmissionSlice';
+import { CreateAddressSubmissionThunk} from './submit/createAddressSubmissionSlice';
+import { useClearCreateAddressSubmission, useCreateAddressHubSubmit, useCreateAddressSubmissionState, useCreateAddressSubmitRetry } from './submit/createAddressSubmissionHooks';
 import { CreateAddressSubmitted } from './submit/CreateAddressSubmitted';
 import { CreateAddressSuccess } from './submit/CreateAddressSuccess';
 

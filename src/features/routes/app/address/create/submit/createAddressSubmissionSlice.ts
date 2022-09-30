@@ -1,5 +1,3 @@
-import { useActionWithoutPayload, useAppSelector, useSubmissionRetry, useSubmissionThunkDispatch } from "../../../../../../app/hooks"
-import { RootState } from "../../../../../../app/store"
 import { AddressItem, CreateAddressData, isAddressItem } from "../../../../../../packages/YipStackLib/types/address/address"
 import { submissionSliceGenerator, SubmissionState } from "../../../../../../util/redux/slices/submissionSlice"
 import { createSimpleApiPostThunk, PortBodyThunk } from "../../../../../../util/redux/thunks"
@@ -16,18 +14,6 @@ export const createAddressSubmissionSliceGenerator =
 
 export const createAddressSubmissionSlice = createAddressSubmissionSliceGenerator(submitCreateAddress)
 
-export const useClearCreateAddressSubmission = () => useActionWithoutPayload(createAddressSubmissionSlice.actions.clearState)
-
-export function useCreateAddressSubmitRetry(thunk: CreateAddressSubmissionThunk){
-    const submit = useCreateAddressHubSubmit(thunk, false)
-    return useSubmissionRetry(useCreateAddressSubmissionState, useClearCreateAddressSubmission, submit)
-}
-
-export const selectCreateAddressSubmissionSlice = (state: RootState) => state.createAddressSubmission
-
-export const useCreateAddressSubmissionState = () => useAppSelector(selectCreateAddressSubmissionSlice)
-
-export const useCreateAddressHubSubmit = (thunk: CreateAddressSubmissionThunk, 
-    shouldCheckClear:boolean=true) => useSubmissionThunkDispatch(thunk, selectCreateAddressSubmissionSlice, shouldCheckClear)
+export const { clearState } = createAddressSubmissionSlice.actions
 
 export default createAddressSubmissionSlice.reducer
