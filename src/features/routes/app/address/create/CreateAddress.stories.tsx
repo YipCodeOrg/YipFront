@@ -3,10 +3,11 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
 import createAddressEditReducer from "./edit/createAddressEditSlice"
 import { Provider } from "react-redux"
-import { createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
+import { createMockThunkOrFailureThunk, createMockTransformedPortBodyOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
 import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
 import { createAddressSubmissionSliceGenerator } from "./submit/createAddressSubmissionSlice"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
+import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
 
 
 type StoryType = typeof StoryWrapper
@@ -54,9 +55,23 @@ function StoryWrapper(props: StoryWrapperProps) {
 
     const mockSubmissionReducer = createAddressSubmissionSliceGenerator(mockSubmissionThunk).reducer
 
+    const mockAddressDataThunk = createMockThunkOrFailureThunk<UserAddressSliceData[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
+    [], d => d, delayMilis)
+
+    const mockDeletionThunk: DeleteAddressThunk = createMockTransformedPortBodyThunk<DeleteAddressData, DeleteAddressData>(
+      "mockDeleteAddress", d => d, delayMilis
+    )
+
+    const mockUpdateRegistrationsThunk: UpdateRegistrationThunk = createMockTransformedPortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>(
+      "mockUpdateRegistrations", d => d, delayMilis
+    )
+
+    const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk)
+    (() => mockAddressDataThunk).slice.reducer
+
     const mockStore = configureStore({
         reducer: {
-
+            userAddressData: userAddressDataReducer,
             createAddressEdit: createAddressEditReducer,
             createAddressSubmission: mockSubmissionReducer
         }
