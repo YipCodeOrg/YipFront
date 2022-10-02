@@ -8,6 +8,8 @@ import { AddressItem, CreateAddressData } from "../../../../../packages/YipStack
 import { createAddressSubmissionSliceGenerator } from "./submit/createAddressSubmissionSlice"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
+import { UserData } from "../../../../../packages/YipStackLib/types/userData"
+import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
 
 
 type StoryType = typeof StoryWrapper
@@ -69,8 +71,21 @@ function StoryWrapper(props: StoryWrapperProps) {
     const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk)
     (() => mockAddressDataThunk).slice.reducer
 
+    const mockUserData: UserData = {
+        sub: "Mock-SUB-32432789",
+        data: {
+          yipCodes: []
+        }
+    }
+
+    const mockUserDataThunk = createMockThunkOrFailureThunk<UserData, MessagePort, UserData>
+    ("mockUserData", mockUserData, d => d, delayMilis)
+    const userDataReducer = userDataSliceGenerator(mockDeletionThunk)(() => mockUserDataThunk).slice.reducer
+    
+
     const mockStore = configureStore({
         reducer: {
+            userData: userDataReducer,
             userAddressData: userAddressDataReducer,
             createAddressEdit: createAddressEditReducer,
             createAddressSubmission: mockSubmissionReducer
