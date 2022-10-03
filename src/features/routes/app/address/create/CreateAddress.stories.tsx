@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import CreateAddressWrapper, { CreateAddress } from "./CreateAddress"
+import CreateAddressWrapper from "./CreateAddress"
 import createAddressEditReducer from "./edit/createAddressEditSlice"
 import { Provider } from "react-redux"
 import { createMockThunkOrFailureThunk, createMockTransformedPortBodyOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
@@ -10,13 +10,28 @@ import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/Y
 import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
 import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
-
+import { ConnectedDashboard } from "../../Dashboard"
 
 type StoryType = typeof StoryWrapper
 
+enum DisplayScreen {
+    DashboardScreen = "Dashboard",
+    CreateAddressScreen = "Create Address"
+}
+
 export default {
-    component: CreateAddress,
-    title: 'app/address/create'
+    title: 'app/address/create',
+    args: {
+        screen: DisplayScreen.CreateAddressScreen
+    },
+    argTypes: {
+        screen: {
+            options: DisplayScreen,
+            control: {
+                type: "select"
+            }
+      }
+    }
 } as ComponentMeta<StoryType>
 
 const Template: ComponentStory<StoryType> = (args: StoryWrapperProps) => <StoryWrapper {...args} />
@@ -26,13 +41,14 @@ type StoryWrapperProps = {
     delayMilis: number,
     initialName: string,
     shouldFail?: boolean,
+    screen: string
 }
 
 const arbitraryDate1 = dateToSimpleDate(new Date(2020, 12))
 
 function StoryWrapper(props: StoryWrapperProps) {
 
-    const { delayMilis, initialRawAddress, initialName, shouldFail } = props
+    const { delayMilis, initialRawAddress, initialName, shouldFail, screen } = props
 
     const mockSubmissionThunk = createMockTransformedPortBodyOrFailureThunk("mockCreateAddressData", 
     responseGenerator, delayMilis, !!shouldFail)
@@ -93,13 +109,18 @@ function StoryWrapper(props: StoryWrapperProps) {
     })
 
     return <Provider store={mockStore}>
-        <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />
+        {screen === DisplayScreen.CreateAddressScreen && <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />}
+        {screen === DisplayScreen.DashboardScreen && <ConnectedDashboard 
+           selectedYipCode={null}
+           userAddressDataThunk={mockAddressDataThunk}
+           userDataThunk={mockUserDataThunk}
+           deleteAddressThunk={mockDeletionThunk} />}
     </Provider>
 }
 
 export const Standard = Template.bind({})
 Standard.args = {
-    delayMilis: 1500
+    delayMilis: 1500,
 }
 
 export const RawFilled = Template.bind({})
