@@ -11,7 +11,7 @@ import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
 import { ConnectedDashboard } from "../../Dashboard"
 import { useState } from "react"
-import { createMockSubmissionThunk } from "./submit/createAddressMocks"
+import { createMockSubmissionThunk, useMockYipcodeGenerator } from "./submit/createAddressMocks"
 
 type StoryType = typeof StoryWrapper
 
@@ -52,7 +52,8 @@ function StoryWrapper(props: StoryWrapperProps) {
     const { initialRawAddress, initialName, screen } = props
     const { delayMilis, shouldFail } = props
     const storeThunkProps = { delayMilis, shouldFail: !!shouldFail }
-    const [storeThunks, ] = useState(() => createStoreAndThunks(storeThunkProps))
+    const mockYipCodeGenerator = useMockYipcodeGenerator("MOCKYIPCODE")
+    const [storeThunks, ] = useState(() => createStoreAndThunks(storeThunkProps, mockYipCodeGenerator))
 
     const { mockStore, mockSubmissionThunk, mockAddressDataThunk, mockUserDataThunk, mockDeletionThunk } = 
         storeThunks
@@ -72,10 +73,9 @@ type StoreThunksProps = {
     shouldFail: boolean
 }
 
-function createStoreAndThunks(props: StoreThunksProps){
-    const { delayMilis, shouldFail } = props
-
-    const mockSubmissionThunk = createMockSubmissionThunk(delayMilis, shouldFail, arbitraryDate1)
+function createStoreAndThunks(props: StoreThunksProps, mockYipCodeGenerator: () => string){
+    const { delayMilis, shouldFail } = props    
+    const mockSubmissionThunk = createMockSubmissionThunk(delayMilis, shouldFail, arbitraryDate1, mockYipCodeGenerator)
 
     const mockSubmissionReducer = createAddressSubmissionSliceGenerator(mockSubmissionThunk).reducer
 
