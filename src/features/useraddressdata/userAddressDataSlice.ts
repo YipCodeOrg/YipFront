@@ -4,10 +4,10 @@ import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetch
 import { createApiDeleteThunk, createApiGetThunk, createSimpleApiPutThunk, PortBodyThunk } from "../../util/redux/thunks";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
-import { compose2Higher, compose2PairDomain } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
+import { compose2TripleDomain, compose3Higher } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
 import { isRegistration, Registration } from "../../packages/YipStackLib/types/registrations";
 import { PortBodyInput } from "../../util/redux/thunkHelpers";
-import { CreateAddressSubmissionThunk } from "../routes/app/address/create/submit/createAddressSubmissionSlice";
+import { CreateAddressSubmissionThunk, submitCreateAddress } from "../routes/app/address/create/submit/createAddressSubmissionSlice";
 
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressSliceData[], MessagePort, {}>
@@ -54,24 +54,31 @@ export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
 
 export const updateRegistrations: UpdateRegistrationThunk = createSimpleApiPutThunk("/address/registrations", isUpdateRegistrationPayload)
 
-const mainBuilderUpdater = compose2Higher(registrationUpdateBuilderUpdater, deletionBuilderUpdater)
+const mainBuilderUpdater = compose3Higher(registrationUpdateBuilderUpdater, deletionBuilderUpdater, addressCreatedBuilderUpdater)
 
-export const userAddressDataSliceGenerator = compose2PairDomain(
+export const userAddressDataSliceGenerator = compose2TripleDomain(
     mainBuilderUpdater,
     fetchSliceGenerator<UserAddressData[], UserAddressSliceData[]>
         ("userAddressData", d => d, "/addresses", isUserAddressDataArray)
 )
 
-
-// TODO: Continue this once create address thunk is modified to return a user address data type
 function addressCreatedBuilderUpdater(thunk: CreateAddressSubmissionThunk) {
     return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
         builder.addCase(thunk.fulfilled, (state, action) => {
-            const body = action.payload
-            const { yipCode, address, addressMetadata } = body
-            const {  } = addressMetadata
+            const addressData = action.payload
+            addAddressData(state, addressData)
         })
         return builder
+    }
+}
+
+function addAddressData(state: UserAddressDataState, data: UserAddressData){
+    const sliceData = state.sliceData
+    const newSliceData = newUserAddressSliceData(data)
+    if(sliceData === undefined){
+        state.sliceData = [newSliceData]
+    } else {
+        sliceData.push(newSliceData)
     }
 }
 
@@ -173,6 +180,6 @@ function generateThunk(path: string, predicate: (obj: any) => obj is UserAddress
 }
 
 export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } =
-    userAddressDataSliceGenerator(updateRegistrations, deleteAddress)(generateThunk)
+    userAddressDataSliceGenerator(updateRegistrations, deleteAddress, submitCreateAddress)(generateThunk)
 
 export default userAddressDataSlice.reducer

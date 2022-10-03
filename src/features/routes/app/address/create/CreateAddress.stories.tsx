@@ -3,8 +3,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import CreateAddressWrapper from "./CreateAddress"
 import createAddressEditReducer from "./edit/createAddressEditSlice"
 import { Provider } from "react-redux"
-import { createMockThunkOrFailureThunk, createMockTransformedPortBodyOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
-import { AddressItem, CreateAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
 import { createAddressSubmissionSliceGenerator } from "./submit/createAddressSubmissionSlice"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
@@ -12,6 +11,7 @@ import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
 import { ConnectedDashboard } from "../../Dashboard"
 import { useState } from "react"
+import { createMockSubmissionThunk } from "./submit/createAddressMocks"
 
 type StoryType = typeof StoryWrapper
 
@@ -75,26 +75,7 @@ type StoreThunksProps = {
 function createStoreAndThunks(props: StoreThunksProps){
     const { delayMilis, shouldFail } = props
 
-    const mockSubmissionThunk = createMockTransformedPortBodyOrFailureThunk("mockCreateAddressData", 
-    responseGenerator, delayMilis, !!shouldFail)
-
-    function responseGenerator(d: CreateAddressData): AddressItem {
-
-        const response: AddressItem = {
-            address: d.address,
-            yipCode: "MOCKYIPCODE12345",
-            addressMetadata: {
-                lastUpdated: arbitraryDate1
-            }
-        }
-
-        if (d.name !== undefined) {
-            response.name = d.name
-        }
-
-        return response
-
-    }
+    const mockSubmissionThunk = createMockSubmissionThunk(delayMilis, shouldFail, arbitraryDate1)
 
     const mockSubmissionReducer = createAddressSubmissionSliceGenerator(mockSubmissionThunk).reducer
 
@@ -109,7 +90,7 @@ function createStoreAndThunks(props: StoreThunksProps){
       "mockUpdateRegistrations", d => d, delayMilis
     )
 
-    const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk)
+    const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk, mockSubmissionThunk)
     (() => mockAddressDataThunk).slice.reducer
 
     const mockUserData: UserData = {
