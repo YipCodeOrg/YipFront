@@ -18,11 +18,12 @@ import {
 import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
 import { MdClose as CloseIcon} from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import { appAbs, glossaryAbs } from '../routing/routeStrings';
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from './Logo';
 
 const links: [link: string, path:string][] = [["/", "Home"],
-  ["/site/glossary", "Glossary"]];
+  [glossaryAbs, "Glossary"]];
 
 const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   <Box
@@ -71,7 +72,7 @@ export const NavBar: React.FC<NavbarProps> = ({isLoggedIn, isSignedUp, setIsSige
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'} >                        
-            <Link to={"/app"}>
+            <Link to={appAbs}>
               <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>                             
             </Link>
             <HStack
@@ -132,11 +133,11 @@ export const NavBar: React.FC<NavbarProps> = ({isLoggedIn, isSignedUp, setIsSige
 
   function redirectSignupLogin() {
     setIsSigedUp(true)
-    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodeURIComponent("/app")}`);
+    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=signup&postLoginRedirect=${encodeURIComponent(appAbs)}`);
   }
 
   function redirectLoginSignup() {
-    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodeURIComponent("/app")}`);
+    return () => window.location.replace(`${HUB_AUTH_INIT_URL}?action=login&postLoginRedirect=${encodeURIComponent(appAbs)}`);
   }
 }
 

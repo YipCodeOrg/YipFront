@@ -5,8 +5,9 @@ import { lazy, Suspense} from "react";
 import { selectIsLoggedIn } from "../../features/profile/profileSelectors";
 import { useAppSelector } from "../../app/hooks";
 import { submitCreateAddress } from "../../features/routes/app/address/create/submit/createAddressSubmissionSlice";
+import { about, address, addresses, app, contact, create, faq, glossary, legal, pricing, privacy, site, terms, testimonials, topLevelAbs, view, yiptionary } from "./routeStrings";
 
-// Routes: lazy-loaded for performance
+// Route Components: lazy-loaded for performance
 const Home = lazy(() => import("../../features/routes/Home"))
 const About = lazy(() => import("../../features/routes/site/About"))
 const Glossary = lazy(() => import("../../features/routes/site/Glossary"))
@@ -41,37 +42,37 @@ const MainRouter = () => {
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
   
   return (  
-      <BrowserRouter>
-      <Routes>
-        <Route path="/*" element={<TopLevelRoutingLayout/>}>
-            <Route index element={<LoadingWrapper><Home isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/></LoadingWrapper>}/>
-            <Route path="site" element={<FullSiteRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
-              <Route path="about" element={<LoadingWrapper><About/></LoadingWrapper>}/>
-              <Route path="contact" element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
-              <Route path="faq" element={<LoadingWrapper><Faq/></LoadingWrapper>}/>
-              <Route path="glossary">
-                <Route index element={<LoadingWrapper><Glossary/></LoadingWrapper>}/>
-                <Route path="yiptionary" element={<LoadingWrapper><Yiptionary/></LoadingWrapper>}/>
+    <BrowserRouter>
+    <Routes>
+      <Route path={topLevelAbs} element={<TopLevelRoutingLayout/>}>
+          <Route index element={<LoadingWrapper><Home isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/></LoadingWrapper>}/>
+          <Route path={site} element={<FullSiteRoutingLayout isLoggedIn={isLoggedIn} isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
+            <Route path={about} element={<LoadingWrapper><About/></LoadingWrapper>}/>
+            <Route path={contact} element={<LoadingWrapper><Contact/></LoadingWrapper>}/>
+            <Route path={faq} element={<LoadingWrapper><Faq/></LoadingWrapper>}/>
+            <Route path={glossary}>
+              <Route index element={<LoadingWrapper><Glossary/></LoadingWrapper>}/>
+              <Route path={yiptionary} element={<LoadingWrapper><Yiptionary/></LoadingWrapper>}/>
+            </Route>
+            <Route path={legal} element={<LoadingWrapper><Legal/></LoadingWrapper>}/>
+            <Route path={pricing} element={<LoadingWrapper><Pricing/></LoadingWrapper>}/>
+            <Route path={privacy} element={<LoadingWrapper><Privacy/></LoadingWrapper>}/>
+            <Route path={terms} element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
+            <Route path={testimonials} element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
+          </Route>
+          <Route path={app} element={<LoginWrapper isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
+            <Route path={addresses}>
+              <Route path={view} element={<LoadingWrapper><ViewAddresses/></LoadingWrapper>}/>
+            </Route> 
+            <Route path={address}>
+              <Route path={create} element={<LoadingWrapper>
+                  <CreateAddress submissionThunk={submitCreateAddress}/>
+                </LoadingWrapper>}/>
               </Route>
-              <Route path="legal" element={<LoadingWrapper><Legal/></LoadingWrapper>}/>
-              <Route path="pricing" element={<LoadingWrapper><Pricing/></LoadingWrapper>}/>
-              <Route path="privacy" element={<LoadingWrapper><Privacy/></LoadingWrapper>}/>
-              <Route path="terms" element={<LoadingWrapper><Terms/></LoadingWrapper>}/>
-              <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
-            </Route>
-            <Route path="app" element={<LoginWrapper isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
-              <Route path="addresses">
-                <Route path="view" element={<LoadingWrapper><ViewAddresses/></LoadingWrapper>}/>
-              </Route> 
-              <Route path="address">
-                <Route path="create" element={<LoadingWrapper>
-                    <CreateAddress submissionThunk={submitCreateAddress}/>
-                  </LoadingWrapper>}/>
-                </Route>
-            </Route>
-          </Route>          
-        </Routes>      
-      </BrowserRouter>
+          </Route>
+        </Route>          
+      </Routes>      
+    </BrowserRouter>
   )
 }
 

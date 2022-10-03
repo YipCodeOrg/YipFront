@@ -17,6 +17,7 @@ import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { lowercaseFilterInSomeProp, TextFilter } from "../../../../components/core/TextFilter"
+import { editfriendsAbs } from "../../../../components/routing/routeStrings"
 
 export type ViewFriendsProps = {
     friends: Friend[],
@@ -43,7 +44,7 @@ function ViewFriendsEmpty(){
                         You have not added any friends yet.{' '}
                 </Heading>
                 <Center>
-                    <RouterLink to="/app/friends/edit">
+                    <RouterLink to={editfriendsAbs}>
                         <Button
                         rounded={'full'}
                         px={6}

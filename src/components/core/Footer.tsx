@@ -11,6 +11,7 @@ import {
 import { ReactNode } from 'react';
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube, } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { aboutAbs, appAbs, contactAbs, faqAbs, legalAbs, pricingAbs, privacyAbs, termsAbs } from '../routing/routeStrings';
 import { Logo } from './Logo';
 
 const SocialButton = ({
@@ -65,14 +66,14 @@ const NavLink : React.FC<{path: string, text: string }> = ({path, text}) => (
   </Box>
 );
 
-const companyLinks: [link: string, path:string][] = [["/site/about", "About us"],
-  ["/site/contact", "Contact us"],
-  ["/site/pricing", "Pricing"]];
+const companyLinks: [link: string, path:string][] = [[aboutAbs, "About us"],
+  [contactAbs, "Contact us"],
+  [pricingAbs, "Pricing"]];
 
-const supportLinks: [link: string, path:string][] = [["/site/faq", "FAQ"], 
-  ["/site/terms", "Terms of Service"], 
-  ["/site/legal", "Legal"], 
-  ["/site/privacy", "Privacy Policy"]]
+const supportLinks: [link: string, path:string][] = [[faqAbs, "FAQ"], 
+  [termsAbs, "Terms of Service"], 
+  [legalAbs, "Legal"], 
+  [privacyAbs, "Privacy Policy"]]
 
 
 export default function Footer() {
@@ -89,7 +90,7 @@ export default function Footer() {
           spacing={8}>
           <Stack spacing={6}>
             <Box>                       
-              <Link to={"/app"}>
+              <Link to={appAbs}>
                 <Logo lightCol='#000000' darkCol='#ffffff' size={47}/>                             
               </Link>           
             </Box>

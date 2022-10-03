@@ -24,6 +24,7 @@ import { ConfirmationPopoverButton } from "../../../../../components/core/Confir
 import { useThunkDispatch } from "../../../../../app/hooks"
 import { useCallback, useMemo } from "react"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../../../useraddressdata/userAddressDataHooks"
+import { createAbs, editRegistrationsAbs } from "../../../../../components/routing/routeStrings"
 
 export default function ViewAddressesWrapper(){
     
@@ -96,7 +97,7 @@ const LoadedViewAddresses: React.FC<LoadedViewAddressesProps> = (props) =>{
         buttonData: [{
             hoverText: userAddressData.length > 0 ? "Create another address" : "Create an address",
             icon: FaPlusCircle,
-            link: "/app/address/create"
+            link: createAbs
         }]
     }
 
@@ -124,7 +125,7 @@ const EmptyViewAddressesContent = () => {
                     You have no addresses yet!{' '}
             </Heading>
             <Center>
-                <RouterLink to="/app/address/create">
+                <RouterLink to={createAbs}>
                     <Button
                     rounded={'full'}
                     px={6}
@@ -212,7 +213,7 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
             <Spacer/>
             <HStack paddingRight="2">
                 <Tooltip label={editRegistrationsTooltip} placement="top" openDelay={500}>
-                    <RouterLink to={"/app/registrations/edit"}>
+                    <RouterLink to={editRegistrationsAbs}>
                         <IconButton aria-label={editRegistrationsTooltip} bg="inherit">
                             <Icon as={MdEditNote}/>
                         </IconButton>

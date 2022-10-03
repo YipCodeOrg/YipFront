@@ -7,6 +7,7 @@ import {
     Code,
   } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { appAbs } from '../routing/routeStrings';
   
   export default function Hero() {
     return (
@@ -30,7 +31,7 @@ import { Link } from 'react-router-dom';
               The future of postal address management is here.
             </Text>
             <Stack spacing={6} direction={'row'}>
-              <Link to="/app">
+              <Link to={appAbs}>
                 <Button
                   rounded={'full'}
                   px={6}
@@ -54,7 +55,7 @@ import { Link } from 'react-router-dom';
               lineHeight={'110%'}>
                   Yip<Code fontSize="xl">Code</Code>{' '}
             </Heading>
-            <Link to="/app">
+            <Link to={appAbs}>
               <Button
                 rounded={'full'}
                 px={6}
