@@ -11,6 +11,7 @@ import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, Updat
 import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
 import { ConnectedDashboard } from "../../Dashboard"
+import { useState } from "react"
 
 type StoryType = typeof StoryWrapper
 
@@ -48,7 +49,31 @@ const arbitraryDate1 = dateToSimpleDate(new Date(2020, 12))
 
 function StoryWrapper(props: StoryWrapperProps) {
 
-    const { delayMilis, initialRawAddress, initialName, shouldFail, screen } = props
+    const { initialRawAddress, initialName, screen } = props
+    const { delayMilis, shouldFail } = props
+    const storeThunkProps = { delayMilis, shouldFail: !!shouldFail }
+    const [storeThunks, ] = useState(() => createStoreAndThunks(storeThunkProps))
+
+    const { mockStore, mockSubmissionThunk, mockAddressDataThunk, mockUserDataThunk, mockDeletionThunk } = 
+        storeThunks
+
+    return <Provider store={mockStore}>
+        {screen === DisplayScreen.CreateAddressScreen && <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />}
+        {screen === DisplayScreen.DashboardScreen && <ConnectedDashboard 
+           selectedYipCode={null}
+           userAddressDataThunk={mockAddressDataThunk}
+           userDataThunk={mockUserDataThunk}
+           deleteAddressThunk={mockDeletionThunk} />}
+    </Provider>
+}
+
+type StoreThunksProps = {
+    delayMilis: number,
+    shouldFail: boolean
+}
+
+function createStoreAndThunks(props: StoreThunksProps){
+    const { delayMilis, shouldFail } = props
 
     const mockSubmissionThunk = createMockTransformedPortBodyOrFailureThunk("mockCreateAddressData", 
     responseGenerator, delayMilis, !!shouldFail)
@@ -108,14 +133,13 @@ function StoryWrapper(props: StoryWrapperProps) {
         }
     })
 
-    return <Provider store={mockStore}>
-        {screen === DisplayScreen.CreateAddressScreen && <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />}
-        {screen === DisplayScreen.DashboardScreen && <ConnectedDashboard 
-           selectedYipCode={null}
-           userAddressDataThunk={mockAddressDataThunk}
-           userDataThunk={mockUserDataThunk}
-           deleteAddressThunk={mockDeletionThunk} />}
-    </Provider>
+    return {
+        mockStore,
+        mockSubmissionThunk,
+        mockAddressDataThunk,
+        mockUserDataThunk,
+        mockDeletionThunk
+    }
 }
 
 export const Standard = Template.bind({})
