@@ -7,6 +7,7 @@ import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/pa
 import { compose2Higher, compose2PairDomain } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
 import { isRegistration, Registration } from "../../packages/YipStackLib/types/registrations";
 import { PortBodyInput } from "../../util/redux/thunkHelpers";
+import { CreateAddressSubmissionThunk } from "../routes/app/address/create/submit/createAddressSubmissionSlice";
 
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressSliceData[], MessagePort, {}>
@@ -60,6 +61,19 @@ export const userAddressDataSliceGenerator = compose2PairDomain(
     fetchSliceGenerator<UserAddressData[], UserAddressSliceData[]>
         ("userAddressData", d => d, "/addresses", isUserAddressDataArray)
 )
+
+
+// TODO: Continue this once create address thunk is modified to return a user address data type
+function addressCreatedBuilderUpdater(thunk: CreateAddressSubmissionThunk) {
+    return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
+        builder.addCase(thunk.fulfilled, (state, action) => {
+            const body = action.payload
+            const { yipCode, address, addressMetadata } = body
+            const {  } = addressMetadata
+        })
+        return builder
+    }
+}
 
 function registrationUpdateBuilderUpdater(thunk: UpdateRegistrationThunk) {
     return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
