@@ -4,78 +4,78 @@ import { IconType } from "react-icons"
 import { FaBuilding, FaHouseUser, FaPlusCircle, FaRegEnvelope } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { Link as RouterLink } from "react-router-dom"
-import { LoadStatus } from "../../../app/types"
-import { useYipCodeUrlParam } from "../../../app/urlParamHooks"
-import Sidebar, { SideBarItemData, SidebarProps } from "../../../components/core/SideBar"
-import { LogoLoadStateWrapper } from "../../../components/hoc/LoadStateWrapper"
-import { UserAddressData } from "../../../packages/YipStackLib/types/address/address"
-import { shrinkToParent } from "../../../util/cssHelpers"
-import { deleteAddress, DeleteAddressData, DeleteAddressThunk, fetchUserAddressData, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice"
-import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./registrations/RegistrationUpdateStatusIcon"
-import { Registration } from "../../../packages/YipStackLib/types/registrations"
+import { LoadStatus } from "../../../../../app/types"
+import { useYipCodeUrlParam } from "../../../../../app/urlParamHooks"
+import Sidebar, { SideBarItemData, SidebarProps } from "../../../../../components/core/SideBar"
+import { LogoLoadStateWrapper } from "../../../../../components/hoc/LoadStateWrapper"
+import { UserAddressData } from "../../../../../packages/YipStackLib/types/address/address"
+import { shrinkToParent } from "../../../../../util/cssHelpers"
+import { deleteAddress, DeleteAddressData, DeleteAddressThunk, fetchUserAddressData, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
+import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "../../registrations/RegistrationUpdateStatusIcon"
+import { Registration } from "../../../../../packages/YipStackLib/types/registrations"
 import { MdEditNote } from "react-icons/md"
-import { AddressPanel } from "../../../components/core/AddressPanel"
-import { PageWithHeading } from "../../../components/hoc/PageWithHeading"
+import { AddressPanel } from "../../../../../components/core/AddressPanel"
+import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
 import { AsyncThunk } from "@reduxjs/toolkit"
-import { UserData } from "../../../packages/YipStackLib/types/userData"
-import { fetchUserData } from "../../userdata/userDataSlice"
-import { simpleDateToDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date"
-import { ConfirmationPopoverButton } from "../../../components/core/ConfirmationPopoverButton"
-import { useThunkDispatch } from "../../../app/hooks"
+import { UserData } from "../../../../../packages/YipStackLib/types/userData"
+import { fetchUserData } from "../../../../userdata/userDataSlice"
+import { simpleDateToDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
+import { ConfirmationPopoverButton } from "../../../../../components/core/ConfirmationPopoverButton"
+import { useThunkDispatch } from "../../../../../app/hooks"
 import { useCallback, useMemo } from "react"
-import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../useraddressdata/userAddressDataHooks"
+import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../../../useraddressdata/userAddressDataHooks"
 
-export default function DashboardWrapper(){
+export default function ViewAddressesWrapper(){
     
     const selectedYipCode = useYipCodeUrlParam()
-    return <ConnectedDashboard {...{selectedYipCode}}
+    return <ConnectedViewAddresses {...{selectedYipCode}}
         userAddressDataThunk={fetchUserAddressData}
         userDataThunk={fetchUserData}
         deleteAddressThunk={deleteAddress} />
 }
 
-export type ConnectedDashboardProps = {
+export type ConnectedViewAddressesProps = {
     selectedYipCode: string | null,
     userAddressDataThunk: AsyncThunk<UserAddressSliceData[], MessagePort, {}>,
     userDataThunk: AsyncThunk<UserData, MessagePort, {}>
     deleteAddressThunk: DeleteAddressThunk
 }
 
-export function ConnectedDashboard(props: ConnectedDashboardProps){
+export function ConnectedViewAddresses(props: ConnectedViewAddressesProps){
 
     const { selectedYipCode, userAddressDataThunk, userDataThunk, deleteAddressThunk} = props    
     const [userAddressData, userAddressDataStatus] = useSortedAddressDataHubFetch(userAddressDataThunk, userDataThunk)
 
     const deleteAddress = useThunkDispatch(deleteAddressThunk)
 
-    return <Dashboard {...{userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress}}/>    
+    return <ViewAddresses {...{userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress}}/>    
 }
 
-export type DashboardProps = {
+export type ViewAddressesProps = {
     userAddressData: UserAddressSliceData[] | undefined,
     userAddressDataStatus: LoadStatus,
     selectedYipCode: string | null,
     deleteAddress: (data: DeleteAddressData) => void
 }
 
-export const Dashboard: React.FC<DashboardProps> = (props) => {
+export const ViewAddresses: React.FC<ViewAddressesProps> = (props) => {
 
     const {userAddressData, userAddressDataStatus, selectedYipCode, deleteAddress} = props
 
-    const loadedElement = userAddressData!! ? <LoadedDashboard {...{userAddressData,
+    const loadedElement = userAddressData!! ? <LoadedViewAddresses {...{userAddressData,
         selectedYipCode, deleteAddress}}/> : <></>    
 
     return <LogoLoadStateWrapper status = {userAddressDataStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
 }
 
-type LoadedDashboardProps = {
+type LoadedViewAddressesProps = {
     userAddressData: UserAddressSliceData[],
     selectedYipCode: string | null,
     deleteAddress: (data: DeleteAddressData) => void
 }
 
-const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
+const LoadedViewAddresses: React.FC<LoadedViewAddressesProps> = (props) =>{
     
     const {userAddressData, selectedYipCode, deleteAddress} = props
     const addressMap = useMemoisedYipCodeToAddressMap(userAddressData)
@@ -96,7 +96,7 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
         buttonData: [{
             hoverText: userAddressData.length > 0 ? "Create another address" : "Create an address",
             icon: FaPlusCircle,
-            link: "/app/create"
+            link: "/app/address/create"
         }]
     }
 
@@ -105,16 +105,16 @@ const LoadedDashboard: React.FC<LoadedDashboardProps> = (props) =>{
         selectedAddress = addressMap.get(effectiveSelectedYipcode) ?? null
     }
 
-    return <HStack style={shrinkToParent} width="100%" maxW="100%" id="loaded-dashboard">
+    return <HStack style={shrinkToParent} width="100%" maxW="100%">
         <Sidebar {...sideBarProps}/>
         {!!selectedAddress ?
-            <DashboardContent {...{selectedAddressData: selectedAddress, deleteAddress}}/> :
-            <EmptyDashboardContent/>
+            <ViewAddressesContent {...{selectedAddressData: selectedAddress, deleteAddress}}/> :
+            <EmptyViewAddressesContent/>
         }        
     </HStack>
 }
 
-const EmptyDashboardContent = () => {
+const EmptyViewAddressesContent = () => {
     return <Center style={{flex:1}} maxW="100%">        
         <Stack spacing={6}>
             <Heading
@@ -124,7 +124,7 @@ const EmptyDashboardContent = () => {
                     You have no addresses yet!{' '}
             </Heading>
             <Center>
-                <RouterLink to="/app/create">
+                <RouterLink to="/app/address/create">
                     <Button
                     rounded={'full'}
                     px={6}
@@ -139,12 +139,12 @@ const EmptyDashboardContent = () => {
     </Center>
 }
 
-type DashboardContentProps = {
+type ViewAddressesContentProps = {
     selectedAddressData: UserAddressSliceData,
     deleteAddress: (data: DeleteAddressData) => void
 }
 
-const DashboardContent: React.FC<DashboardContentProps> = (props) =>{
+const ViewAddressesContent: React.FC<ViewAddressesContentProps> = (props) =>{
     
     const { selectedAddressData, deleteAddress } = props
     const { addressData, isDeleting } = selectedAddressData
@@ -205,7 +205,7 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
     const editRegistrationsTooltip = "Edit registrations"
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
-    return <VStack id="dashboard-registration" align="left" spacing="5px"
+    return <VStack align="left" spacing="5px"
         justify="top">
         <HStack align="flex-start">
             <label>Registrations</label>

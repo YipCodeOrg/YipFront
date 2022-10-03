@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { Provider } from "react-redux";
-import { dateToSimpleDate } from "../../../packages/YipStackLib/packages/YipAddress/util/date";
-import { UserAddressData } from "../../../packages/YipStackLib/types/address/address";
-import { UserData } from "../../../packages/YipStackLib/types/userData";
-import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../util/storybook/mockThunks";
-import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../useraddressdata/userAddressDataSlice";
-import { userDataSliceGenerator } from "../../userdata/userDataSlice";
-import { createMockSubmissionThunk, useMockYipcodeGenerator } from "./address/create/submit/createAddressMocks";
-import { ConnectedDashboard, Dashboard } from "./Dashboard";
+import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date";
+import { UserAddressData } from "../../../../../packages/YipStackLib/types/address/address";
+import { UserData } from "../../../../../packages/YipStackLib/types/userData";
+import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks";
+import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice";
+import { userDataSliceGenerator } from "../../../../userdata/userDataSlice";
+import { createMockSubmissionThunk, useMockYipcodeGenerator } from "../../address/create/submit/createAddressMocks";
+import { ConnectedViewAddresses, ViewAddresses } from "./ViewAddresses";
 
 type StoryType = typeof StoryWrapper
 
@@ -21,8 +21,8 @@ enum StoryYipCode {
 }
 
 export default {
-    component: Dashboard,
-    title: 'app/Dashboard',
+    component: ViewAddresses,
+    title: 'app/ViewAddresses',
     argTypes: {
       selectedYipCode: {
         options: StoryYipCode
@@ -86,7 +86,7 @@ function StoryWrapper(props: StoryWrapperProps){
   })
   
   return <Provider store={mockStore}>
-      <ConnectedDashboard {...{selectedYipCode}}
+      <ConnectedViewAddresses {...{selectedYipCode}}
         userAddressDataThunk={mockAddressDataThunk}
         userDataThunk={mockUserDataThunk}
         deleteAddressThunk={mockDeletionThunk} />

@@ -26,7 +26,7 @@ export const AddressPanel: React.FC<AddressPanelProps> = ({addressItem, displayY
         </HStack>
         <VStack align="left" justify="top" maxW="100%" bg={panelBg} borderRadius="lg" p={4} {...rest}>        
             <LabelledYipCodeContent {...{yipCode, displayYipCode}} display={displayYipCode? "inherit" : "none"}/>
-            <VStack id="dashboard-address" align="left">
+            <VStack align="left">
                 <LabelText text="Address"/>
                 <HStack align="flex-start">
                     <List boxShadow='outline' borderRadius="lg" p={2}>

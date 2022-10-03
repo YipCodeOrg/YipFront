@@ -9,14 +9,14 @@ import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/Y
 import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
 import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
-import { ConnectedDashboard } from "../../Dashboard"
+import { ConnectedViewAddresses } from "../../addresses/view/ViewAddresses"
 import { useState } from "react"
 import { createMockSubmissionThunk, useMockYipcodeGenerator } from "./submit/createAddressMocks"
 
 type StoryType = typeof StoryWrapper
 
 enum DisplayScreen {
-    DashboardScreen = "Dashboard",
+    ViewAddressesScreen = "ViewAddresses",
     CreateAddressScreen = "Create Address"
 }
 
@@ -60,7 +60,7 @@ function StoryWrapper(props: StoryWrapperProps) {
 
     return <Provider store={mockStore}>
         {screen === DisplayScreen.CreateAddressScreen && <CreateAddressWrapper {...{ initialRawAddress, initialName }} submissionThunk={mockSubmissionThunk} />}
-        {screen === DisplayScreen.DashboardScreen && <ConnectedDashboard 
+        {screen === DisplayScreen.ViewAddressesScreen && <ConnectedViewAddresses 
            selectedYipCode={null}
            userAddressDataThunk={mockAddressDataThunk}
            userDataThunk={mockUserDataThunk}

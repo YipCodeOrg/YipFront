@@ -2,14 +2,14 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { action } from '@storybook/addon-actions'
 import Home, { HomeProps } from "./Home";
 
-type DashboardType = typeof Home
+type HomeType = typeof Home
 
 export default {
     component: Home,
     title: 'site/routes/Home',
-  } as ComponentMeta<DashboardType>
+  } as ComponentMeta<HomeType>
 
-const Template: ComponentStory<DashboardType> = (args: HomeProps) => <Home {...args}/>
+const Template: ComponentStory<HomeType> = (args: HomeProps) => <Home {...args}/>
 
 export const Standard = Template.bind({})
 Standard.args = {

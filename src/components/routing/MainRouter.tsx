@@ -18,7 +18,7 @@ const Faq = lazy(() => import("../../features/routes/site/Faq"))
 const Privacy = lazy(() => import("../../features/routes/site/Privacy"))
 const Legal = lazy(() => import("../../features/routes/site/Legal"))
 const Terms = lazy(() => import("../../features/routes/site/Terms"))
-const Dashboard = lazy(() => import("../../features/routes/app/Dashboard"));
+const ViewAddresses = lazy(() => import("../../features/routes/app/addresses/view/ViewAddresses"));
 const CreateAddress = lazy(() => import("../../features/routes/app/address/create/CreateAddress"));
 
 type LoadingWrapperProps = {
@@ -60,10 +60,14 @@ const MainRouter = () => {
               <Route path="testimonials" element={<LoadingWrapper><Testimonials/></LoadingWrapper>}/>
             </Route>
             <Route path="app" element={<LoginWrapper isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
-              <Route index element={<LoadingWrapper><Dashboard/></LoadingWrapper>}/>
-              <Route path="create" element={<LoadingWrapper>
-                  <CreateAddress submissionThunk={submitCreateAddress}/>
-                </LoadingWrapper>}/>
+              <Route path="addresses">
+                <Route path="view" element={<LoadingWrapper><ViewAddresses/></LoadingWrapper>}/>
+              </Route> 
+              <Route path="address">
+                <Route path="create" element={<LoadingWrapper>
+                    <CreateAddress submissionThunk={submitCreateAddress}/>
+                  </LoadingWrapper>}/>
+                </Route>
             </Route>
           </Route>          
         </Routes>      
