@@ -6,7 +6,7 @@ export type CreateAddressSubmissionState = SubmissionState<CreateAddressData, Us
 export type CreateAddressSubmissionThunk = PortBodyThunk<CreateAddressData, UserAddressData>
 
 export const submitCreateAddress: CreateAddressSubmissionThunk =
-    createSimpleApiPostThunk<CreateAddressData, UserAddressData>("/createAddressData", isUserAddressData)
+    createSimpleApiPostThunk<CreateAddressData, UserAddressData>("/address", isUserAddressData)
 
 export const createAddressSubmissionSliceGenerator = 
     submissionSliceGenerator<CreateAddressData, UserAddressData>("createAddress",
