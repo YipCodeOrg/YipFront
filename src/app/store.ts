@@ -4,6 +4,7 @@ import userDataReducer from "../features/userdata/userDataSlice"
 import userAddressDataReducer from "../features/useraddressdata/userAddressDataSlice"
 import createAddressEditReducer from "../features/routes/app/address/create/edit/createAddressEditSlice"
 import createAddressSubmissionReducer from "../features/routes/app/address/create/submit/createAddressSubmissionSlice"
+import addFriendSubmissionReducer from "../features/routes/app/friend/add/submission/addFriendSubmissionSlice"
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         userData: userDataReducer,
         userAddressData: userAddressDataReducer,
         createAddressEdit: createAddressEditReducer,
-        createAddressSubmission: createAddressSubmissionReducer
+        createAddressSubmission: createAddressSubmissionReducer,
+        addFriendSubmission: addFriendSubmissionReducer
     }
 })
 
