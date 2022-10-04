@@ -1,7 +1,7 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import { Friend, FriendsValidationResult, validateFriends } from "../../../../packages/YipStackLib/types/friends"
-import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
-import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../util/storybook/ValidateWrapper"
+import { Friend, FriendsValidationResult, validateFriends } from "../../../../../packages/YipStackLib/types/friends"
+import { numberToAlpha } from "../../../../../util/storybook/storybookHelpers"
+import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../../util/storybook/ValidateWrapper"
 import { AddFriend, AddFriendProps } from "./AddFriend"
 
 type StoryType = typeof StoryWrapper

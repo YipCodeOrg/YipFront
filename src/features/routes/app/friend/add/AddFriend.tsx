@@ -1,12 +1,12 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
 import { BsPersonPlusFill } from "react-icons/bs"
-import { useEnhancedValidation } from "../../../../app/hooks"
-import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
-import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
-import { standardValidationControlDataFromArray, ValidationControl } from "../../../../components/hoc/ValidationControl"
-import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
-import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
-import { Friend, FriendsValidationResult } from "../../../../packages/YipStackLib/types/friends"
+import { useEnhancedValidation } from "../../../../../app/hooks"
+import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
+import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
+import { standardValidationControlDataFromArray, ValidationControl } from "../../../../../components/hoc/ValidationControl"
+import { Indexed } from "../../../../../packages/YipStackLib/packages/YipAddress/util/types"
+import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
+import { Friend, FriendsValidationResult } from "../../../../../packages/YipStackLib/types/friends"
 
 export type IndexedFriendsValidationResult = Indexed<FriendsValidationResult>
 
