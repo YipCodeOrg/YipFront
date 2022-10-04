@@ -5,7 +5,7 @@ import { lazy, Suspense} from "react";
 import { selectIsLoggedIn } from "../../features/profile/profileSelectors";
 import { useAppSelector } from "../../app/hooks";
 import { submitCreateAddress } from "../../features/routes/app/address/create/submit/createAddressSubmissionSlice";
-import { about, address, addresses, app, contact, create, faq, glossary, legal, pricing, privacy, site, terms, testimonials, topLevelAbs, view, yiptionary } from "./routeStrings";
+import { about, address, addresses, app, contact, create, faq, glossary, legal, pricing, privacy, site, terms, testimonials, topLevelAbs, viewAddresses, yiptionary } from "./routeStrings";
 
 // Route Components: lazy-loaded for performance
 const Home = lazy(() => import("../../features/routes/Home"))
@@ -62,7 +62,7 @@ const MainRouter = () => {
           </Route>
           <Route path={app} element={<LoginWrapper isSignedUp={isSignedUp} setIsSigedUp={setIsSigedUp}/>}>
             <Route path={addresses}>
-              <Route path={view} element={<LoadingWrapper><ViewAddresses/></LoadingWrapper>}/>
+              <Route path={viewAddresses} element={<LoadingWrapper><ViewAddresses/></LoadingWrapper>}/>
             </Route> 
             <Route path={address}>
               <Route path={create} element={<LoadingWrapper>
