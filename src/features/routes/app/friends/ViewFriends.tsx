@@ -1,6 +1,6 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Stack,
     Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer, ButtonGroup } from "@chakra-ui/react"
-import { LoadedFriend } from "./friends"
+import { LoadedFriend } from "./friendsSlice"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { DisclosureResult, useDisclosures, useIndexFilter, usePagination } from "../../../../app/hooks"
