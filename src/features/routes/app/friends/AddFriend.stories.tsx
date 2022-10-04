@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { Friend, FriendsValidationResult, validateFriends } from "../../../../packages/YipStackLib/types/friends"
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
 import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../util/storybook/ValidateWrapper"
-import AddFriend, { AddFriendProps } from "./AddFriend"
+import { AddFriend, AddFriendProps } from "./AddFriend"
 
 type StoryType = typeof StoryWrapper
 
@@ -22,15 +22,14 @@ function StoryWrapper({initialFriends}: AddFriendStoryProps){
     function render(props: AppendSingletonValidateRenderProps<Friend, FriendsValidationResult>){
 
         const { valToAppend: newFriend, setValToAppend: setFriend, validation: friendsValidation,
-            save: saveFriends, cancel: cancelAddFriend } = props
+            save: saveFriends } = props
 
         const childProps: AddFriendProps = {
             friends: initialFriends,
             setNewFriend: setFriend,
             newFriend: newFriend ?? {name: "", yipCode: ""},
             friendsValidation,
-            saveFriends,
-            cancelAddFriend 
+            saveFriends
         }    
 
         return <AddFriend {...childProps}/>
