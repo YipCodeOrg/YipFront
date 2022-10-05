@@ -2,11 +2,28 @@ import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorMod
 import { BsPersonPlusFill } from "react-icons/bs"
 import { useEnhancedValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
+import { LogoLoadStateWrapper } from "../../../../../components/hoc/LoadStateWrapper"
 import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationControl } from "../../../../../components/hoc/ValidationControl"
 import { Indexed } from "../../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend, FriendsValidationResult } from "../../../../../packages/YipStackLib/types/friends"
+import { useFriendsHubFetch } from "../../friends/friendsHooks"
+import { FetchFriendsThunk } from "../../friends/friendsSlice"
+import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
+
+type ConnectedAddFriendProps = {
+    submissionThunk: AddFriendSubmissionThunk,
+    fetchThunk: FetchFriendsThunk    
+}
+
+export function ConnectedAddFriend(props: ConnectedAddFriendProps){
+    const { submissionThunk, fetchThunk } = props
+
+    const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
+
+    return <LogoLoadStateWrapper status={loadStatus} loadedElement={<>TODO</>} logoSize={80}/>
+}
 
 export type IndexedFriendsValidationResult = Indexed<FriendsValidationResult>
 
