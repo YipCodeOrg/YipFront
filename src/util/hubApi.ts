@@ -1,11 +1,6 @@
 import { ApiRequestPayload, ApiResponsePayload, FrontToHubMessage, HubToFrontMessage } from "../packages/YipStackLib/util/hubFront"
 import { logAndReject, logAndReturnRejectedPromise } from "../packages/YipStackLib/util/misc"
 
-
-export const HttpStatusOk: number = 200
-
-
-
 function isHubToFrontMessage(obj: any): obj is HubToFrontMessage{
     const label = obj.label
     if (!(typeof label == 'string' || label instanceof String)) {
