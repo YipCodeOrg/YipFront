@@ -6,6 +6,7 @@ import createAddressEditReducer from "../features/routes/app/address/create/edit
 import createAddressSubmissionReducer from "../features/routes/app/address/create/submit/createAddressSubmissionSlice"
 import addFriendSubmissionReducer from "../features/routes/app/friend/add/submit/addFriendSubmissionSlice"
 import friends from "../features/routes/app/friends/friendsSlice"
+import addFriendEdit from "../features/routes/app/friend/add/edit/addFriendEditSlice"
 
 const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
         createAddressEdit: createAddressEditReducer,
         createAddressSubmission: createAddressSubmissionReducer,
         addFriendSubmission: addFriendSubmissionReducer,
-        friends
+        friends,
+        addFriendEdit
     }
 })
 
