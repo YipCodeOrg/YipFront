@@ -82,7 +82,7 @@ export function createSimpleApiRequestThunk<TThunkInput, TResponse, TBody={}>(
 export function createApiRequestThunk<TThunkInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: HttpMethod, basePath: string,
+    expectedStatus: HttpStatusCode, method: HttpMethod, basePath: string,
     responseTransform: (_: TResponse) => TReturn,    
     bodyGenerator?: (i: TThunkInput) => TBody,
     augmentPath: (i: TThunkInput, path: string) => string = (_, p) => p)
