@@ -11,6 +11,12 @@ export type PortBodyInput<TBody> = {
     body: TBody
 } & InputWithPort
 
+export function liftBodyToPortBodyFunction2<TBody, T2, TReturn>(f: (b: TBody, v2: T2) => TReturn){
+    return function(i: PortBodyInput<TBody>, v2: T2){
+        return f(i.body, v2)
+    }
+}
+
 export type PortBodyRequest<TBody, TResponse> = ASyncFunction<PortBodyInput<TBody>, TResponse>
 
 export function createApiRequest<TRequestInput, TResponse, TReturn, TBody={}>(
