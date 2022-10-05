@@ -175,11 +175,11 @@ export function newUserAddressSliceData(addressData: UserAddressData): UserAddre
     }
 }
 
-function generateThunk(path: string, predicate: (obj: any) => obj is UserAddressData[]) {
+function generatefetchThunk(path: string, predicate: (obj: any) => obj is UserAddressData[]) {
     return createApiGetThunk<UserAddressData[], UserAddressSliceData[]>(path, predicate, r => r.map(newUserAddressSliceData))
 }
 
 export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } =
-    userAddressDataSliceGenerator(updateRegistrations, deleteAddress, submitCreateAddress)(generateThunk)
+    userAddressDataSliceGenerator(updateRegistrations, deleteAddress, submitCreateAddress)(generatefetchThunk)
 
 export default userAddressDataSlice.reducer
