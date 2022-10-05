@@ -1,4 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit"
+import HttpMethod from "../../packages/YipStackLib/packages/YipAddress/util/httpMethod"
 import HttpStatusCode from "../../packages/YipStackLib/packages/YipAddress/util/httpStatusCode"
 import { createApiRequest, PortBodyInput } from "./thunkHelpers"
 
@@ -16,7 +17,7 @@ export function createApiDeleteThunk<TBody, TResponse, TReturn>(path: string,
     isCorrectType: (obj: any) => obj is TResponse,
     responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn> {
     return createPortBodyRequestThunk<TBody, TResponse, TReturn>
-        (path, isCorrectType, HttpStatusCode.OK, "DELETE", responseTransform)
+        (path, isCorrectType, HttpStatusCode.OK, HttpMethod.DELETE, responseTransform)
 }
 
 export function createSimpleApiPutThunk<TBody, TResponse>(path: string,
@@ -30,7 +31,7 @@ export function createApiPutThunk<TBody, TResponse, TReturn>(path: string,
     isCorrectType: (obj: any) => obj is TResponse,
     responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn> {
     return createPortBodyRequestThunk<TBody, TResponse, TReturn>
-        (path, isCorrectType, HttpStatusCode.OK, "PUT", responseTransform)
+        (path, isCorrectType, HttpStatusCode.OK, HttpMethod.PUT, responseTransform)
 }
 
 export function createSimpleApiPostThunk<TBody, TResponse>(path: string,
@@ -42,7 +43,7 @@ export function createApiPostThunk<TBody, TResponse, TReturn>(path: string,
     isCorrectType: (obj: any) => obj is TResponse,
     responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn> {
     return createPortBodyRequestThunk<TBody, TResponse, TReturn>
-        (path, isCorrectType, HttpStatusCode.OK, "POST", responseTransform)
+        (path, isCorrectType, HttpStatusCode.OK, HttpMethod.POST, responseTransform)
 }
 
 export function createSimpleApiGetThunk<TResponse>(path: string, isCorrectType: (obj: any) => obj is TResponse) {    
@@ -52,16 +53,16 @@ export function createSimpleApiGetThunk<TResponse>(path: string, isCorrectType: 
 export function createApiGetThunk<TResponse, TReturn>(path: string, isCorrectType: (obj: any) => obj is TResponse,
 responseTransform: (_: TResponse) => TReturn) {    
     return createApiRequestThunk<MessagePort, TResponse, TReturn>(p => p, 
-        isCorrectType, HttpStatusCode.OK, "GET", path, responseTransform)
+        isCorrectType, HttpStatusCode.OK, HttpMethod.GET, path, responseTransform)
 }
 
 export function createSimplePortBodyRequestThunk<TBody, TResponse>(path: string,
-    isCorrectType: (obj: any) => obj is TResponse, expectedStatus: number, method: string): PortBodyThunk<TBody, TResponse>{
+    isCorrectType: (obj: any) => obj is TResponse, expectedStatus: number, method: HttpMethod): PortBodyThunk<TBody, TResponse>{
         return createPortBodyRequestThunk(path, isCorrectType, expectedStatus, method, r => r)
 }
 
 export function createPortBodyRequestThunk<TBody, TResponse, TReturn>(path: string,
-    isCorrectType: (obj: any) => obj is TResponse, expectedStatus: number, method: string,
+    isCorrectType: (obj: any) => obj is TResponse, expectedStatus: number, method: HttpMethod,
     responseTransform: (_: TResponse) => TReturn): PortBodyThunk<TBody, TReturn>{
         return createApiRequestThunk<PortBodyInput<TBody>, TResponse, TReturn, TBody>
             (p => p.port, isCorrectType, expectedStatus, method, path, responseTransform, i => i.body)
@@ -70,7 +71,7 @@ export function createPortBodyRequestThunk<TBody, TResponse, TReturn>(path: stri
 export function createSimpleApiRequestThunk<TThunkInput, TResponse, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: string, path: string,
+    expectedStatus: number, method: HttpMethod, path: string,
     bodyGenerator?: (i: TThunkInput) => TBody)
      : AsyncThunk<TResponse, TThunkInput, {}>{
 
@@ -81,7 +82,7 @@ export function createSimpleApiRequestThunk<TThunkInput, TResponse, TBody={}>(
 export function createApiRequestThunk<TThunkInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: string, basePath: string,
+    expectedStatus: number, method: HttpMethod, basePath: string,
     responseTransform: (_: TResponse) => TReturn,    
     bodyGenerator?: (i: TThunkInput) => TBody,
     augmentPath: (i: TThunkInput, path: string) => string = (_, p) => p)

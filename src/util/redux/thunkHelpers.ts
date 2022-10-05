@@ -1,3 +1,4 @@
+import HttpMethod from "../../packages/YipStackLib/packages/YipAddress/util/httpMethod"
 import { ASyncFunction } from "../../packages/YipStackLib/packages/YipAddress/util/misc"
 import { ApiRequestPayload } from "../../packages/YipStackLib/util/hubFront"
 import { logAndReturnRejectedPromise } from "../../packages/YipStackLib/util/misc"
@@ -22,7 +23,7 @@ export type PortBodyRequest<TBody, TResponse> = ASyncFunction<PortBodyInput<TBod
 export function createApiRequest<TRequestInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TRequestInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: string, generatePath: (i: TRequestInput) => string,
+    expectedStatus: number, method: HttpMethod, generatePath: (i: TRequestInput) => string,
     responseTransform: (_: TResponse) => TReturn,
     bodyGenerator?: (i: TRequestInput) => TBody)
     : (i: TRequestInput) => Promise<TReturn> {
