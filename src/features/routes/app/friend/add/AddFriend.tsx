@@ -12,7 +12,7 @@ import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk } from "../../friends/friendsSlice"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
-type ConnectedAddFriendProps = {
+export type ConnectedAddFriendProps = {
     submissionThunk: AddFriendSubmissionThunk,
     fetchThunk: FetchFriendsThunk    
 }

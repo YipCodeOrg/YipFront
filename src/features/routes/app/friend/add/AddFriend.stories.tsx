@@ -1,42 +1,64 @@
+import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import { Friend, FriendsValidationResult, validateFriends } from "../../../../../packages/YipStackLib/types/friends"
+import { useMemo } from "react"
+import { Provider } from "react-redux"
+import { Friend } from "../../../../../packages/YipStackLib/types/friends"
+import { createMockApiRequestThunk, createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
 import { numberToAlpha } from "../../../../../util/storybook/storybookHelpers"
-import { AppendSingletonValidateRenderProps, AppendSingletonValidateWrapper } from "../../../../../util/storybook/ValidateWrapper"
-import { AddFriend, AddFriendProps } from "./AddFriend"
+import { friendsSliceGenerator, LoadedFriend, newLoadedFriend } from "../../friends/friendsSlice"
+import { ConnectedAddFriend, ConnectedAddFriendProps } from "./AddFriend"
+import addFriendEdit from "./edit/addFriendEditSlice"
+import { addFriendSubmissionSliceGenerator, AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
 type StoryType = typeof StoryWrapper
 
 export default {
-    component: AddFriend,
-    title: 'app/friends/add'
+    component: StoryWrapper,
+    title: 'app/friends/add',
+    args: {
+        delayMilis: 1500,
+        shouldFailSubmission: false
+    },
   } as ComponentMeta<StoryType>
 
 const Template: ComponentStory<StoryType> = (args: AddFriendStoryProps) => <StoryWrapper {...args}/>
 
 type AddFriendStoryProps = {
-    initialFriends: Friend[]
+    initialFriends: Friend[],
+    delayMilis: number,
+    shouldFailSubmission: boolean
 }
 
-function StoryWrapper({initialFriends}: AddFriendStoryProps){
-        
-    function render(props: AppendSingletonValidateRenderProps<Friend, FriendsValidationResult>){
+function StoryWrapper(props: AddFriendStoryProps){
 
-        const { valToAppend: newFriend, setValToAppend: setFriend, validation: friendsValidation,
-            save: saveFriends } = props
+    const { initialFriends, delayMilis, shouldFailSubmission } = props
 
-        const childProps: AddFriendProps = {
-            friends: initialFriends,
-            setNewFriend: setFriend,
-            newFriend: newFriend ?? {name: "", yipCode: ""},
-            friendsValidation,
-            saveFriends
-        }    
+    const initialLoadedFriends = useMemo(() => initialFriends.map(newLoadedFriend), [initialFriends])
 
-        return <AddFriend {...childProps}/>
+    const mockFetchThunk = createMockApiRequestThunk<MessagePort, LoadedFriend[]>(
+        initialLoadedFriends, "mock/friend/fetch", delayMilis)
+    const mockSubmissionThunk: AddFriendSubmissionThunk
+         = createMockTransformedPortBodyOrFailureThunk("mock/friend/submit", f => f, delayMilis, shouldFailSubmission)
+
+    const addFriendProps: ConnectedAddFriendProps = {
+        fetchThunk: mockFetchThunk,
+        submissionThunk: mockSubmissionThunk
     }
 
-    return <AppendSingletonValidateWrapper render={render} initialArr={initialFriends} validate={validateFriends}
-        initialValToAppend={{name: "", yipCode: ""}} />
+    const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer
+    const mockFetchReducer = friendsSliceGenerator(() => mockFetchThunk).slice.reducer
+
+    const mockStore = configureStore({
+        reducer: {
+            addFriendSubmission: mockSubmissionReducer,
+            friends: mockFetchReducer,
+            addFriendEdit
+        }
+    })
+
+    return <Provider store={mockStore}>
+        <ConnectedAddFriend {...addFriendProps}/>
+    </Provider>
 }
 
 export const Standard = Template.bind({})

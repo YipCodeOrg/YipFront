@@ -13,7 +13,7 @@ export type LoadedFriend = {
     addressLoadStatus: LoadStatus
 }
 
-function newLoadedFriend(friend: Friend): LoadedFriend{
+export function newLoadedFriend(friend: Friend): LoadedFriend{
     return {
         friend,
         address: null,
@@ -21,7 +21,7 @@ function newLoadedFriend(friend: Friend): LoadedFriend{
     }
 }
 
-const friendsSliceGenerator = fetchSliceGenerator<Friend[], LoadedFriend[]>
+export const friendsSliceGenerator = fetchSliceGenerator<Friend[], LoadedFriend[]>
 ("userAddressData", d => d, "/addresses", isFriendArray)()
 
 function generatefetchThunk(path: string, predicate: (obj: any) => obj is Friend[]) : FetchFriendsThunk{
