@@ -22,17 +22,18 @@ export type PortBodyRequest<TBody, TResponse> = ASyncFunction<PortBodyInput<TBod
 export function createApiRequest<TRequestInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TRequestInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: string, path: string,    
+    expectedStatus: number, method: string, generatePath: (i: TRequestInput) => string,
     responseTransform: (_: TResponse) => TReturn,
     bodyGenerator?: (i: TRequestInput) => TBody)
     : (i: TRequestInput) => Promise<TReturn> {
 
-    const apiRequest: ApiRequestPayload = {
-        method,
-        path
-    }
-
     return async (input: TRequestInput) => {
+
+        const apiRequest: ApiRequestPayload = {
+            method,
+            path: generatePath(input)
+        }
+
         if(bodyGenerator !== undefined){
             apiRequest.body = JSON.stringify(bodyGenerator(input))
         }

@@ -81,16 +81,21 @@ export function createSimpleApiRequestThunk<TThunkInput, TResponse, TBody={}>(
 export function createApiRequestThunk<TThunkInput, TResponse, TReturn, TBody={}>(
     getPort: (i: TThunkInput) => MessagePort,
     isResponseCorrectType: (obj: any) => obj is TResponse,    
-    expectedStatus: number, method: string, path: string,
+    expectedStatus: number, method: string, basePath: string,
     responseTransform: (_: TResponse) => TReturn,    
-    bodyGenerator?: (i: TThunkInput) => TBody)
+    bodyGenerator?: (i: TThunkInput) => TBody,
+    augmentPath: (i: TThunkInput, path: string) => string = (_, p) => p)
      : AsyncThunk<TReturn, TThunkInput, {}>{
 
-    const pathStartingWithForwardSlash = path.startsWith("/") ? path : `/${path}`
-    const typePrefix = `request${pathStartingWithForwardSlash}/${method}`
+    const basePathStartingWithForwardSlash = basePath.startsWith("/") ? basePath : `/${basePath}`
+    const typePrefix = `request${basePathStartingWithForwardSlash}/${method}`
+
+    function generatePath(i: TThunkInput) : string{
+        return augmentPath(i, basePath)
+    }
 
     const asyncRequest = createApiRequest(getPort, isResponseCorrectType,
-        expectedStatus, method, path, responseTransform, bodyGenerator)
+        expectedStatus, method, generatePath, responseTransform, bodyGenerator)
 
     return createAsyncThunk(
         typePrefix,
