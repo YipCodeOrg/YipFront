@@ -1,4 +1,4 @@
-import { Friend, isFriend } from "../../../../../../packages/YipStackLib/types/friends"
+import { Friend, isFriend } from "../../../../../../packages/YipStackLib/types/friends/friend"
 import { submissionSliceGenerator, SubmissionState } from "../../../../../../util/redux/slices/submissionSlice"
 import { createSimpleApiPutThunk, PortBodyThunk } from "../../../../../../util/redux/thunks"
 

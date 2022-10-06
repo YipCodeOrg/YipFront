@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import undoable from "redux-undo"
-import { Friend } from "../../../../../../packages/YipStackLib/types/friends"
+import { Friend } from "../../../../../../packages/YipStackLib/types/friends/friend"
 import { UndoActionType } from "../../../../../../util/undo/undoActions"
 
 const initialState: Friend = {

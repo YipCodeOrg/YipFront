@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../../../app/hooks"
-import { Friend } from "../../../../../../packages/YipStackLib/types/friends"
+import { Friend } from "../../../../../../packages/YipStackLib/types/friends/friend"
 import { selectAddFriendState } from "./addFriendEditSelectors"
 import { setAddFriendEdit } from "./addFriendEditSlice"
 

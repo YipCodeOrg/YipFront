@@ -12,7 +12,7 @@ import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrappe
 import { AddressPanel, YipCodeAndCopyButton } from "../../../../components/core/AddressPanel"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
-import { Friend } from "../../../../packages/YipStackLib/types/friends"
+import { Friend } from "../../../../packages/YipStackLib/types/friends/friend"
 import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"

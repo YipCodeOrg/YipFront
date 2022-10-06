@@ -1,5 +1,5 @@
 import { LoadStatus } from "../../../../app/types"
-import { Friend, isFriendArray } from "../../../../packages/YipStackLib/types/friends"
+import { Friend, isFriendArray } from "../../../../packages/YipStackLib/types/friends/friend"
 import { AddressItem } from "../../../../packages/YipStackLib/types/address/address"
 import { fetchSliceGenerator } from "../../../../util/redux/slices/fetchSlice"
 import { createApiGetThunk } from "../../../../util/redux/thunks"
