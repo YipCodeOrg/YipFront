@@ -1,13 +1,14 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
 import { BsPersonPlusFill } from "react-icons/bs"
-import { useEnhancedValidation } from "../../../../../app/hooks"
+import { useEnhancedValidation, useValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
 import { LogoLoadStateWrapper } from "../../../../../components/hoc/LoadStateWrapper"
 import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationControl } from "../../../../../components/hoc/ValidationControl"
 import { Indexed } from "../../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
-import { Friend, FriendsValidationResult } from "../../../../../packages/YipStackLib/types/friends"
+import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
+import { FriendsValidationResult, validateFriend } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
@@ -23,6 +24,9 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
 
     const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
     const { friend: newFriend, setFriend: setNewFriend } = useAddFriendEdit()
+    
+    const { validation, updateValidation } = useValidation(() => newFriend,
+        validateFriend, v => v.topValidationResult, [newFriend])
 
     return <LogoLoadStateWrapper status={loadStatus} loadedElement={<>TODO</>} logoSize={80}/>
 }
