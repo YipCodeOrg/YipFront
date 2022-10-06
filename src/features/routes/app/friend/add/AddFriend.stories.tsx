@@ -12,12 +12,18 @@ import { addFriendSubmissionSliceGenerator, AddFriendSubmissionThunk } from "./s
 
 type StoryType = typeof StoryWrapper
 
+enum AddFriendStoryScreen{
+    AddFriend, ViewFriends
+}
+
 export default {
     component: StoryWrapper,
     title: 'app/friends/add',
     args: {
-        delayMilis: 1500,
-        shouldFailSubmission: false
+        submissionDelayMilis: 1500,
+        fetchDelayMilis: 300,
+        shouldFailSubmission: false,
+        screen: AddFriendStoryScreen.AddFriend
     },
   } as ComponentMeta<StoryType>
 
@@ -25,20 +31,22 @@ const Template: ComponentStory<StoryType> = (args: AddFriendStoryProps) => <Stor
 
 type AddFriendStoryProps = {
     initialFriends: Friend[],
-    delayMilis: number,
-    shouldFailSubmission: boolean
+    submissionDelayMilis: number,
+    fetchDelayMilis: number,
+    shouldFailSubmission: boolean,
+    screen: AddFriendStoryScreen    
 }
 
 function StoryWrapper(props: AddFriendStoryProps){
 
-    const { initialFriends, delayMilis, shouldFailSubmission } = props
+    const { initialFriends, submissionDelayMilis, fetchDelayMilis, shouldFailSubmission, screen } = props
 
     const initialLoadedFriends = useMemo(() => initialFriends.map(newLoadedFriend), [initialFriends])
 
     const mockFetchThunk = createMockApiRequestThunk<MessagePort, LoadedFriend[]>(
-        initialLoadedFriends, "mock/friend/fetch", delayMilis)
+        initialLoadedFriends, "mock/friend/fetch", fetchDelayMilis)
     const mockSubmissionThunk: AddFriendSubmissionThunk
-         = createMockTransformedPortBodyOrFailureThunk("mock/friend/submit", f => f, delayMilis, shouldFailSubmission)
+         = createMockTransformedPortBodyOrFailureThunk("mock/friend/submit", f => f, submissionDelayMilis, shouldFailSubmission)
 
     const addFriendProps: ConnectedAddFriendProps = {
         fetchThunk: mockFetchThunk,
@@ -57,7 +65,11 @@ function StoryWrapper(props: AddFriendStoryProps){
     })
 
     return <Provider store={mockStore}>
-        <ConnectedAddFriend {...addFriendProps}/>
+        {
+            screen === AddFriendStoryScreen.AddFriend
+                ? <ConnectedAddFriend {...addFriendProps}/>
+                : <>TODO: Render ViewFriends screen here once ViewFriends has been connected to Redux</>
+        }        
     </Provider>
 }
 
