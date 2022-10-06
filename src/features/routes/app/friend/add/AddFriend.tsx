@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { BsPersonPlusFill } from "react-icons/bs"
 import { useEnhancedValidation, useValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
@@ -26,8 +26,10 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
 
     const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
     const { friend: newFriend, setFriend: setNewFriend } = useAddFriendEdit()
+
+    const friends = useMemo(() => sliceData?.map(l => l.friend) ?? [], [sliceData])
     
-    const { validation, updateValidation } = useValidation(() => newFriend,
+    const { validation, updateValidation: revalidate } = useValidation(() => newFriend,
         validateFriend, v => v.topValidationResult, [newFriend])
 
     const submitHook = useAddFriendHubSubmit(submissionThunk)
@@ -36,7 +38,10 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
         submitHook(newFriend)
     }, [submitHook, newFriend])
 
-    return <LogoLoadStateWrapper status={loadStatus} loadedElement={<>TODO</>} logoSize={80}/>
+    return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
+        {...{friends, newFriend, setNewFriend, friendsValidation,
+                saveFriends, validation, revalidate}}
+    />} logoSize={80}/>
 }
 
 export type IndexedFriendsValidationResult = Indexed<FriendsValidationResult>
