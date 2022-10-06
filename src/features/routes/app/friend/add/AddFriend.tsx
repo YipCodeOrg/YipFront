@@ -1,11 +1,11 @@
-import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
+import { ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
 import { useCallback, useMemo } from "react"
 import { BsPersonPlusFill } from "react-icons/bs"
 import { useEnhancedValidation, useValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
+import { ValidateSubmitButton } from "../../../../../components/core/ValidateSubmitButton"
 import { LogoLoadStateWrapper } from "../../../../../components/hoc/LoadStateWrapper"
 import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
-import { standardValidationControlDataFromArray, ValidationControl } from "../../../../../components/hoc/ValidationControl"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
 import { FriendsValidationResult, validateFriends } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
@@ -79,12 +79,12 @@ export type AddFriendProps = {
     setNewFriend: (newFriend: Friend) => void,
     friendsValidation: NewFriendValidationResult | null,
     saveFriends: () => void,
-    revalidate: () => void
+    revalidate: () => ValidationResult
 }
 
 export function AddFriend(props: AddFriendProps){
 
-    const { saveFriends, friendsValidation, newFriend, setNewFriend } = props
+    const { saveFriends, friendsValidation, newFriend, setNewFriend, revalidate } = props
 
     let nameValidationResult: ValidationResult | null = null
     let yipCodeValidationResult: ValidationResult | null = null
@@ -105,12 +105,6 @@ export function AddFriend(props: AddFriendProps){
         }
     }
 
-    const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(friendsValidation?.result ?? null)
-
-    function renderButtonGroup(){
-        return <AddFriendButtonGroup {...{saveFriends, isInvalid}}/>
-    }
-
     return <PageWithHeading heading="Add Friend " icon={BsPersonPlusFill}>        
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack align="flex-start" display={{base: "none", md: "inherit"}}>
@@ -119,7 +113,7 @@ export function AddFriend(props: AddFriendProps){
             <VStack align="flex-start" display={{base: "inherit", md: "none"}}>
                 <FormContent {...{nameValidationResult, yipCodeValidationResult, newFriend, handleInputRegistrationChange}} />
             </VStack>
-            <ValidationControl render={renderButtonGroup} {...{isInvalid, validationErrorMessage}}/>
+            <AddFriendButtonGroup {...{saveFriends, friendsValidation, revalidate}}/>
         </VStack>
     </PageWithHeading>
 
@@ -127,16 +121,21 @@ export function AddFriend(props: AddFriendProps){
 
 export type AddFriendButtonGroupProps = {
     saveFriends: () => void,
-    isInvalid: boolean
+    friendsValidation: NewFriendValidationResult | null,
+    revalidate: () => ValidationResult
 }
 
-function AddFriendButtonGroup({saveFriends, isInvalid}: AddFriendButtonGroupProps){
+function AddFriendButtonGroup(props: AddFriendButtonGroupProps){
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
+    const saveLabel = "Save this friend"
+    const { saveFriends, friendsValidation, revalidate } = props
 
     return <ButtonGroup isAttached variant='outline'
         bg={buttonGroupBg} borderRadius="lg">
-        <Button onClick={saveFriends} isDisabled={isInvalid}>Save</Button>
+        <ValidateSubmitButton {...{tooltipLabel: saveLabel, text: "Save",
+            validation: friendsValidation?.result.topValidationResult ?? null,
+            submitChanges: saveFriends, revalidate}}/>
     </ButtonGroup>
 }
 
