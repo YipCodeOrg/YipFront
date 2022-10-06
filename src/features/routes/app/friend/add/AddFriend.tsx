@@ -40,7 +40,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
 
     return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
         {...{friends, newFriend, setNewFriend, friendsValidation,
-                saveFriends, validation, revalidate}}
+                saveFriends, revalidate}}
     />} logoSize={80}/>
 }
 
@@ -52,7 +52,6 @@ export type AddFriendProps = {
     setNewFriend: (newFriend: Friend) => void,
     friendsValidation: IndexedFriendsValidationResult | null,
     saveFriends: () => void,
-    validation: FriendValidationResult | null,
     revalidate: () => void
 }
 
