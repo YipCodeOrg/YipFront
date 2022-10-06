@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
+import { useCallback } from "react"
 import { BsPersonPlusFill } from "react-icons/bs"
 import { useEnhancedValidation, useValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
@@ -8,10 +9,11 @@ import { standardValidationControlDataFromArray, ValidationControl } from "../..
 import { Indexed } from "../../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
-import { FriendsValidationResult, validateFriend } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
+import { FriendsValidationResult, FriendValidationResult, validateFriend } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
+import { useAddFriendHubSubmit } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
 export type ConnectedAddFriendProps = {
@@ -28,6 +30,12 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     const { validation, updateValidation } = useValidation(() => newFriend,
         validateFriend, v => v.topValidationResult, [newFriend])
 
+    const submitHook = useAddFriendHubSubmit(submissionThunk)
+
+    const saveFriends = useCallback(function(){
+        submitHook(newFriend)
+    }, [submitHook, newFriend])
+
     return <LogoLoadStateWrapper status={loadStatus} loadedElement={<>TODO</>} logoSize={80}/>
 }
 
@@ -38,7 +46,9 @@ export type AddFriendProps = {
     newFriend: Friend,
     setNewFriend: (newFriend: Friend) => void,
     friendsValidation: IndexedFriendsValidationResult | null,
-    saveFriends: () => void
+    saveFriends: () => void,
+    validation: FriendValidationResult | null,
+    revalidate: () => void
 }
 
 export function AddFriend(props: AddFriendProps){
