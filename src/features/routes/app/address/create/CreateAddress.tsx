@@ -135,10 +135,9 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
 
   const submitCallback = useCreateAddressHubSubmit(submissionThunk)
 
-  function submitChanges(){
+  const submitChanges = useCallback(function(){
     const createAddressData = createAddressDataCallback()
-    submitCallback(createAddressData)
-  }
+    submitCallback(createAddressData)}, [createAddressDataCallback, submitCallback])
 
   const { status: submissionStatus, submitted } = useCreateAddressSubmissionState()
   const retrySubmission = useCreateAddressSubmitRetry(submissionThunk)
