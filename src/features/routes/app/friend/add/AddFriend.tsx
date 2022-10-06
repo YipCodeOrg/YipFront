@@ -10,6 +10,7 @@ import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib
 import { Friend, FriendsValidationResult } from "../../../../../packages/YipStackLib/types/friends"
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk } from "../../friends/friendsSlice"
+import { useAddFriendEdit } from "./edit/addFriendEditHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
 export type ConnectedAddFriendProps = {
@@ -21,6 +22,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     const { submissionThunk, fetchThunk } = props
 
     const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
+    const { friend: newFriend, setFriend: setNewFriend } = useAddFriendEdit()
 
     return <LogoLoadStateWrapper status={loadStatus} loadedElement={<>TODO</>} logoSize={80}/>
 }
