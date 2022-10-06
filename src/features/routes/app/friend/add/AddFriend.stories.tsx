@@ -13,7 +13,8 @@ import { addFriendSubmissionSliceGenerator, AddFriendSubmissionThunk } from "./s
 type StoryType = typeof StoryWrapper
 
 enum AddFriendStoryScreen{
-    AddFriend, ViewFriends
+    AddFriend = "Add Friend",
+    ViewFriends = "View Friends"
 }
 
 export default {
@@ -25,6 +26,14 @@ export default {
         shouldFailSubmission: false,
         screen: AddFriendStoryScreen.AddFriend
     },
+    argTypes: {
+        screen: {
+            options: AddFriendStoryScreen,
+            control: {
+                type: "select"
+            }
+      }
+    }
   } as ComponentMeta<StoryType>
 
 const Template: ComponentStory<StoryType> = (args: AddFriendStoryProps) => <StoryWrapper {...args}/>
