@@ -6,4 +6,4 @@ import { FetchFriendsThunk, LoadedFriend } from "./friendsSlice"
 export function useFriendsHubFetch(thunk: FetchFriendsThunk)
 : FetchSliceOf<LoadedFriend[]>{
     return useAsyncHubFetch(thunk, selectFriendsSlice)  
-}    
+}
