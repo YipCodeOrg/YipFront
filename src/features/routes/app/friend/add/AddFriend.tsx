@@ -6,12 +6,11 @@ import { FormValidationErrorMessage } from "../../../../../components/core/FormV
 import { LogoLoadStateWrapper } from "../../../../../components/hoc/LoadStateWrapper"
 import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationControl } from "../../../../../components/hoc/ValidationControl"
-import { Indexed } from "../../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
-import { FriendsValidationResult, FriendValidationResult, validateFriend } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
+import { FriendsValidationResult, validateFriends } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
-import { FetchFriendsThunk } from "../../friends/friendsSlice"
+import { FetchFriendsThunk, LoadedFriend } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
 import { useAddFriendHubSubmit } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
@@ -27,16 +26,26 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
     const { friend: newFriend, setFriend: setNewFriend } = useAddFriendEdit()
 
-    const friends = useMemo(() => sliceData?.map(l => l.friend) ?? [], [sliceData])
+    const { newFriendIndex, friends } = useMemo(() => combineNewFriendWithFriends(newFriend, sliceData), [newFriend, sliceData])
     
-    const { validation, updateValidation: revalidate } = useValidation(() => newFriend,
-        validateFriend, v => v.topValidationResult, [newFriend])
+    const { validation, updateValidation: revalidate } = useValidation(() => friends,
+        validateFriends, v => v.topValidationResult, [friends])
 
-    const submitHook = useAddFriendHubSubmit(submissionThunk)
+    const submitHook = useAddFriendHubSubmit(submissionThunk)    
 
     const saveFriends = useCallback(function(){
         submitHook(newFriend)
     }, [submitHook, newFriend])
+
+    const friendsValidation: NewFriendValidationResult | null = useMemo(function(){
+        if(validation === null){
+            return null
+        }
+        return {
+            newFriendIndex,
+            result: validation
+        }
+    }, [validation, newFriendIndex])
 
     return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
         {...{friends, newFriend, setNewFriend, friendsValidation,
@@ -44,13 +53,31 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     />} logoSize={80}/>
 }
 
-export type IndexedFriendsValidationResult = Indexed<FriendsValidationResult>
+type FriendCombinationData = {
+    newFriendIndex: number,
+    friends: Friend[]
+}
+
+function combineNewFriendWithFriends(newFriend: Friend, sliceData: LoadedFriend[] | undefined) : FriendCombinationData{
+    const sliceFriends = sliceData?.map(l => l.friend) ?? []
+    const friends = [newFriend, ...sliceFriends]
+    const newFriendIndex = 0
+    return {
+        newFriendIndex,
+        friends
+    }
+}
+
+export type NewFriendValidationResult  = {
+    result: FriendsValidationResult,
+    newFriendIndex: number
+}
 
 export type AddFriendProps = {
     friends: Friend[],
     newFriend: Friend,
     setNewFriend: (newFriend: Friend) => void,
-    friendsValidation: IndexedFriendsValidationResult | null,
+    friendsValidation: NewFriendValidationResult | null,
     saveFriends: () => void,
     revalidate: () => void
 }
@@ -69,8 +96,8 @@ export function AddFriend(props: AddFriendProps){
     }
 
     if(friendsValidation !== null){
-        const index = friendsValidation.index
-        const validation = friendsValidation.obj
+        const index = friendsValidation.newFriendIndex
+        const validation = friendsValidation.result
         const itemValidation = validation.itemValidations[index]
         if(itemValidation !== undefined){
             nameValidationResult = itemValidation.fieldValidations.name
@@ -78,7 +105,7 @@ export function AddFriend(props: AddFriendProps){
         }
     }
 
-    const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(friendsValidation?.obj ?? null)
+    const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(friendsValidation?.result ?? null)
 
     function renderButtonGroup(){
         return <AddFriendButtonGroup {...{saveFriends, isInvalid}}/>
