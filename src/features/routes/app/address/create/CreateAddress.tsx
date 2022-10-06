@@ -130,7 +130,7 @@ export default function CreateAddressWrapper(props: CreateAddressWrapperProps) {
     dispatch(clearAddress())
   }
 
-  const { validation, updateValidation } = useValidation(getCreateAddressData,
+  const { validation, updateValidation } = useValidation(createAddressDataCallback,
       validateCreateAddress, v => v.topValidationResult, [name, effectiveStructuredAddress])
 
   const submitCallback = useCreateAddressHubSubmit(submissionThunk)
