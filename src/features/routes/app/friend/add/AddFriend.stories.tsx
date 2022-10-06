@@ -43,12 +43,14 @@ type AddFriendStoryProps = {
     submissionDelayMilis: number,
     fetchDelayMilis: number,
     shouldFailSubmission: boolean,
-    screen: AddFriendStoryScreen    
+    screen: AddFriendStoryScreen,
+    initialNewFriend?: Friend
 }
 
 function StoryWrapper(props: AddFriendStoryProps){
 
-    const { initialFriends, submissionDelayMilis, fetchDelayMilis, shouldFailSubmission, screen } = props
+    const { initialFriends, submissionDelayMilis, fetchDelayMilis,
+        shouldFailSubmission, screen, initialNewFriend } = props
 
     const initialLoadedFriends = useMemo(() => initialFriends.map(newLoadedFriend), [initialFriends])
 
@@ -59,7 +61,11 @@ function StoryWrapper(props: AddFriendStoryProps){
 
     const addFriendProps: ConnectedAddFriendProps = {
         fetchThunk: mockFetchThunk,
-        submissionThunk: mockSubmissionThunk
+        submissionThunk: mockSubmissionThunk,
+    }
+
+    if(initialNewFriend !== undefined){
+        addFriendProps.initialNewFriend = initialNewFriend
     }
 
     const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer
@@ -88,6 +94,29 @@ Standard.args={
     {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
     {name: "Gauss", yipCode: "FFC9229ALDN04"}]
 }
+
+export const Filled = Template.bind({})
+Filled.args={
+    initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
+    {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
+    {name: "Gauss", yipCode: "FFC9229ALDN04"}],
+    initialNewFriend: {
+        name: "Morgy Freedude",
+        yipCode: "MOFREE1888"
+    }
+}
+
+export const DupeName = Template.bind({})
+DupeName.args={
+    initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
+    {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
+    {name: "Gauss", yipCode: "FFC9229ALDN04"}],
+    initialNewFriend: {
+        name: "Daniel Fanjkutic",
+        yipCode: "MOFREE1888"
+    }
+}
+
 
 const longFriends = makeLongFriendsArray(300)
 

@@ -1,5 +1,5 @@
 import { ButtonGroup, FormControl, FormLabel, HStack, Input, useColorModeValue, VStack } from "@chakra-ui/react"
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { BsPersonPlusFill } from "react-icons/bs"
 import { useEnhancedValidation, useValidation } from "../../../../../app/hooks"
 import { FormValidationErrorMessage } from "../../../../../components/core/FormValidationErrorMessage"
@@ -17,14 +17,21 @@ import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
 export type ConnectedAddFriendProps = {
     submissionThunk: AddFriendSubmissionThunk,
-    fetchThunk: FetchFriendsThunk    
+    fetchThunk: FetchFriendsThunk,
+    initialNewFriend?: Friend
 }
 
 export function ConnectedAddFriend(props: ConnectedAddFriendProps){
-    const { submissionThunk, fetchThunk } = props
+    const { submissionThunk, fetchThunk, initialNewFriend } = props
 
     const { sliceData, loadStatus } = useFriendsHubFetch(fetchThunk)
     const { friend: newFriend, setFriend: setNewFriend } = useAddFriendEdit()
+
+    useEffect(function(){
+        if(initialNewFriend !== undefined){
+            setNewFriend(initialNewFriend)
+        }
+    }, [initialNewFriend, setNewFriend])
 
     const { newFriendIndex, friends } = useMemo(() => combineNewFriendWithFriends(newFriend, sliceData), [newFriend, sliceData])
     
