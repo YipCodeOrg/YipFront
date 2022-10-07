@@ -13,7 +13,8 @@ import { SubmissionStatus } from "../../../../../util/redux/slices/submissionSli
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk, LoadedFriend } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
-import { useAddFriendHubSubmit, useAddFriendSubmissionState, useClearAddFriendSubmission } from "./submit/addFriendSubmissionHooks"
+import { AddFriendFailed } from "./submit/AddFriendFailed"
+import { useAddFriendHubSubmit, useAddFriendSubmissionState, useAddFriendSubmitRetry, useClearAddFriendSubmission } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 import { AddFriendSubmitted } from "./submit/AddFriendSubmitted"
 import { AddFriendSuccess } from "./submit/AddFriendSuccess"
@@ -59,6 +60,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
 
     const { status: submissionStatus, submitted } = useAddFriendSubmissionState()
     const clearSubmissionState = useClearAddFriendSubmission()
+    const retrySubmission = useAddFriendSubmitRetry(submissionThunk)
   
     if(submissionStatus === SubmissionStatus.Clear){
         return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
@@ -69,7 +71,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     } else if(submissionStatus === SubmissionStatus.Responded){
         return <AddFriendSuccess {...{friend: submitted, clearSubmissionState}}/>
     } else {
-        return <>TODO: Failed</>
+        return <AddFriendFailed {...{friend: submitted, clearSubmissionState, retrySubmission}}/>
     }
 }
 
