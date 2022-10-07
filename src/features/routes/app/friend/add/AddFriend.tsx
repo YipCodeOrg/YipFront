@@ -9,10 +9,11 @@ import { PageWithHeading } from "../../../../../components/hoc/PageWithHeading"
 import { hasErrors, ValidationResult } from "../../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
 import { FriendsValidationResult, validateFriends } from "../../../../../packages/YipStackLib/types/friends/validateFriend"
+import { SubmissionStatus } from "../../../../../util/redux/slices/submissionSlice"
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk, LoadedFriend } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
-import { useAddFriendHubSubmit } from "./submit/addFriendSubmissionHooks"
+import { useAddFriendHubSubmit, useAddFriendSubmissionState } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 
 export type ConnectedAddFriendProps = {
@@ -54,10 +55,19 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
         }
     }, [validation, newFriendIndex])
 
-    return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
-        {...{friends, newFriend, setNewFriend, friendsValidation,
-                saveFriends, revalidate}}
-    />} logoSize={80}/>
+    const { status: submissionStatus } = useAddFriendSubmissionState()
+  
+    if(submissionStatus === SubmissionStatus.Clear){
+        return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
+            {...{friends, newFriend, setNewFriend, friendsValidation,
+                    saveFriends, revalidate}}/>} logoSize={80}/>
+    } else if(submissionStatus === SubmissionStatus.Submitted){
+        return <>TODO: Submitted</>
+    } else if(submissionStatus === SubmissionStatus.Responded){
+        return <>TODO: Responded</>
+    } else {
+        return <>TODO: Failed</>
+    }
 }
 
 type FriendCombinationData = {

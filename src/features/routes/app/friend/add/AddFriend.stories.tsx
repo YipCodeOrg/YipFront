@@ -117,6 +117,18 @@ DupeName.args={
     }
 }
 
+export const SubmissionFailure = Template.bind({})
+SubmissionFailure.args={
+    initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
+    {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
+    {name: "Gauss", yipCode: "FFC9229ALDN04"}],
+    initialNewFriend: {
+        name: "Subby McFailface",
+        yipCode: "MOFREE1888"
+    },
+    shouldFailSubmission: true
+}
+
 
 const longFriends = makeLongFriendsArray(300)
 
