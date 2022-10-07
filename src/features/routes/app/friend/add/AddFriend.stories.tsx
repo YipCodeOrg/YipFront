@@ -106,6 +106,19 @@ Filled.args={
     }
 }
 
+export const LongSubmissionDelay = Template.bind({})
+LongSubmissionDelay.args={
+    initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},
+    {name: "Daniel Fanjkutic", yipCode: "AO9229ALDN04"},
+    {name: "Gauss", yipCode: "FFC9229ALDN04"}],
+    initialNewFriend: {
+        name: "Morgy Freedude",
+        yipCode: "MOFREE1888"
+    },
+    // 10 min
+    submissionDelayMilis: 600000
+}
+
 export const DupeName = Template.bind({})
 DupeName.args={
     initialFriends: [{name: "Alice", yipCode: "QLC9229ALDN04"},

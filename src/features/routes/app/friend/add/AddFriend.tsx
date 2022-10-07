@@ -15,6 +15,7 @@ import { FetchFriendsThunk, LoadedFriend } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
 import { useAddFriendHubSubmit, useAddFriendSubmissionState } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
+import { AddFriendSubmitted } from "./submit/AddFriendSubmitted"
 
 export type ConnectedAddFriendProps = {
     submissionThunk: AddFriendSubmissionThunk,
@@ -55,14 +56,14 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
         }
     }, [validation, newFriendIndex])
 
-    const { status: submissionStatus } = useAddFriendSubmissionState()
+    const { status: submissionStatus, submitted } = useAddFriendSubmissionState()
   
     if(submissionStatus === SubmissionStatus.Clear){
         return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
             {...{friends, newFriend, setNewFriend, friendsValidation,
                     saveFriends, revalidate}}/>} logoSize={80}/>
     } else if(submissionStatus === SubmissionStatus.Submitted){
-        return <>TODO: Submitted</>
+        return <AddFriendSubmitted {...{friend: submitted}}/>
     } else if(submissionStatus === SubmissionStatus.Responded){
         return <>TODO: Responded</>
     } else {
