@@ -40,3 +40,5 @@ export const topLevelAbs = `${topLevelPrefix}/*`
         export const friendsAbs = `${appAbs}/${friends}`
             export const editfriends = "edit"
             export const editfriendsAbs = `${friendsAbs}/${editfriends}`
+            export const viewfriends = "view"
+            export const viewfriendsAbs = `${friendsAbs}/${viewfriends}`

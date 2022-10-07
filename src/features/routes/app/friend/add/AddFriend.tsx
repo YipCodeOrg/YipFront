@@ -13,9 +13,10 @@ import { SubmissionStatus } from "../../../../../util/redux/slices/submissionSli
 import { useFriendsHubFetch } from "../../friends/friendsHooks"
 import { FetchFriendsThunk, LoadedFriend } from "../../friends/friendsSlice"
 import { useAddFriendEdit } from "./edit/addFriendEditHooks"
-import { useAddFriendHubSubmit, useAddFriendSubmissionState } from "./submit/addFriendSubmissionHooks"
+import { useAddFriendHubSubmit, useAddFriendSubmissionState, useClearAddFriendSubmission } from "./submit/addFriendSubmissionHooks"
 import { AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
 import { AddFriendSubmitted } from "./submit/AddFriendSubmitted"
+import { AddFriendSuccess } from "./submit/AddFriendSuccess"
 
 export type ConnectedAddFriendProps = {
     submissionThunk: AddFriendSubmissionThunk,
@@ -57,6 +58,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     }, [validation, newFriendIndex])
 
     const { status: submissionStatus, submitted } = useAddFriendSubmissionState()
+    const clearSubmissionState = useClearAddFriendSubmission()
   
     if(submissionStatus === SubmissionStatus.Clear){
         return <LogoLoadStateWrapper status={loadStatus} loadedElement={<AddFriend
@@ -65,7 +67,7 @@ export function ConnectedAddFriend(props: ConnectedAddFriendProps){
     } else if(submissionStatus === SubmissionStatus.Submitted){
         return <AddFriendSubmitted {...{friend: submitted}}/>
     } else if(submissionStatus === SubmissionStatus.Responded){
-        return <>TODO: Responded</>
+        return <AddFriendSuccess {...{friend: submitted, clearSubmissionState}}/>
     } else {
         return <>TODO: Failed</>
     }
