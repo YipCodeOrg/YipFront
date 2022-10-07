@@ -1,6 +1,6 @@
 import { Button, Center, Flex, Heading, HStack, Icon, Stack,
     Tooltip, VStack, useColorModeValue, Text, IconButton, Box, Spacer, ButtonGroup } from "@chakra-ui/react"
-import { LoadedFriend } from "./friendsSlice"
+import { FetchFriendsThunk, LoadedFriend } from "./friendsSlice"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
 import { DisclosureResult, useDisclosures, useIndexFilter, usePagination } from "../../../../app/hooks"
@@ -18,6 +18,28 @@ import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortBu
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { lowercaseFilterInSomeProp, TextFilter } from "../../../../components/core/TextFilter"
 import { editfriendsAbs } from "../../../../components/routing/routeStrings"
+import { useFriendsHubFetch } from "./friendsHooks"
+
+export type ConnectedViewFriendsProps = {
+    fetchThunk: FetchFriendsThunk
+}
+
+export function ConnectedViewFriends(props: ConnectedViewFriendsProps){
+
+    const { fetchThunk } = props
+    const { sliceData, loadStatus} = useFriendsHubFetch(fetchThunk)
+
+    const friends = useMemo(() => sliceData?.map(l => l.friend) ?? [], [sliceData])
+
+    function renderCard(props: FriendCardWrapperProps){
+        return <>TODO: Add connected card and render it here</>
+    }
+
+    const loadedElement = sliceData!! ? <ViewFriends {...{friends, renderCard}}/> : <></>
+
+    return <LogoLoadStateWrapper status = {loadStatus} loadedElement={loadedElement}
+        h="100%" flexGrow={1} justify="center" logoSize={80}/>
+}
 
 export type ViewFriendsProps = {
     friends: Friend[],
