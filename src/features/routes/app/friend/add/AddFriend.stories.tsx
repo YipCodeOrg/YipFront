@@ -44,7 +44,7 @@ type AddFriendStoryProps = {
     fetchDelayMilis: number,
     shouldFailSubmission: boolean,
     screen: AddFriendStoryScreen,
-    initialNewFriend?: Friend
+    initialNewFriend?: Friend | undefined
 }
 
 function StoryWrapper(props: AddFriendStoryProps){
@@ -62,10 +62,7 @@ function StoryWrapper(props: AddFriendStoryProps){
     const addFriendProps: ConnectedAddFriendProps = {
         fetchThunk: mockFetchThunk,
         submissionThunk: mockSubmissionThunk,
-    }
-
-    if(initialNewFriend !== undefined){
-        addFriendProps.initialNewFriend = initialNewFriend
+        initialNewFriend
     }
 
     const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer

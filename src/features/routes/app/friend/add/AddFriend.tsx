@@ -22,7 +22,7 @@ import { AddFriendSuccess } from "./submit/AddFriendSuccess"
 export type ConnectedAddFriendProps = {
     submissionThunk: AddFriendSubmissionThunk,
     fetchThunk: FetchFriendsThunk,
-    initialNewFriend?: Friend
+    initialNewFriend?: Friend | undefined
 }
 
 export function ConnectedAddFriend(props: ConnectedAddFriendProps){
