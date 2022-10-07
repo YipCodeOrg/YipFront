@@ -69,7 +69,7 @@ function StoryWrapper(props: AddFriendStoryProps){
     }
 
     const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer
-    const mockFetchReducer = friendsSliceGenerator(() => mockFetchThunk).slice.reducer
+    const mockFetchReducer = friendsSliceGenerator(mockSubmissionThunk)(() => mockFetchThunk).slice.reducer
 
     const mockStore = configureStore({
         reducer: {
