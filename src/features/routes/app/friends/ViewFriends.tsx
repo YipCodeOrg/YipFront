@@ -12,7 +12,6 @@ import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrappe
 import { AddressPanel, YipCodeAndCopyButton } from "../../../../components/core/AddressPanel"
 import { Indexed } from "../../../../packages/YipStackLib/packages/YipAddress/util/types"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
-import { Friend } from "../../../../packages/YipStackLib/types/friends/friend"
 import { BsChevronContract } from "react-icons/bs"
 import { AlphaSortButtonsContent } from "../../../../components/core/AlphaSortButtons"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
@@ -29,20 +28,18 @@ export function ConnectedViewFriends(props: ConnectedViewFriendsProps){
     const { fetchThunk } = props
     const { sliceData, loadStatus} = useFriendsHubFetch(fetchThunk)
 
-    const friends = useMemo(() => sliceData?.map(l => l.friend) ?? [], [sliceData])
-
     function renderCard(props: FriendCardWrapperProps){
         return <>TODO: Add connected card and render it here</>
     }
 
-    const loadedElement = sliceData!! ? <ViewFriends {...{friends, renderCard}}/> : <></>
+    const loadedElement = sliceData!! ? <ViewFriends {...{friends: sliceData, renderCard}}/> : <></>
 
     return <LogoLoadStateWrapper status = {loadStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
 }
 
 export type ViewFriendsProps = {
-    friends: Friend[],
+    friends: LoadedFriend[],
     renderCard: (props: FriendCardWrapperProps) => JSX.Element
 }
 
@@ -83,7 +80,7 @@ function ViewFriendsEmpty(){
 }
 
 export type FriendCardWrapperProps = {
-    friend: Friend,
+    friend: LoadedFriend,
     disclosure: DisclosureResult
 }
 
@@ -100,7 +97,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const { disclosures, setAllClosed } = useDisclosures(friends)
 
-    const fuse = useCallback(function(f: Indexed<Friend>) : FriendCardWrapperProps{
+    const fuse = useCallback(function(f: Indexed<LoadedFriend>) : FriendCardWrapperProps{
         
         const index = f.index
         const disclosure = disclosures[index]
@@ -119,9 +116,9 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
 
-    function filterFunction(filterValue: string): (f: Friend) =>  boolean{
-        return lowercaseFilterInSomeProp(filterValue,
-            [f => f.name, f => f.yipCode])
+    function filterFunction(filterValue: string): (friend: LoadedFriend) =>  boolean{
+        return lowercaseFilterInSomeProp(filterValue, [f => f.friend.name, 
+            f => f.friend.yipCode])        
     }
 
     return <PageWithHeading heading="Friends " icon={FaUserFriends}> 
@@ -132,7 +129,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
                         <IconButton icon={<BsChevronContract/>} aria-label="collapseAllTooltip"
                             onClick={setAllClosed}/>
                     </Tooltip>
-                    <AlphaSortButtonsContent setter={setPreFiltered} arr={preFiltered} sortField={f=>f.obj.name}
+                    <AlphaSortButtonsContent setter={setPreFiltered} arr={preFiltered} sortField={f=>f.obj.friend.name}
                         sortFieldDesc="name"/>
                 </ButtonGroup>
                 <Spacer/>
