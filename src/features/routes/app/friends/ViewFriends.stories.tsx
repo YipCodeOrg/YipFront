@@ -4,7 +4,7 @@ import { inverseIndexMap } from "../../../../packages/YipStackLib/packages/YipAd
 import { dateToSimpleDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
 import { LoadedFriend } from "./friendsSlice"
-import { FriendCard, FriendCardProps, FriendCardWrapperProps, ViewFriends, ViewFriendsProps } from "./ViewFriends"
+import { FriendCard, FriendCardProps, ConnectedFriendCardProps, ViewFriends, ViewFriendsProps } from "./ViewFriends"
 
 type ViewFriendsType = typeof ViewFriends
 const arbitraryDate = dateToSimpleDate(new Date(2021, 12))
@@ -62,46 +62,4 @@ function longRepeatedFriend(i: number): LoadedFriend{
   yipCode},
   addressLoadStatus: i % 10 === 0 ? LoadStatus.Pending : i % 5 === 0 ? LoadStatus.NotLoaded : LoadStatus.Loaded}
   
-}
-
-function MockLongFriendCardWrapper(props: FriendCardWrapperProps){
-  
-  const { friend, disclosure } = props
-
-  const friendCardProps: FriendCardProps = {
-    loadedFriend: {
-      friend,
-      address: null,
-      addressLoadStatus: LoadStatus.Failed,      
-    },
-    disclosure
-  }
-
-  const index = indexedLongFriends.get(friend.yipCode)
-  
-  if(index !== undefined){
-    const longFriend = longFriends[index]
-    if(longFriend !== undefined){
-      friendCardProps.loadedFriend.address = longFriend.address
-      friendCardProps.loadedFriend = longFriend
-    }
-  }
-
-  return <FriendCard {...friendCardProps} />
-}
-
-function MockFriendCardWrapper(props: FriendCardWrapperProps){
-  
-  const { friend, disclosure } = props
-  
-  const friendCardProps: FriendCardProps = {
-    loadedFriend: {
-      friend,
-      address: null,
-      addressLoadStatus: LoadStatus.Failed,      
-    },
-    disclosure
-  }
-
-  return <FriendCard {...friendCardProps} />
 }

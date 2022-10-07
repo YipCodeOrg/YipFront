@@ -18,21 +18,24 @@ import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { lowercaseFilterInSomeProp, TextFilter } from "../../../../components/core/TextFilter"
 import { editfriendsAbs } from "../../../../components/routing/routeStrings"
 import { useFriendsHubFetch } from "./friendsHooks"
+import { FetchAddressThunk } from "../address/fetch/fetchAddressThunk"
+import { useFetchAddressDispatch } from "../address/fetch/fetchAddressHooks"
 
 export type ConnectedViewFriendsProps = {
-    fetchThunk: FetchFriendsThunk
+    fetchFriendsThunk: FetchFriendsThunk,
+    fetchAddressThunk: FetchAddressThunk
 }
 
 export function ConnectedViewFriends(props: ConnectedViewFriendsProps){
 
-    const { fetchThunk } = props
-    const { sliceData, loadStatus} = useFriendsHubFetch(fetchThunk)
+    const { fetchFriendsThunk, fetchAddressThunk } = props
+    const { sliceData, loadStatus} = useFriendsHubFetch(fetchFriendsThunk)
 
-    function renderCard(props: FriendCardWrapperProps){
-        return <>TODO: Add connected card and render it here</>
+    function renderCard(props: ConnectedFriendCardProps){
+        return <ConnectedFriendCard {...props}/>
     }
 
-    const loadedElement = sliceData!! ? <ViewFriends {...{friends: sliceData, renderCard}}/> : <></>
+    const loadedElement = sliceData!! ? <ViewFriends {...{friends: sliceData, renderCard, fetchAddressThunk}}/> : <></>
 
     return <LogoLoadStateWrapper status = {loadStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
@@ -40,7 +43,8 @@ export function ConnectedViewFriends(props: ConnectedViewFriendsProps){
 
 export type ViewFriendsProps = {
     friends: LoadedFriend[],
-    renderCard: (props: FriendCardWrapperProps) => JSX.Element
+    renderCard: (props: ConnectedFriendCardProps) => JSX.Element,
+    fetchAddressThunk: FetchAddressThunk
 }
 
 export const ViewFriends: React.FC<ViewFriendsProps> = (props) => {
@@ -79,14 +83,15 @@ function ViewFriendsEmpty(){
     </PageWithHeading>
 }
 
-export type FriendCardWrapperProps = {
-    friend: LoadedFriend,
-    disclosure: DisclosureResult
+export type ConnectedFriendCardProps = {
+    loadedFriend: LoadedFriend,
+    disclosure: DisclosureResult,
+    fetchThunk: FetchAddressThunk
 }
 
 const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
-    const { friends, renderCard } = props
+    const { friends, renderCard, fetchAddressThunk: fetchThunk } = props
     const filterResult = useIndexFilter(friends)
     const { filtered, setPreFiltered, preFiltered } = filterResult
     const collapseAllTooltip = "Collapse all card details"
@@ -97,7 +102,7 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 
     const { disclosures, setAllClosed } = useDisclosures(friends)
 
-    const fuse = useCallback(function(f: Indexed<LoadedFriend>) : FriendCardWrapperProps{
+    const fuse = useCallback(function(f: Indexed<LoadedFriend>) : ConnectedFriendCardProps{
         
         const index = f.index
         const disclosure = disclosures[index]
@@ -107,8 +112,9 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
         }
 
         return {
-            friend: f.obj,
-            disclosure
+            loadedFriend: f.obj,
+            disclosure,
+            fetchThunk
         }
     }, [disclosures])
 
@@ -150,8 +156,8 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
 }
 
 type ViewFriendsPanelProps = {
-    cardProps: FriendCardWrapperProps[],
-    renderCard: (props: FriendCardWrapperProps) => JSX.Element
+    cardProps: ConnectedFriendCardProps[],
+    renderCard: (props: ConnectedFriendCardProps) => JSX.Element
 }
 
 const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps, renderCard}) => {
@@ -164,9 +170,24 @@ const ViewFriendsPanel: React.FC<ViewFriendsPanelProps> = ({cardProps, renderCar
     </Flex>
 }
 
+function ConnectedFriendCard(props: ConnectedFriendCardProps){
+    
+    const { fetchThunk, loadedFriend, ...rest } = props
+
+    const fetchDispatch = useFetchAddressDispatch(fetchThunk)
+
+    const loadCardData = useCallback(function(){
+        const yipCode = loadedFriend.friend.yipCode
+        fetchDispatch({yipCode})
+    }, [fetchDispatch, loadedFriend])
+
+    return <FriendCard {...{loadCardData, loadedFriend, ...rest}}/>
+}
+
 export type FriendCardProps = {
-    loadedFriend: LoadedFriend
-    disclosure: DisclosureResult
+    loadedFriend: LoadedFriend,
+    disclosure: DisclosureResult,
+    loadCardData: () => void
 }
 
 export const FriendCard: React.FC<FriendCardProps> = (props) => {
