@@ -1,5 +1,5 @@
 import { ActionCreatorWithoutPayload, AsyncThunk } from '@reduxjs/toolkit'
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
 import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
@@ -164,6 +164,22 @@ export type DisclosureResult = {
     isOpen: boolean,
     setOpen: () => void,
     setClosed: () => void
+}
+
+export type DisclosureMap = {
+    [key: string]: DisclosureResult
+}
+
+export type DisclosureMapResult = {
+    disclosures: DisclosureMap
+    setAllOpen: () => void,
+    setAllClosed: () => void
+}
+
+export function useDisclosureMap<TVal>(t: TVal[], keyProp: (t: TVal) => string){
+    const keyList = useMemo(() => t.map(keyProp), [t, keyProp])
+
+    // TODO: Complete this
 }
 
 export type DisclosuresResult = {
