@@ -2,9 +2,13 @@ import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { useMemo } from "react"
 import { Provider } from "react-redux"
+import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
+import { AddressItem } from "../../../../../packages/YipStackLib/types/address/address"
 import { Friend } from "../../../../../packages/YipStackLib/types/friends/friend"
-import { createMockApiRequestThunk, createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
+import { createMockApiRequestThunk, createMockTransformedInputThunk, createMockTransformedPortBodyOrFailureThunk } from "../../../../../util/storybook/mockThunks"
 import { numberToAlpha } from "../../../../../util/storybook/storybookHelpers"
+import { mockAddressItemFromYipCode } from "../../../../../util/storybook/thunks/mockFriendThunks"
+import { FetchAddressThunkInput } from "../../address/fetch/fetchAddressThunk"
 import { friendsSliceGenerator, LoadedFriend, newLoadedFriend } from "../../friends/friendsSlice"
 import { ConnectedAddFriend, ConnectedAddFriendProps } from "./AddFriend"
 import addFriendEdit from "./edit/addFriendEditSlice"
@@ -47,6 +51,8 @@ type AddFriendStoryProps = {
     initialNewFriend?: Friend | undefined
 }
 
+const arbitraryDate = dateToSimpleDate(new Date(2021, 12))
+
 function StoryWrapper(props: AddFriendStoryProps){
 
     const { initialFriends, submissionDelayMilis, fetchDelayMilis,
@@ -59,6 +65,10 @@ function StoryWrapper(props: AddFriendStoryProps){
     const mockSubmissionThunk: AddFriendSubmissionThunk
          = createMockTransformedPortBodyOrFailureThunk("mock/friend/submit", f => f, submissionDelayMilis, shouldFailSubmission)
 
+    // Don't expect this to be used in this story
+    const mockFetchAddressThunk = createMockTransformedInputThunk<FetchAddressThunkInput, AddressItem>(
+        "mock/address/fetch", (i) => mockAddressItemFromYipCode(i.body.yipCode, arbitraryDate), 0)
+
     const addFriendProps: ConnectedAddFriendProps = {
         fetchThunk: mockFetchThunk,
         submissionThunk: mockSubmissionThunk,
@@ -66,7 +76,7 @@ function StoryWrapper(props: AddFriendStoryProps){
     }
 
     const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer
-    const mockFetchReducer = friendsSliceGenerator(mockSubmissionThunk)(() => mockFetchThunk).slice.reducer
+    const mockFetchReducer = friendsSliceGenerator(mockFetchAddressThunk, mockSubmissionThunk)(() => mockFetchThunk).slice.reducer
 
     const mockStore = configureStore({
         reducer: {

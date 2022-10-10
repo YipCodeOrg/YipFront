@@ -6,6 +6,7 @@ import { AddressItem } from "../../../../packages/YipStackLib/types/address/addr
 import { Friend } from "../../../../packages/YipStackLib/types/friends/friend"
 import { createMockApiRequestThunk, createMockTransformedInputThunk, createMockTransformedPortBodyOrFailureThunk } from "../../../../util/storybook/mockThunks"
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers"
+import { mockAddressItemFromYipCode } from "../../../../util/storybook/thunks/mockFriendThunks"
 import { FetchAddressThunkInput } from "../address/fetch/fetchAddressThunk"
 import { AddFriendSubmissionThunk } from "../friend/add/submit/addFriendSubmissionSlice"
 import { friendsSliceGenerator, LoadedFriend, newLoadedFriend } from "./friendsSlice"
@@ -43,9 +44,9 @@ function ViewFriendsStory(props: ViewFriendsStoryProps) {
         = createMockTransformedPortBodyOrFailureThunk("mock/friend/submit", f => f, 0, false)
 
   const mockFetchAddressThunk = createMockTransformedInputThunk<FetchAddressThunkInput, AddressItem>(
-    "mock/address/fetch", (i) => mockAddressItemFromYipCode(i.body.yipCode), fetchAddressDelayMilis)
+    "mock/address/fetch", (i) => mockAddressItemFromYipCode(i.body.yipCode, arbitraryDate), fetchAddressDelayMilis)
 
-  const mockFriendsReducer = friendsSliceGenerator(mockSubmissionThunk)(() => mockFetchFriendsThunk).slice.reducer
+  const mockFriendsReducer = friendsSliceGenerator(mockFetchAddressThunk, mockSubmissionThunk)(() => mockFetchFriendsThunk).slice.reducer
 
   const mockStore = configureStore({
     reducer: {
@@ -97,17 +98,4 @@ function longRepeatedFriend(i: number): Friend {
 
   return { name: `${numberToAlpha(i, 3)}-${i}`, yipCode }
 
-}
-
-function mockAddressItemFromYipCode(yipCode: string) {
-  return {
-    address: {
-      addressLines: ["123 Fake Street", "Imaginary Road", "Nowhereville", "Nonexistentland", "FUNPOSTCODE123"],
-      aliasMap: {
-        postCode: 4
-      }
-    },
-    addressMetadata: { lastUpdated: arbitraryDate },
-    yipCode
-  }
 }
