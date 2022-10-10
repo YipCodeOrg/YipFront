@@ -19,7 +19,7 @@ import { lowercaseFilterInSomeProp, TextFilter } from "../../../../components/co
 import { editfriendsAbs } from "../../../../components/routing/routeStrings"
 import { useFriendsHubFetch } from "./friendsHooks"
 import { FetchAddressThunk } from "../address/fetch/fetchAddressThunk"
-import { useFetchAddressDispatch } from "../address/fetch/fetchAddressHooks"
+import { useFetchIfNotLoaded } from "../address/fetch/fetchAddressHooks"
 
 export type ConnectedViewFriendsProps = {
     fetchFriendsThunk: FetchFriendsThunk,
@@ -174,12 +174,7 @@ function ConnectedFriendCard(props: ConnectedFriendCardProps){
     
     const { fetchThunk, loadedFriend, ...rest } = props
 
-    const fetchDispatch = useFetchAddressDispatch(fetchThunk)
-
-    const loadCardData = useCallback(function(){
-        const yipCode = loadedFriend.friend.yipCode
-        fetchDispatch({yipCode})
-    }, [fetchDispatch, loadedFriend])
+    const loadCardData = useFetchIfNotLoaded(fetchThunk, loadedFriend)
 
     return <FriendCard {...{loadCardData, loadedFriend, ...rest}}/>
 }
@@ -195,9 +190,14 @@ export const FriendCard: React.FC<FriendCardProps> = (props) => {
     const expandLabel = "Expand friend to see details"
     const cardBg = useColorModeValue('gray.300', 'gray.700')
     const { isOpen, setOpen, setClosed } = props.disclosure
-    const { loadedFriend } = props
+    const { loadedFriend, loadCardData } = props
     const { yipCode } = loadedFriend.friend
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
+
+    const handleCardOpen = useCallback(function(){
+        loadCardData()
+        setOpen()
+    }, [setOpen, loadCardData])
 
     const friend = loadedFriend.friend
     return <VStack boxShadow="lg" maxW="400px"
@@ -212,7 +212,7 @@ export const FriendCard: React.FC<FriendCardProps> = (props) => {
         </VStack>
         <Box display={isOpen ? "none" : "inherit"} w="100%">
             <IconButton aria-label={expandLabel} w="100%"
-                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={setOpen}>
+                borderTopLeftRadius="none" borderTopRightRadius="none" onClick={handleCardOpen}>
                 <Icon as={MdExpandMore}/>
             </IconButton>
         </Box>
