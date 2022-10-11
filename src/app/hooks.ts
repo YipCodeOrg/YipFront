@@ -1,6 +1,7 @@
 import { ActionCreatorWithoutPayload, AsyncThunk } from '@reduxjs/toolkit'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { hasKey, mapMapValues, StringMap } from '../packages/YipStackLib/packages/YipAddress/util/stringMap'
 import { Indexed } from '../packages/YipStackLib/packages/YipAddress/util/types'
 import { EnhancedValidation, lazyEnhancedValidationOrNull } from '../packages/YipStackLib/packages/YipAddress/validate/ehancedValidation'
 import { ValidationResult } from '../packages/YipStackLib/packages/YipAddress/validate/validation'
@@ -166,9 +167,7 @@ export type DisclosureResult = {
     setClosed: () => void
 }
 
-export type DisclosureMap = {
-    [key: string]: DisclosureResult
-}
+export type DisclosureMap = StringMap<DisclosureResult>
 
 export type DisclosureMapResult = {
     disclosures: DisclosureMap
@@ -176,10 +175,70 @@ export type DisclosureMapResult = {
     setAllClosed: () => void
 }
 
-export function useDisclosureMap<TVal>(t: TVal[], keyProp: (t: TVal) => string){
-    const keyList = useMemo(() => t.map(keyProp), [t, keyProp])
+export function useDisclosureMap<TVal>(t: TVal[], keyProp: (t: TVal) => string): DisclosureMapResult{
+    const indexedKeyList = useMemo(() => t.map(keyProp), [t, keyProp])
 
-    // TODO: Complete this
+    const [backingMap, setBackingMap] = useState<StringMap<boolean>>({})
+
+    const backingUpdater = useCallback(function(prevMap: StringMap<boolean>){                
+        const newMap = {...prevMap}
+        const unMappedKeys = indexedKeyList.filter(k => hasKey(prevMap, k))
+        unMappedKeys.forEach(k => {
+            newMap[k] = false
+        })
+        return newMap
+    }, [indexedKeyList])
+
+    useEffect(function(){
+        setBackingMap(backingUpdater)
+    }, [backingUpdater, setBackingMap])
+
+    const setOpen = useCallback(function(key: string){
+        setBackingMap(setIsOpen(key, true))
+    }, [setBackingMap])
+    
+    const setClosed = useCallback(function(key: string){
+        setBackingMap(setIsOpen(key, false))
+    }, [setBackingMap])
+
+    function setIsOpen(key: string, isOpen: boolean){
+        return function(prevMap: StringMap<boolean>){
+            const newMap = {...prevMap}
+            newMap[key] = isOpen
+            return newMap
+        }
+    }
+    
+    const setAllOpen = useCallback(function(){
+        setBackingMap(setAllIsOpen(true))
+    }, [setBackingMap])
+    
+    const setAllClosed = useCallback(function(){
+        setBackingMap(setAllIsOpen(false))  
+    }, [setBackingMap])
+
+    function setAllIsOpen(isOpen: boolean){
+        return function(prevMap: StringMap<boolean>){
+            const newMap = mapMapValues(prevMap, (_: boolean) => isOpen)
+            return newMap
+        }
+    }
+
+    const disclosures: DisclosureMap = useMapped(backingMap, (map) => {
+        return mapMapValues(map, (b, k) => {
+            return {
+                isOpen: b,
+                setOpen: () => setOpen(k),
+                setClosed: () => setClosed(k)
+            }
+        })
+    })
+
+    return {
+        disclosures,
+        setAllOpen,
+        setAllClosed
+    }
 }
 
 export type DisclosuresResult = {
