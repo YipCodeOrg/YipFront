@@ -176,18 +176,18 @@ export type DisclosureMapResult = {
 }
 
 export function useDisclosureMap<TVal>(t: TVal[], keyProp: (t: TVal) => string): DisclosureMapResult{
-    const indexedKeyList = useMemo(() => t.map(keyProp), [t, keyProp])
-
-    const [backingMap, setBackingMap] = useState<StringMap<boolean>>({})
+    const indexedKeyList = useMemo(() => t.map(keyProp), [t, keyProp])    
 
     const backingUpdater = useCallback(function(prevMap: StringMap<boolean>){                
         const newMap = {...prevMap}
-        const unMappedKeys = indexedKeyList.filter(k => hasKey(prevMap, k))
+        const unMappedKeys = indexedKeyList.filter(k => !hasKey(prevMap, k))        
         unMappedKeys.forEach(k => {
             newMap[k] = false
         })
         return newMap
     }, [indexedKeyList])
+
+    const [backingMap, setBackingMap] = useState<StringMap<boolean>>(backingUpdater({}))
 
     useEffect(function(){
         setBackingMap(backingUpdater)
