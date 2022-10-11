@@ -35,13 +35,13 @@ export type EditRegistrationsProps = {
     saveRegistrations: () => void,
     reset: () => void,
     setRegistrations: (newRegistrations: Registration[]) => void,
-    addressLabel: string,
+    addressName: string,
     addressLastUpdated: Date,
 }
 
 export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     
-    const {registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
+    const {registrations, addressName, setRegistrations, addressLastUpdated, validation,
         saveRegistrations, reset} = props
     const [indexedRegistrations, _] = useMutableIndexed(registrations)
     const itemsPerPage = 10
@@ -76,7 +76,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
 
     //TODO: Devise better solution for mobile screen e.g. a vertical list of items & a drawer on each
-    return <PageWithHeading heading={`Edit Registrations (${addressLabel})  `} icon={MdEditNote}>
+    return <PageWithHeading heading={`Edit Registrations (${addressName})  `} icon={MdEditNote}>
         <VStack w="100%" p = {{ base: 2, sm: 4, md: 8 }}>
             <HStack w="100%" justifyContent="flex-start">
             <ValidationControl isInvalid={isInvalid} render={renderButtonGroup}
