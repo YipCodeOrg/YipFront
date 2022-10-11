@@ -18,8 +18,10 @@ import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../.
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { ConfirmationPopoverButton } from "../../../../components/core/ConfirmationPopoverButton"
-import { FetchUserAddressDataThunk } from "../../../useraddressdata/userAddressDataSlice"
+import { FetchUserAddressDataThunk, UserAddressSliceData } from "../../../useraddressdata/userAddressDataSlice"
 import { EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice"
+import { useYipCodeToUserAddressMap } from "../../../useraddressdata/userAddressDataHooks"
+import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
 
 export type ConnectedEditRegistrationsProps = {
     yipCode: string,
@@ -28,9 +30,29 @@ export type ConnectedEditRegistrationsProps = {
 }
 
 export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
-    const {} = props
+    const { yipCode, fetchThunk } = props
 
+    const [addressesMap, addressesLoadStatus] = useYipCodeToUserAddressMap(fetchThunk)
 
+    const address = addressesMap.get(yipCode)
+
+    const loadedElement = address !== undefined ? <EditRegistrationsLoaded 
+        {...{address}}/> : <>ERROR: Address not found</>
+
+    return <LogoLoadStateWrapper status = {addressesLoadStatus} loadedElement={loadedElement}
+    h="100%" flexGrow={1} justify="center" logoSize={80}/>
+
+}
+
+type EditRegistrationsLoadedProps = {
+    address: UserAddressSliceData
+}
+
+function EditRegistrationsLoaded(props: EditRegistrationsLoadedProps){
+    
+    const { address } = props    
+    
+    return !!address ? <>TODO</> : <>TODO</>
 }
 
 export type EditRegistrationsProps = {
