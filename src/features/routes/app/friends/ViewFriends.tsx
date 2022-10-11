@@ -35,7 +35,7 @@ export function ConnectedViewFriends(props: ConnectedViewFriendsProps){
         return <ConnectedFriendCard {...props}/>
     }
 
-    const loadedElement = sliceData!! ? <ViewFriends {...{friends: sliceData, renderCard, fetchAddressThunk}}/> : <></>
+    const loadedElement = sliceData!! ? <ViewFriends {...{friends: sliceData, renderCard, fetchAddressThunk}}/>: <></>
 
     return <LogoLoadStateWrapper status = {loadStatus} loadedElement={loadedElement}
         h="100%" flexGrow={1} justify="center" logoSize={80}/>
