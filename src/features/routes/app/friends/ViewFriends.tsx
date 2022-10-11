@@ -3,7 +3,7 @@ import { Button, Center, Flex, Heading, HStack, Icon, Stack,
 import { FetchFriendsThunk, LoadedFriend } from "./friendsSlice"
 import { FaUserFriends } from "react-icons/fa"
 import { MdExpandMore, MdExpandLess } from "react-icons/md"
-import { DisclosureResult, useDisclosures, useIndexFilter, usePagination } from "../../../../app/hooks"
+import { DisclosureResult, useDisclosureMap, useIndexFilter, usePagination } from "../../../../app/hooks"
 import React, { useCallback, useMemo } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { LoadStatus } from "../../../../app/types"
@@ -100,19 +100,20 @@ const ViewFriendsFilled: React.FC<ViewFriendsProps> = (props) => {
     const {currentItems, pageCount, selectedPage, handlePageClick} = 
         usePagination(itemsPerPage, filtered, true)
 
-    const { disclosures, setAllClosed } = useDisclosures(friends)
+    const { disclosures, setAllClosed } = useDisclosureMap(friends, f => f.friend.yipCode)
 
     const fuse = useCallback(function(f: Indexed<LoadedFriend>) : ConnectedFriendCardProps{
         
-        const index = f.index
-        const disclosure = disclosures[index]
+        const loadedFriend = f.obj
+        const yipCode = loadedFriend.friend.yipCode
+        const disclosure = disclosures[yipCode]
 
         if(disclosure === undefined){
-            throw new Error("Unexpected undefined data when indexing")
+            throw new Error(`Unexpected undefined disclosure for yipCode: ${yipCode}`)
         }
 
         return {
-            loadedFriend: f.obj,
+            loadedFriend,
             disclosure,
             fetchThunk
         }
