@@ -18,9 +18,13 @@ import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../.
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { ConfirmationPopoverButton } from "../../../../components/core/ConfirmationPopoverButton"
+import { FetchUserAddressDataThunk } from "../../../useraddressdata/userAddressDataSlice"
+import { EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice"
 
 export type ConnectedEditRegistrationsProps = {
-
+    yipCode: string,
+    fetchThunk: FetchUserAddressDataThunk,
+    submitThunk: EditRegistrationsSubmissionThunk
 }
 
 export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
