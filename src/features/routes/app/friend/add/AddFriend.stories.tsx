@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { Provider } from "react-redux"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { AddressItem } from "../../../../../packages/YipStackLib/types/address/address"
@@ -10,6 +10,7 @@ import { numberToAlpha } from "../../../../../util/storybook/storybookHelpers"
 import { mockAddressItemFromYipCode } from "../../../../../util/storybook/thunks/mockFriendThunks"
 import { FetchAddressThunkInput } from "../../address/fetch/fetchAddressThunk"
 import { friendsSliceGenerator, LoadedFriend, newLoadedFriend } from "../../friends/friendsSlice"
+import { ConnectedViewFriends } from "../../friends/ViewFriends"
 import { ConnectedAddFriend, ConnectedAddFriendProps } from "./AddFriend"
 import addFriendEdit from "./edit/addFriendEditSlice"
 import { addFriendSubmissionSliceGenerator, AddFriendSubmissionThunk } from "./submit/addFriendSubmissionSlice"
@@ -55,8 +56,37 @@ const arbitraryDate = dateToSimpleDate(new Date(2021, 12))
 
 function StoryWrapper(props: AddFriendStoryProps){
 
-    const { initialFriends, submissionDelayMilis, fetchDelayMilis,
-        shouldFailSubmission, screen, initialNewFriend } = props
+    const { screen, initialNewFriend, ...rest } = props
+
+    const [storeAndThunks, ] = useState(createStoreAndThunks({...rest}))
+    const { mockFetchThunk, mockSubmissionThunk, mockFetchAddressThunk, mockStore } = storeAndThunks
+    
+
+    const addFriendProps: ConnectedAddFriendProps = {
+        fetchThunk: mockFetchThunk,
+        submissionThunk: mockSubmissionThunk,
+        initialNewFriend
+    }    
+
+    return <Provider store={mockStore}>
+        {
+            screen === AddFriendStoryScreen.AddFriend
+                ? <ConnectedAddFriend {...addFriendProps}/>
+                : <ConnectedViewFriends fetchFriendsThunk={mockFetchThunk} fetchAddressThunk={mockFetchAddressThunk}/>
+        }        
+    </Provider>
+}
+
+type StoreThunkProps = {    
+    initialFriends: Friend[],
+    submissionDelayMilis: number,
+    fetchDelayMilis: number,
+    shouldFailSubmission: boolean,    
+}
+
+function createStoreAndThunks(props: StoreThunkProps){
+
+    const { initialFriends, submissionDelayMilis, fetchDelayMilis, shouldFailSubmission} = props
 
     const initialLoadedFriends = useMemo(() => initialFriends.map(newLoadedFriend), [initialFriends])
 
@@ -69,12 +99,6 @@ function StoryWrapper(props: AddFriendStoryProps){
     const mockFetchAddressThunk = createMockTransformedInputThunk<FetchAddressThunkInput, AddressItem>(
         "mock/address/fetch", (i) => mockAddressItemFromYipCode(i.body.yipCode, arbitraryDate), 0)
 
-    const addFriendProps: ConnectedAddFriendProps = {
-        fetchThunk: mockFetchThunk,
-        submissionThunk: mockSubmissionThunk,
-        initialNewFriend
-    }
-
     const mockSubmissionReducer = addFriendSubmissionSliceGenerator(mockSubmissionThunk).reducer
     const mockFetchReducer = friendsSliceGenerator(mockFetchAddressThunk, mockSubmissionThunk)(() => mockFetchThunk).slice.reducer
 
@@ -86,13 +110,12 @@ function StoryWrapper(props: AddFriendStoryProps){
         }
     })
 
-    return <Provider store={mockStore}>
-        {
-            screen === AddFriendStoryScreen.AddFriend
-                ? <ConnectedAddFriend {...addFriendProps}/>
-                : <>TODO: Render ViewFriends screen here once ViewFriends has been connected to Redux</>
-        }        
-    </Provider>
+    return {
+        mockFetchThunk,
+        mockSubmissionThunk,
+        mockFetchAddressThunk,
+        mockStore
+    }
 }
 
 export const Standard = Template.bind({})
