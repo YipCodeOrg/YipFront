@@ -19,6 +19,16 @@ import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../.
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 
+export type ConnectedEditRegistrationsProps = {
+
+}
+
+export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
+    const {} = props
+
+    
+}
+
 export type EditRegistrationsProps = {
     registrations: Registration[],
     validation: RegistrationsValidationResult | null,
