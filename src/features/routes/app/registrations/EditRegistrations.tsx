@@ -14,10 +14,10 @@ import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/pa
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
-import { CancelButton } from "../../../../components/core/CancelButton"
 import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../../../app/hooks"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
+import { ConfirmationPopoverButton } from "../../../../components/core/ConfirmationPopoverButton"
 
 export type ConnectedEditRegistrationsProps = {
 
@@ -26,14 +26,14 @@ export type ConnectedEditRegistrationsProps = {
 export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
     const {} = props
 
-    
+
 }
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
     validation: RegistrationsValidationResult | null,
     saveRegistrations: () => void,
-    cancel: () => void,
+    reset: () => void,
     setRegistrations: (newRegistrations: Registration[]) => void,
     addressLabel: string,
     addressLastUpdated: Date,
@@ -42,7 +42,7 @@ export type EditRegistrationsProps = {
 export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     
     const {registrations, addressLabel, setRegistrations, addressLastUpdated, validation,
-        saveRegistrations, cancel} = props
+        saveRegistrations, reset} = props
     const [indexedRegistrations, _] = useMutableIndexed(registrations)
     const itemsPerPage = 10
 
@@ -70,7 +70,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
 
     function renderButtonGroup({isInvalid}: ValidationComponentProps){
         return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations,
-            addNewRegistration: addNewRegistrationCallback, cancel}} />
+            addNewRegistration: addNewRegistrationCallback, reset}} />
     }
 
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
@@ -105,20 +105,22 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
 type EditRegistrationsButtonGroupProps = {
     saveRegistrations: () => void,
     addNewRegistration: () => void,
-    cancel: () => void,
+    reset: () => void,
     isInvalid: boolean
 }
 
 function EditRegistrationsButtonGroup(props: EditRegistrationsButtonGroupProps){
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
     const addNewRegistrationTooltip = "Add new registration"
+    const popoverBodyMessage = "Are you sure you want to reset edits made to the registrations?"
+    const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
 
-    const { saveRegistrations, addNewRegistration, isInvalid, cancel } = props
+    const { saveRegistrations, addNewRegistration, isInvalid, reset } = props
 
     return <ButtonGroup isAttached variant='outline'
         bg={buttonGroupBg} borderRadius="lg">                
         <Button onClick={saveRegistrations} isDisabled={isInvalid}>Save</Button>
-        <CancelButton cancelAction={cancel} shouldWarn/>
+        <ConfirmationPopoverButton {...{popoverBodyMessage, confirmButtonBg, action: reset, actionName: "Reset"}}/>
         <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
             <IconButton aria-label={addNewRegistrationTooltip}
                 icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>
