@@ -113,8 +113,10 @@ function createStoreAndThunks(props: StoreThunksProps){
         createMockThunkOrFailureThunk<Registration[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
             initialRegistrations, generateSingletonAddressData, fetchDelayMilis)
 
+    // Non-MVP: May want to add a userDataFetch delay, separate to the address data one.
+    // For now, setting the delay for user data to zero, as it's most convenient to test stories this way.
     const mockUserDataThunk = createMockThunkOrFailureThunk<UserData, MessagePort, UserData>
-    ("mockUserData", mockUserData, d => d, fetchDelayMilis)
+    ("mockUserData", mockUserData, d => d, 0)
 
     // Don't expect this to be called in this story
     const mockDeletionThunk: DeleteAddressThunk = createMockTransformedPortBodyThunk<DeleteAddressData, DeleteAddressData>(
@@ -179,6 +181,13 @@ Failure.args = {
     initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitrarySimpleDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitrarySimpleDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitrarySimpleDate2}, {name: "OWASP", addressLastUpdated: arbitrarySimpleDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitrarySimpleDate3}],
     addressName: "Work",
     shouldFailSubmission: true
+}
+
+export const TenSecondSubmissionDelay = Template.bind({})
+TenSecondSubmissionDelay.args = {
+    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitrarySimpleDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitrarySimpleDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitrarySimpleDate2}, {name: "OWASP", addressLastUpdated: arbitrarySimpleDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitrarySimpleDate3}],
+    addressName: "Work",
+    submissionDelayMilis: 10000,
 }
 
 export const LongSubmissionDelay = Template.bind({})
