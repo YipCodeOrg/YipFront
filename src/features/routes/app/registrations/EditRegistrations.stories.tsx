@@ -168,6 +168,21 @@ Standard.args = {
     addressName: "Work"
 }
 
+export const Failure = Template.bind({})
+Failure.args = {
+    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitrarySimpleDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitrarySimpleDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitrarySimpleDate2}, {name: "OWASP", addressLastUpdated: arbitrarySimpleDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitrarySimpleDate3}],
+    addressName: "Work",
+    shouldFailSubmission: true
+}
+
+export const LongSubmissionDelay = Template.bind({})
+LongSubmissionDelay.args = {
+    initialRegistrations: [{name: "Mozilla Developer Website", addressLastUpdated: arbitrarySimpleDate1, hyperlink: "https://developer.mozilla.org/"}, {name: "Whistle While you work", addressLastUpdated: arbitrarySimpleDate3}, {name: "WorkyMcWorkerson", addressLastUpdated: arbitrarySimpleDate2}, {name: "OWASP", addressLastUpdated: arbitrarySimpleDate3, hyperlink: "https://owasp.org/"}, {name: "That big teddy bear delivery company", addressLastUpdated: arbitrarySimpleDate3}],
+    addressName: "Work",
+    //10 min
+    submissionDelayMilis: 600000,
+}
+
 export const DupeName = Template.bind({})
 DupeName.args = {
     initialRegistrations: [{name: "Dupey McDuperson", addressLastUpdated: arbitrarySimpleDate1}, {name: "Dupey McDuperson", addressLastUpdated: arbitrarySimpleDate2}, {name: "", addressLastUpdated: arbitrarySimpleDate3}, {name: "", addressLastUpdated: arbitrarySimpleDate1}],
