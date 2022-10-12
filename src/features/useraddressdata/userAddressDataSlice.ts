@@ -67,20 +67,18 @@ function registrationUpdateBuilderUpdater(thunk: EditRegistrationsSubmissionThun
             const yipCode = action.meta.arg.body.yipCode
             handleAddressUpdate(state, yipCode, a => a.isUpdatingRegistrations = true)
         })
-            .addCase(thunk.rejected, (state, action) => {
-                const yipCode = action.meta.arg.body.yipCode
-                handleAddressUpdate(state, yipCode, a => a.isUpdatingRegistrations = false)
+        .addCase(thunk.rejected, (state, action) => {
+            const yipCode = action.meta.arg.body.yipCode
+            handleAddressUpdate(state, yipCode, a => a.isUpdatingRegistrations = false)
+        })
+        .addCase(thunk.fulfilled, (state, action) => {
+            const body = action.meta.arg.body
+            const { yipCode, registrations } = body
+            handleAddressUpdate(state, yipCode, function (a: UserAddressSliceData) {
+                a.addressData.registrations = registrations
+                a.isUpdatingRegistrations = false
             })
-            .addCase(thunk.fulfilled, (state, action) => {
-                const body = action.meta.arg.body
-                const { yipCode, registrations } = body
-                handleYipCodeUpdate(state, yipCode, function (data, index) {
-                    const datum = data[index]
-                    if (datum !== undefined) {
-                        datum.addressData.registrations = registrations
-                    }
-                })
-            })
+        })
         return builder
     }
 }
