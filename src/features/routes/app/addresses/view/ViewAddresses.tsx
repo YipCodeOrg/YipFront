@@ -25,6 +25,7 @@ import { useThunkDispatch } from "../../../../../app/hooks"
 import { useCallback, useMemo } from "react"
 import { useMemoisedYipCodeToAddressMap, useSortedAddressDataHubFetch } from "../../../../useraddressdata/userAddressDataHooks"
 import { createAbs, editRegistrationsAbs } from "../../../../../components/routing/routeStrings"
+import { LogoSpinnerWrapper } from "../../../../../components/hoc/SpinnerWrapper"
 
 export default function ViewAddressesWrapper(){
     
@@ -148,7 +149,7 @@ type ViewAddressesContentProps = {
 const ViewAddressesContent: React.FC<ViewAddressesContentProps> = (props) =>{
     
     const { selectedAddressData, deleteAddress } = props
-    const { addressData, isDeleting } = selectedAddressData
+    const { addressData, isDeleting, isUpdatingRegistrations } = selectedAddressData
     const addressName = getDisplayLabelForAddress(addressData)
     const addressLastUpdated = simpleDateToDate(addressData.address.addressMetadata.lastUpdated)
 
@@ -161,13 +162,15 @@ const ViewAddressesContent: React.FC<ViewAddressesContentProps> = (props) =>{
         {/*Medium-to-large screen*/}
         <HStack align="flex-start" spacing="15px" display={{ base: 'none', md: 'inherit' }} p={4}>
             <AddressPanel addressItem={addressData.address} displayYipCode={true} maxW="500px"/>
-            <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <RegistrationPanel registrations={addressData.registrations}
+                {...{addressLastUpdated, isUpdatingRegistrations}}/>
             <ButtonPanel {...{isDeleting}} deleteAddress={deleteThisAddress}/>
         </HStack>
         {/*Mobile*/}
         <VStack align="top" spacing="15px" display={{ base: 'inherit', md: 'none' }} p={2}>
             <AddressPanel addressItem={addressData.address} displayYipCode={true}/>
-            <RegistrationPanel registrations={addressData.registrations} addressLastUpdated={addressLastUpdated}/>
+            <RegistrationPanel registrations={addressData.registrations}
+                {...{addressLastUpdated, isUpdatingRegistrations}}/>
             <ButtonPanel {...{isDeleting}} deleteAddress={deleteThisAddress}/>
         </VStack>
     </PageWithHeading>
@@ -197,17 +200,20 @@ function ButtonPanel(props: ButtonPanelProps){
 
 type RegistrationPanelPrpos = {
     registrations: Registration[],
-    addressLastUpdated: Date
+    addressLastUpdated: Date,
+    isUpdatingRegistrations: boolean
 }
 
 const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
-    const {registrations, addressLastUpdated} = props
+    const {registrations, addressLastUpdated, isUpdatingRegistrations } = props
 
     const editRegistrationsTooltip = "Edit registrations"
     const panelBg = useColorModeValue('gray.50', 'whiteAlpha.100')
 
+    const mainElement = <>{registrations.map((r, i) => <RegistrationCard registration={r} key={`${r.name}${i}`} addressLastUpdated={addressLastUpdated}/>)}</>
+
     return <VStack align="left" spacing="5px"
-        justify="top">
+    justify="top">
         <HStack align="flex-start">
             <label>Registrations</label>
             <Spacer/>
@@ -223,9 +229,9 @@ const RegistrationPanel: React.FC<RegistrationPanelPrpos> = (props) => {
             </HStack>
         </HStack>
         <VStack align="left" spacing="8px" justify="top" borderRadius="lg" p="4"
-            bg={panelBg}>
-            {registrations.map((r, i) => <RegistrationCard registration={r} key={`${r.name}${i}`} addressLastUpdated={addressLastUpdated}/>)}
-        </VStack>
+        bg={panelBg}>
+            <LogoSpinnerWrapper {...{mainElement, isSpinning: isUpdatingRegistrations, logoSize: 40}}/>
+        </VStack>        
     </VStack>
 }
 
