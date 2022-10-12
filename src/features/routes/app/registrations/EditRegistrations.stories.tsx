@@ -29,6 +29,7 @@ export default {
         screen: DisplayScreen.EditRegistrationsScreen,
         addressName: "Mock Address",
         submissionDelayMilis: 1500,
+        fetchDelayMilis: 1500,
         shouldFailSubmission: false,
     },
     argTypes: {
@@ -56,14 +57,15 @@ type StoryWrapperProps = {
     initialRegistrations: Registration[],
     addressName: string,
     submissionDelayMilis: number,
+    fetchDelayMilis: number
     shouldFailSubmission?: boolean,
 }
 
 function StoryWrapper(props: StoryWrapperProps) {
 
     const { initialRegistrations, addressName, screen, 
-        submissionDelayMilis, shouldFailSubmission } = props
-    const storeThunkProps = { submissionDelayMilis,
+        submissionDelayMilis, shouldFailSubmission, fetchDelayMilis } = props
+    const storeThunkProps = { submissionDelayMilis, fetchDelayMilis,
         shouldFailSubmission: !!shouldFailSubmission,
         addressName,
         initialRegistrations }
@@ -86,22 +88,66 @@ function StoryWrapper(props: StoryWrapperProps) {
 type StoreThunksProps = {
     initialRegistrations: Registration[],
     submissionDelayMilis: number,
+    fetchDelayMilis: number,
     shouldFailSubmission: boolean,
     addressName: string
 }
 
 function createStoreAndThunks(props: StoreThunksProps){
-    const { submissionDelayMilis, shouldFailSubmission, initialRegistrations, addressName } = props    
+    const { submissionDelayMilis, fetchDelayMilis,
+        shouldFailSubmission, initialRegistrations, addressName } = props
 
+    const mockUserData: UserData = {
+        sub: "Mock-SUB-32432789",
+        data: {
+            yipCodes: []
+        }
+    }
+
+    // Thunks
     const mockSubmissionThunk: EditRegistrationsSubmissionThunk = shouldFailSubmission ? 
     createMockFailureApiRequestThunk("mockSubmitRegistrations", submissionDelayMilis)
     : createMockTransformedPortBodyThunk("mockSubmitRegistrations", d => d, submissionDelayMilis)
 
-    const mockSubmissionReducer = editRegistrationsSubmissionSliceGenerator(mockSubmissionThunk).reducer
-
     const mockAddressDataThunk: FetchUserAddressDataThunk =
         createMockThunkOrFailureThunk<Registration[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
-            initialRegistrations, generateSingletonAddressData, submissionDelayMilis)
+            initialRegistrations, generateSingletonAddressData, fetchDelayMilis)
+
+    const mockUserDataThunk = createMockThunkOrFailureThunk<UserData, MessagePort, UserData>
+    ("mockUserData", mockUserData, d => d, fetchDelayMilis)
+
+    // Don't expect this to be called in this story
+    const mockDeletionThunk: DeleteAddressThunk = createMockTransformedPortBodyThunk<DeleteAddressData, DeleteAddressData>(
+        "mockDeleteAddress", d => d, 0)
+  
+    // Don't expect this to be called in this story
+    const mockCreateAddressSubmissionThunk = newMockCreateAddressSubmissionThunk
+        (0, false, arbitrarySimpleDate1, () => "")
+
+    // Reducers & Store
+
+    const mockSubmissionReducer = editRegistrationsSubmissionSliceGenerator(mockSubmissionThunk).reducer        
+    const userAddressDataReducer = userAddressDataSliceGenerator(mockSubmissionThunk, mockDeletionThunk, mockCreateAddressSubmissionThunk)
+    (() => mockAddressDataThunk).slice.reducer
+    const userDataReducer = userDataSliceGenerator(mockDeletionThunk)(() => mockUserDataThunk).slice.reducer
+
+    const mockStore = configureStore({
+        reducer: {
+            userData: userDataReducer,
+            userAddressData: userAddressDataReducer,
+            editRegistrationsSubmission: mockSubmissionReducer
+        }
+    })
+
+    return {
+        mockStore,
+        mockSubmissionThunk,
+        mockAddressDataThunk,
+        mockUserDataThunk,
+        mockDeletionThunk
+    }
+
+    // Helpers
 
     function generateSingletonAddressData(initialRegistrations: Registration[]): UserAddressSliceData[]{
         const addressData: UserAddressData = {
@@ -119,46 +165,6 @@ function createStoreAndThunks(props: StoreThunksProps){
         }
 
         return [newUserAddressSliceData(addressData)]
-    }
-
-    const mockDeletionThunk: DeleteAddressThunk = createMockTransformedPortBodyThunk<DeleteAddressData, DeleteAddressData>(
-      "mockDeleteAddress", d => d, submissionDelayMilis
-    )
-
-    // Don't expect this to be called in this story
-    const mockCreateAddressSubmissionThunk = newMockCreateAddressSubmissionThunk
-        (0, false, arbitrarySimpleDate1, () => "")
-
-    const userAddressDataReducer = userAddressDataSliceGenerator(mockSubmissionThunk, mockDeletionThunk,       mockCreateAddressSubmissionThunk)
-    (() => mockAddressDataThunk).slice.reducer
-
-    const mockUserData: UserData = {
-        sub: "Mock-SUB-32432789",
-        data: {
-          yipCodes: []
-        }
-    }
-
-    const mockUserDataThunk = createMockThunkOrFailureThunk<UserData, MessagePort, UserData>
-    ("mockUserData", mockUserData, d => d, submissionDelayMilis)
-    const userDataReducer = userDataSliceGenerator(mockDeletionThunk)(() => mockUserDataThunk).slice.reducer
-    
-
-    const mockStore = configureStore({
-        reducer: {
-            userData: userDataReducer,
-            userAddressData: userAddressDataReducer,
-            createAddressSubmission: mockSubmissionReducer,
-            editRegistrationsSubmission: mockSubmissionReducer
-        }
-    })
-
-    return {
-        mockStore,
-        mockSubmissionThunk,
-        mockAddressDataThunk,
-        mockUserDataThunk,
-        mockDeletionThunk
     }
 }
 
