@@ -5,23 +5,24 @@ import { MdEditNote, MdUpdate } from "react-icons/md"
 import { ImBin } from "react-icons/im"
 import { BiMoveVertical } from "react-icons/bi"
 import { useDrag, useDrop } from "react-dnd"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import AlphaSortButtons from "../../../../components/core/AlphaSortButtons"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import { AggregatedRegistrationUpdateStatusIcon, RegistrationUpdateStatusIcon } from "./RegistrationUpdateStatusIcon"
-import { Registration, RegistrationsValidationResult, RegistrationValidationResult } from "../../../../packages/YipStackLib/types/registrations"
+import { Registration, RegistrationsValidationResult, RegistrationValidationResult, validateRegistrations } from "../../../../packages/YipStackLib/types/registrations"
 import { hasErrors, ValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation"
 import { FormValidationErrorMessage } from "../../../../components/core/FormValidationErrorMessage"
 import { PageWithHeading } from "../../../../components/hoc/PageWithHeading"
 import { standardValidationControlDataFromArray, ValidationComponentProps, ValidationControl } from "../../../../components/hoc/ValidationControl"
-import { useEnhancedValidation, useMutableIndexed, usePagination } from "../../../../app/hooks"
+import { useValidation, useMutableIndexed, usePagination, useEnhancedValidation } from "../../../../app/hooks"
 import { StyledPagination } from "../../../../components/core/StyledPagination"
 import { newSimpleDate, simpleDateToDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date"
 import { ConfirmationPopoverButton } from "../../../../components/core/ConfirmationPopoverButton"
 import { FetchUserAddressDataThunk, UserAddressSliceData } from "../../../useraddressdata/userAddressDataSlice"
-import { EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice"
+import { EditRegistrationsData, EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice"
 import { useYipCodeToUserAddressMap } from "../../../useraddressdata/userAddressDataHooks"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
+import { useEditRegistrationsHubSubmit } from "./submit/editRegistrationsSubmissionHooks"
 
 export type ConnectedEditRegistrationsProps = {
     yipCode: string,
@@ -30,14 +31,25 @@ export type ConnectedEditRegistrationsProps = {
 }
 
 export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
-    const { yipCode, fetchThunk } = props
+    const { yipCode, fetchThunk, submitThunk } = props
 
     const [addressesMap, addressesLoadStatus] = useYipCodeToUserAddressMap(fetchThunk)
 
     const address = addressesMap.get(yipCode)
 
+    const submitThunkAction = useEditRegistrationsHubSubmit(submitThunk)
+
+    const submitRegistrations : (rs: Registration[]) => void
+     = useCallback(function(rs: Registration[]){
+        const thunkInput: EditRegistrationsData = {
+            registrations: rs,
+            yipCode
+        }
+        submitThunkAction(thunkInput)
+    }, [submitThunk, yipCode])
+
     const loadedElement = address !== undefined ? <EditRegistrationsLoaded 
-        {...{address}}/> : <>ERROR: Address not found</>
+        {...{address, submitRegistrations}}/> : <>ERROR: Address not found</>
 
     return <LogoLoadStateWrapper status = {addressesLoadStatus} loadedElement={loadedElement}
     h="100%" flexGrow={1} justify="center" logoSize={80}/>
@@ -45,14 +57,36 @@ export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProp
 }
 
 type EditRegistrationsLoadedProps = {
-    address: UserAddressSliceData
+    address: UserAddressSliceData,
+    submitRegistrations : (rs: Registration[]) => void
 }
 
 function EditRegistrationsLoaded(props: EditRegistrationsLoadedProps){
     
-    const { address } = props    
+    const { address, submitRegistrations } = props
+    const baseRegistrations = address.addressData.registrations
+    const addressItem = address.addressData.address
+    const effectiveAddressName = addressItem.name ?? addressItem.yipCode
+    const addressLastUpdated = simpleDateToDate(addressItem.addressMetadata.lastUpdated)
+
+    // TODO: Include a version number for optimistic locking
+    const [registrations, setRegistrations] = useState(baseRegistrations)
+
+    const getRegistrations = useCallback(() => registrations, [registrations])
+
+    const reset = useCallback(function(){
+        setRegistrations(baseRegistrations)
+    }, [address])
+
+    const saveRegistrations = useCallback(function(){
+        submitRegistrations(registrations)
+    }, [submitRegistrations, registrations])
+
+    const { validation } = useValidation(getRegistrations,
+        validateRegistrations, r => r.topValidationResult, [registrations])
     
-    return !!address ? <>TODO</> : <>TODO</>
+    return <EditRegistrations {...{registrations, validation, saveRegistrations, reset,
+        setRegistrations, addressName: effectiveAddressName, addressLastUpdated}}/>
 }
 
 export type EditRegistrationsProps = {

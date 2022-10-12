@@ -84,23 +84,23 @@ export function useValidation<T, TValid>(getLatestData: () => T, validate: (t: T
         return getValidation(v)
     }
 
-    function validateLatestData(): TValid{
+    const validateLatestData = useCallback(function(): TValid{
         const data = getLatestData()
         const validation = validate(data)
         return validation
-    }
+    }, [getLatestData, validate])
 
-    function updateValidation(){
+    const updateValidation = useCallback(function(){
         const latestValidation = validateLatestData()
         setValidation(latestValidation)
         return getValidation(latestValidation)
-    }
+    }, [validateLatestData, setValidation, getValidation])
 
-    function updateValidationIfNotNull(){
+    const updateValidationIfNotNull = useCallback(function(){
         if(validation !== null){
             updateValidation()
         }
-    }
+    }, [updateValidation, validation])
 
     const updateNotNullCallback =
         useCallback(updateValidationIfNotNull, [validation, setValidation, validateLatestData])
