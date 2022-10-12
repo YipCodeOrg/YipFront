@@ -74,7 +74,7 @@ function StoryWrapper(props: StoryWrapperProps) {
 
     return <Provider store={mockStore}>
         {screen === DisplayScreen.EditRegistrationsScreen && <ConnectedEditRegistrations
-            yipCode={mockYipCode} fetchThunk={mockAddressDataThunk} submitThunk={mockSubmissionThunk}/>}
+            yipCode={mockYipCode} fetchThunk={mockAddressDataThunk} submissionThunk={mockSubmissionThunk}/>}
         {screen === DisplayScreen.ViewAddressesScreen && <ConnectedViewAddresses 
            selectedYipCode={null}
            userAddressDataThunk={mockAddressDataThunk}

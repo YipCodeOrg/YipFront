@@ -22,23 +22,27 @@ import { FetchUserAddressDataThunk, UserAddressSliceData } from "../../../userad
 import { EditRegistrationsData, EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice"
 import { useYipCodeToUserAddressMap } from "../../../useraddressdata/userAddressDataHooks"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
-import { useEditRegistrationsHubSubmit } from "./submit/editRegistrationsSubmissionHooks"
+import { useClearEditRegistrationsSubmission, useEditRegistrationsHubSubmit, useEditRegistrationsSubmissionState, useEditRegistrationsSubmitRetry } from "./submit/editRegistrationsSubmissionHooks"
 import { ValidateSubmitButton } from "../../../../components/core/ValidateSubmitButton"
+import { SubmissionStatus } from "../../../../util/redux/slices/submissionSlice"
+import { EditRegistrationsSubmitted } from "./submit/EditRegistrationsSubmitted"
+import { EditRegistrationsSuccess } from "./submit/EditRegistrationsSuccess"
+import { EditRegistrationsFailed } from "./submit/EditRegistrationsFailed"
 
 export type ConnectedEditRegistrationsProps = {
     yipCode: string,
     fetchThunk: FetchUserAddressDataThunk,
-    submitThunk: EditRegistrationsSubmissionThunk
+    submissionThunk: EditRegistrationsSubmissionThunk
 }
 
 export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProps){
-    const { yipCode, fetchThunk, submitThunk } = props
+    const { yipCode, fetchThunk, submissionThunk } = props
 
     const [addressesMap, addressesLoadStatus] = useYipCodeToUserAddressMap(fetchThunk)
 
     const address = addressesMap.get(yipCode)
 
-    const submitThunkAction = useEditRegistrationsHubSubmit(submitThunk)
+    const submitThunkAction = useEditRegistrationsHubSubmit(submissionThunk)
 
     const submitRegistrations : (rs: Registration[]) => void
      = useCallback(function(rs: Registration[]){
@@ -47,13 +51,26 @@ export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProp
             yipCode
         }
         submitThunkAction(thunkInput)
-    }, [submitThunk, yipCode])
+    }, [submissionThunk, yipCode])
+
+    const { status: submissionStatus, submitted } = useEditRegistrationsSubmissionState()
+    const submittedYipCode = submitted?.yipCode || null
+    const clearSubmissionState = useClearEditRegistrationsSubmission()
+    const retrySubmission = useEditRegistrationsSubmitRetry(submissionThunk)
 
     const loadedElement = address !== undefined ? <EditRegistrationsLoaded 
         {...{address, submitRegistrations}}/> : <>ERROR: Address not found</>
 
-    return <LogoLoadStateWrapper status = {addressesLoadStatus} loadedElement={loadedElement}
-    h="100%" flexGrow={1} justify="center" logoSize={80}/>
+    if(submissionStatus === SubmissionStatus.Clear){
+        return <LogoLoadStateWrapper status = {addressesLoadStatus} loadedElement={loadedElement}
+        h="100%" flexGrow={1} justify="center" logoSize={80}/>
+    } else if(submissionStatus === SubmissionStatus.Submitted){
+        return <EditRegistrationsSubmitted {...{yipCode: submittedYipCode}}/>
+    } else if(submissionStatus === SubmissionStatus.Responded){
+        return <EditRegistrationsSuccess {...{yipCode: submittedYipCode, clearSubmissionState}}/>
+    } else {
+        return <EditRegistrationsFailed {...{yipCode: submittedYipCode, clearSubmissionState, retrySubmission}}/>
+    }
 
 }
 
