@@ -13,7 +13,7 @@ import { userDataSliceGenerator } from "../../../userdata/userDataSlice";
 import { newMockCreateAddressSubmissionThunk } from "../address/create/submit/createAddressSubmissionMocks";
 import { ConnectedViewAddresses } from "../addresses/view/ViewAddresses";
 import { ConnectedEditRegistrations } from "./EditRegistrations";
-import { EditRegistrationsData, editRegistrationsSubmissionSliceGenerator, EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice";
+import { editRegistrationsSubmissionSliceGenerator, EditRegistrationsSubmissionThunk } from "./submit/editRegistrationsSubmissionSlice";
 
 
 type StoryType = typeof StoryWrapper
@@ -125,15 +125,11 @@ function createStoreAndThunks(props: StoreThunksProps){
       "mockDeleteAddress", d => d, submissionDelayMilis
     )
 
-    const mockUpdateRegistrationsThunk: EditRegistrationsSubmissionThunk = createMockTransformedPortBodyThunk<EditRegistrationsData, EditRegistrationsData>(
-      "mockUpdateRegistrations", d => d, submissionDelayMilis
-    )
-
     // Don't expect this to be called in this story
     const mockCreateAddressSubmissionThunk = newMockCreateAddressSubmissionThunk
         (0, false, arbitrarySimpleDate1, () => "")
 
-    const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk,       mockCreateAddressSubmissionThunk)
+    const userAddressDataReducer = userAddressDataSliceGenerator(mockSubmissionThunk, mockDeletionThunk,       mockCreateAddressSubmissionThunk)
     (() => mockAddressDataThunk).slice.reducer
 
     const mockUserData: UserData = {
