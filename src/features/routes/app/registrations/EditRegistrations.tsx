@@ -51,7 +51,7 @@ export function ConnectedEditRegistrations(props: ConnectedEditRegistrationsProp
             yipCode
         }
         submitThunkAction(thunkInput)
-    }, [submissionThunk, yipCode])
+    }, [submissionThunk, yipCode, submitThunkAction])
 
     const { status: submissionStatus, submitted } = useEditRegistrationsSubmissionState()
     const submittedYipCode = submitted?.yipCode || null
