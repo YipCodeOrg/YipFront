@@ -3,11 +3,12 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
 import { Provider } from "react-redux";
 import { dateToSimpleDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date";
+import { UserAddressData } from "../../../../packages/YipStackLib/types/address/address";
 import { Registration} from "../../../../packages/YipStackLib/types/registrations";
 import { UserData } from "../../../../packages/YipStackLib/types/userData";
 import { createMockFailureApiRequestThunk, createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../util/storybook/mockThunks";
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers";
-import { DeleteAddressData, DeleteAddressThunk, FetchUserAddressDataThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../useraddressdata/userAddressDataSlice";
+import { DeleteAddressData, DeleteAddressThunk, FetchUserAddressDataThunk, newUserAddressSliceData, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../useraddressdata/userAddressDataSlice";
 import { userDataSliceGenerator } from "../../../userdata/userDataSlice";
 import { newMockCreateAddressSubmissionThunk } from "../address/create/submit/createAddressSubmissionMocks";
 import { ConnectedViewAddresses } from "../addresses/view/ViewAddresses";
@@ -25,7 +26,10 @@ enum DisplayScreen {
 export default {
     title: 'app/registrations/Edit',
     args: {
-        screen: DisplayScreen.EditRegistrationsScreen
+        screen: DisplayScreen.EditRegistrationsScreen,
+        addressName: "Mock Address",
+        submissionDelayMilis: 1500,
+        shouldFailSubmission: false,
     },
     argTypes: {
         screen: {
@@ -45,20 +49,24 @@ const arbitraryDate2 = new Date(2021, 12)
 const arbitrarySimpleDate2 = dateToSimpleDate(arbitraryDate2)
 const arbitrarySimpleDate3 = dateToSimpleDate(new Date(2022, 12))
 const mockYipCode = "YIPMOCKYMOCK"
+const mockSub = "SUBBYMCMOCKERSON"
 
 type StoryWrapperProps = {
+    screen: string,
     initialRegistrations: Registration[],
     addressName: string,
     submissionDelayMilis: number,
     shouldFailSubmission?: boolean,
-    screen: string
 }
 
 function StoryWrapper(props: StoryWrapperProps) {
 
     const { initialRegistrations, addressName, screen, 
         submissionDelayMilis, shouldFailSubmission } = props
-    const storeThunkProps = { submissionDelayMilis, shouldFailSubmission: !!shouldFailSubmission, addressName }
+    const storeThunkProps = { submissionDelayMilis,
+        shouldFailSubmission: !!shouldFailSubmission,
+        addressName,
+        initialRegistrations }
     const [storeThunks, ] = useState(() => createStoreAndThunks(storeThunkProps))
 
     const { mockStore, mockSubmissionThunk, mockAddressDataThunk, mockUserDataThunk, mockDeletionThunk } = 
@@ -66,8 +74,7 @@ function StoryWrapper(props: StoryWrapperProps) {
 
     return <Provider store={mockStore}>
         {screen === DisplayScreen.EditRegistrationsScreen && <ConnectedEditRegistrations
-            yipCode={mockYipCode} fetchThunk={mockAddressDataThunk} submitThunk={mockSubmissionThunk}
-            {...{ initialRegistrations }}/>}
+            yipCode={mockYipCode} fetchThunk={mockAddressDataThunk} submitThunk={mockSubmissionThunk}/>}
         {screen === DisplayScreen.ViewAddressesScreen && <ConnectedViewAddresses 
            selectedYipCode={null}
            userAddressDataThunk={mockAddressDataThunk}
@@ -77,13 +84,14 @@ function StoryWrapper(props: StoryWrapperProps) {
 }
 
 type StoreThunksProps = {
+    initialRegistrations: Registration[],
     submissionDelayMilis: number,
     shouldFailSubmission: boolean,
     addressName: string
 }
 
 function createStoreAndThunks(props: StoreThunksProps){
-    const { submissionDelayMilis, shouldFailSubmission } = props    
+    const { submissionDelayMilis, shouldFailSubmission, initialRegistrations, addressName } = props    
 
     const mockSubmissionThunk: EditRegistrationsSubmissionThunk = shouldFailSubmission ? 
     createMockFailureApiRequestThunk("mockSubmitRegistrations", submissionDelayMilis)
@@ -92,8 +100,26 @@ function createStoreAndThunks(props: StoreThunksProps){
     const mockSubmissionReducer = editRegistrationsSubmissionSliceGenerator(mockSubmissionThunk).reducer
 
     const mockAddressDataThunk: FetchUserAddressDataThunk =
-        createMockThunkOrFailureThunk<UserAddressSliceData[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
-            [], d => d, submissionDelayMilis)
+        createMockThunkOrFailureThunk<Registration[], MessagePort, UserAddressSliceData[]>("mockUserAddressData", 
+            initialRegistrations, generateSingletonAddressData, submissionDelayMilis)
+
+    function generateSingletonAddressData(initialRegistrations: Registration[]): UserAddressSliceData[]{
+        const addressData: UserAddressData = {
+            registrations: initialRegistrations,
+            sub: mockSub,
+            address: {address:  {
+                addressLines: ["456 Lots of Money Lane", "Profit Road", "Cashville", "Workland", "BORINGPOSTCODE456"],
+                aliasMap: {
+                  postCode: 4
+                }
+              },
+            addressMetadata: {lastUpdated: arbitrarySimpleDate2},
+            yipCode: mockYipCode,
+            name: addressName}
+        }
+
+        return [newUserAddressSliceData(addressData)]
+    }
 
     const mockDeletionThunk: DeleteAddressThunk = createMockTransformedPortBodyThunk<DeleteAddressData, DeleteAddressData>(
       "mockDeleteAddress", d => d, submissionDelayMilis
