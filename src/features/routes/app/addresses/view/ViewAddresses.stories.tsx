@@ -4,10 +4,12 @@ import { Provider } from "react-redux";
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date";
 import { UserAddressData } from "../../../../../packages/YipStackLib/types/address/address";
 import { UserData } from "../../../../../packages/YipStackLib/types/userData";
+import { useMockYipcodeGenerator } from "../../../../../util/storybook/mockHooks";
 import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks";
-import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice";
+import { DeleteAddressData, DeleteAddressThunk, newUserAddressSliceData, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice";
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice";
-import { createMockSubmissionThunk, useMockYipcodeGenerator } from "../../address/create/submit/createAddressMocks";
+import { newMockCreateAddressSubmissionThunk } from "../../address/create/submit/createAddressSubmissionMocks";
+import { EditRegistrationsData, EditRegistrationsSubmissionThunk } from "../../registrations/submit/editRegistrationsSubmissionSlice";
 import { ConnectedViewAddresses, ViewAddresses } from "./ViewAddresses";
 
 type StoryType = typeof StoryWrapper
@@ -51,12 +53,12 @@ function StoryWrapper(props: StoryWrapperProps){
       "mockDeleteAddress", d => d, delayMilis
     )
 
-    const mockUpdateRegistrationsThunk: UpdateRegistrationThunk = createMockTransformedPortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>(
+    const mockUpdateRegistrationsThunk: EditRegistrationsSubmissionThunk = createMockTransformedPortBodyThunk<EditRegistrationsData, EditRegistrationsData>(
       "mockUpdateRegistrations", d => d, delayMilis
     )
 
     const mockYipCodeGenerator = useMockYipcodeGenerator("MOCKYIPCODE")  
-  const mockSubmissionThunk = createMockSubmissionThunk(delayMilis, false, arbitraryDate1, mockYipCodeGenerator)
+  const mockSubmissionThunk = newMockCreateAddressSubmissionThunk(delayMilis, false, arbitraryDate1, mockYipCodeGenerator)
 
   const userAddressDataReducer = userAddressDataSliceGenerator(mockUpdateRegistrationsThunk, mockDeletionThunk, mockSubmissionThunk)
     (() => mockAddressDataThunk).slice.reducer

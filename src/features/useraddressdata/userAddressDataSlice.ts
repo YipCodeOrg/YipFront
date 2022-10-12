@@ -1,42 +1,23 @@
 import { ActionReducerMapBuilder, AsyncThunk } from "@reduxjs/toolkit";
 import { isUserAddressData, isUserAddressDataArray, UserAddressData } from "../../packages/YipStackLib/types/address/address";
 import { fetchSliceGenerator, FetchSliceOf } from "../../util/redux/slices/fetchSlice";
-import { createApiDeleteThunk, createApiGetThunk, createSimpleApiPutThunk, PortBodyThunk } from "../../util/redux/thunks";
+import { createApiDeleteThunk, createApiGetThunk } from "../../util/redux/thunks";
 import { UserData } from "../../packages/YipStackLib/types/userData";
 import { isBoolean, isString, isTypedArray } from "../../packages/YipStackLib/packages/YipAddress/util/typePredicates";
 import { compose2TripleDomain, compose3Higher } from "../../packages/YipStackLib/packages/YipAddress/util/misc";
-import { isRegistration, Registration } from "../../packages/YipStackLib/types/registrations";
 import { PortBodyInput } from "../../util/redux/thunkHelpers";
 import { CreateAddressSubmissionThunk, submitCreateAddress } from "../routes/app/address/create/submit/createAddressSubmissionSlice";
+import { EditRegistrationsSubmissionThunk, submitEditRegistrations } from "../routes/app/registrations/submit/editRegistrationsSubmissionSlice";
 
 
 export type FetchUserAddressDataThunk = AsyncThunk<UserAddressSliceData[], MessagePort, {}>
 export type FetchUserDataThunk = AsyncThunk<UserData, MessagePort, {}>
-export type UpdateRegistrationThunk = PortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>
 export type UserAddressDataState = FetchSliceOf<UserAddressSliceData[]>
-
-export type UpdateRegistrationPayload = {
-    registrations: Registration[],
-    yipCode: string
-}
 
 export type UserAddressSliceData = {
     addressData: UserAddressData,
     isDeleting: boolean,
     isUpdatingRegistrations: boolean
-}
-
-export function isUpdateRegistrationPayload(obj: any): obj is UpdateRegistrationPayload {
-    if (obj === undefined) {
-        return false
-    }
-    if (!isString(obj.yipCode)) {
-        return false
-    }
-    if (!isTypedArray(obj.registrations, isRegistration)) {
-        return false
-    }
-    return true
 }
 
 export type DeleteAddressData = {
@@ -51,8 +32,6 @@ export type DeleteAddressThunk = AsyncThunk<DeleteAddressData, PortBodyInput<Del
 
 export const deleteAddress: DeleteAddressThunk = createApiDeleteThunk(
     "/address", isDeleteAddressData, r => r)
-
-export const updateRegistrations: UpdateRegistrationThunk = createSimpleApiPutThunk("/address/registrations", isUpdateRegistrationPayload)
 
 const mainBuilderUpdater = compose3Higher(registrationUpdateBuilderUpdater, deletionBuilderUpdater, addressCreatedBuilderUpdater)
 
@@ -82,7 +61,7 @@ function addAddressData(state: UserAddressDataState, data: UserAddressData){
     }
 }
 
-function registrationUpdateBuilderUpdater(thunk: UpdateRegistrationThunk) {
+function registrationUpdateBuilderUpdater(thunk: EditRegistrationsSubmissionThunk) {
     return function (builder: ActionReducerMapBuilder<UserAddressDataState>) {
         builder.addCase(thunk.pending, (state, action) => {
             const yipCode = action.meta.arg.body.yipCode
@@ -180,6 +159,6 @@ function generatefetchThunk(path: string, predicate: (obj: any) => obj is UserAd
 }
 
 export const { slice: userAddressDataSlice, thunk: fetchUserAddressData } =
-    userAddressDataSliceGenerator(updateRegistrations, deleteAddress, submitCreateAddress)(generatefetchThunk)
+    userAddressDataSliceGenerator(submitEditRegistrations, deleteAddress, submitCreateAddress)(generatefetchThunk)
 
 export default userAddressDataSlice.reducer

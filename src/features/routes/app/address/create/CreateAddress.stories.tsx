@@ -6,12 +6,14 @@ import { Provider } from "react-redux"
 import { createMockThunkOrFailureThunk, createMockTransformedPortBodyThunk } from "../../../../../util/storybook/mockThunks"
 import { createAddressSubmissionSliceGenerator } from "./submit/createAddressSubmissionSlice"
 import { dateToSimpleDate } from "../../../../../packages/YipStackLib/packages/YipAddress/util/date"
-import { DeleteAddressData, DeleteAddressThunk, UpdateRegistrationPayload, UpdateRegistrationThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
+import { DeleteAddressData, DeleteAddressThunk, userAddressDataSliceGenerator, UserAddressSliceData } from "../../../../useraddressdata/userAddressDataSlice"
 import { UserData } from "../../../../../packages/YipStackLib/types/userData"
 import { userDataSliceGenerator } from "../../../../userdata/userDataSlice"
 import { ConnectedViewAddresses } from "../../addresses/view/ViewAddresses"
 import { useState } from "react"
-import { createMockSubmissionThunk, useMockYipcodeGenerator } from "./submit/createAddressMocks"
+import { newMockCreateAddressSubmissionThunk } from "./submit/createAddressSubmissionMocks"
+import { useMockYipcodeGenerator } from "../../../../../util/storybook/mockHooks"
+import { EditRegistrationsData, EditRegistrationsSubmissionThunk } from "../../registrations/submit/editRegistrationsSubmissionSlice"
 
 type StoryType = typeof StoryWrapper
 
@@ -75,7 +77,7 @@ type StoreThunksProps = {
 
 function createStoreAndThunks(props: StoreThunksProps, mockYipCodeGenerator: () => string){
     const { delayMilis, shouldFail } = props    
-    const mockSubmissionThunk = createMockSubmissionThunk(delayMilis, shouldFail, arbitraryDate1, mockYipCodeGenerator)
+    const mockSubmissionThunk = newMockCreateAddressSubmissionThunk(delayMilis, shouldFail, arbitraryDate1, mockYipCodeGenerator)
 
     const mockSubmissionReducer = createAddressSubmissionSliceGenerator(mockSubmissionThunk).reducer
 
@@ -86,7 +88,7 @@ function createStoreAndThunks(props: StoreThunksProps, mockYipCodeGenerator: () 
       "mockDeleteAddress", d => d, delayMilis
     )
 
-    const mockUpdateRegistrationsThunk: UpdateRegistrationThunk = createMockTransformedPortBodyThunk<UpdateRegistrationPayload, UpdateRegistrationPayload>(
+    const mockUpdateRegistrationsThunk: EditRegistrationsSubmissionThunk = createMockTransformedPortBodyThunk<EditRegistrationsData, EditRegistrationsData>(
       "mockUpdateRegistrations", d => d, delayMilis
     )
 
