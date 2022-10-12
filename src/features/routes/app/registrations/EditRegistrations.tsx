@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Grid, GridItem, Heading, HStack,
+import { ButtonGroup, Grid, GridItem, Heading, HStack,
     Icon, IconButton, Input, InputProps, VStack, useColorModeValue, Tooltip, Link, FormControl } from "@chakra-ui/react"
 import { FaPlusCircle } from "react-icons/fa"
 import { MdEditNote, MdUpdate } from "react-icons/md"
@@ -23,6 +23,7 @@ import { EditRegistrationsData, EditRegistrationsSubmissionThunk } from "./submi
 import { useYipCodeToUserAddressMap } from "../../../useraddressdata/userAddressDataHooks"
 import { LogoLoadStateWrapper } from "../../../../components/hoc/LoadStateWrapper"
 import { useEditRegistrationsHubSubmit } from "./submit/editRegistrationsSubmissionHooks"
+import { ValidateSubmitButton } from "../../../../components/core/ValidateSubmitButton"
 
 export type ConnectedEditRegistrationsProps = {
     yipCode: string,
@@ -82,16 +83,17 @@ function EditRegistrationsLoaded(props: EditRegistrationsLoadedProps){
         submitRegistrations(registrations)
     }, [submitRegistrations, registrations])
 
-    const { validation } = useValidation(getRegistrations,
+    const { validation, updateValidation: revalidate } = useValidation(getRegistrations,
         validateRegistrations, r => r.topValidationResult, [registrations])
     
     return <EditRegistrations {...{registrations, validation, saveRegistrations, reset,
-        setRegistrations, addressName: effectiveAddressName, addressLastUpdated}}/>
+        setRegistrations, addressName: effectiveAddressName, addressLastUpdated, revalidate}}/>
 }
 
 export type EditRegistrationsProps = {
     registrations: Registration[],
     validation: RegistrationsValidationResult | null,
+    revalidate: () => ValidationResult,
     saveRegistrations: () => void,
     reset: () => void,
     setRegistrations: (newRegistrations: Registration[]) => void,
@@ -102,7 +104,7 @@ export type EditRegistrationsProps = {
 export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
     
     const {registrations, addressName, setRegistrations, addressLastUpdated, validation,
-        saveRegistrations, reset} = props
+        saveRegistrations, reset, revalidate } = props
     const [indexedRegistrations, _] = useMutableIndexed(registrations)
     const itemsPerPage = 10
 
@@ -130,7 +132,7 @@ export const EditRegistrations: React.FC<EditRegistrationsProps> = (props) => {
 
     function renderButtonGroup({isInvalid}: ValidationComponentProps){
         return <EditRegistrationsButtonGroup {...{isInvalid, saveRegistrations,
-            addNewRegistration: addNewRegistrationCallback, reset}} />
+            addNewRegistration: addNewRegistrationCallback, reset, validation, revalidate}} />
     }
 
     const { validationErrorMessage, isInvalid } = standardValidationControlDataFromArray(validation)
@@ -166,21 +168,26 @@ type EditRegistrationsButtonGroupProps = {
     saveRegistrations: () => void,
     addNewRegistration: () => void,
     reset: () => void,
-    isInvalid: boolean
+    isInvalid: boolean,
+    revalidate: () => ValidationResult,
+    validation: RegistrationsValidationResult | null
 }
 
 function EditRegistrationsButtonGroup(props: EditRegistrationsButtonGroupProps){
     const buttonGroupBg = useColorModeValue('gray.50', 'gray.900')
     const addNewRegistrationTooltip = "Add new registration"
-    const popoverBodyMessage = "Are you sure you want to reset edits made to the registrations?"
+    const resetPopoverBodyMessage = "Are you sure you want to reset edits made to the registrations?"
     const confirmButtonBg = useColorModeValue('gray.50', 'gray.900')
+    const saveLabel = "Save changes"
 
-    const { saveRegistrations, addNewRegistration, isInvalid, reset } = props
+    const { saveRegistrations, addNewRegistration, reset, revalidate, validation } = props
 
     return <ButtonGroup isAttached variant='outline'
-        bg={buttonGroupBg} borderRadius="lg">                
-        <Button onClick={saveRegistrations} isDisabled={isInvalid}>Save</Button>
-        <ConfirmationPopoverButton {...{popoverBodyMessage, confirmButtonBg, action: reset, actionName: "Reset"}}/>
+        bg={buttonGroupBg} borderRadius="lg">
+        <ValidateSubmitButton {...{tooltipLabel: saveLabel, text: "Save",
+            validation: validation?.topValidationResult ?? null, submitChanges: saveRegistrations, revalidate}}/>
+        <ConfirmationPopoverButton {...{popoverBodyMessage: resetPopoverBodyMessage,
+            confirmButtonBg, action: reset, actionName: "Reset"}}/>
         <Tooltip label={addNewRegistrationTooltip} placement="top" openDelay={500}>
             <IconButton aria-label={addNewRegistrationTooltip}
                 icon={<Icon as={FaPlusCircle}/>} onClick={addNewRegistration}/>

@@ -1,5 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { dateToSimpleDate } from "../../../../packages/YipStackLib/packages/YipAddress/util/date";
+import { newEmptyValidationResult } from "../../../../packages/YipStackLib/packages/YipAddress/validate/validation";
 import { Registration, RegistrationsValidationResult, validateRegistrations } from "../../../../packages/YipStackLib/types/registrations";
 import { numberToAlpha } from "../../../../util/storybook/storybookHelpers";
 import { ListUpdateValidateRenderProps, ListUpdateValidateWrapper } from "../../../../util/storybook/ValidateWrapper";
@@ -38,7 +39,9 @@ const StoryWrapper: React.FC<EditRegistrationsStoryProps> = ({initialRegistratio
             addressLastUpdated: arbitraryDate2,
             validation,
             saveRegistrations,
-            reset
+            reset,
+            //Note - this will be removed when story uses Redux-connected component. It's just to remove compilation errors.
+            revalidate: () => newEmptyValidationResult()
         }    
 
         return <EditRegistrations {...childProps}/>
